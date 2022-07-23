@@ -1,0 +1,92 @@
+# Hugh's skhd key bindings, exclusively for yabai
+# resources and examples are available https://www.notion.so/Yabai-8da3b829872d432fac43181b7ff628fc or
+# https://github.com/koekeishiya/skhd/blob/master/examples/skhdrc
+# keybindings and modifiers can be found at https://github.com/koekeishiya/skhd/issues/1
+
+# switch spaces
+# I can't get any of these to work reliably. So on QMK, I've bound the default switch space shortcuts onto the home row
+#ctrl + alt + cmd - 0x2B : yabai -m window --focus north
+#ctrl + alt + cmd - 0x2F : yabai -m window --focus south
+#ctrl + alt + cmd - 0x2B : ~/.config/yabai/switchSpaceLeft.sh
+#ctrl + alt + cmd - 0x2F : osascript -e 'tell application "System Events" to key code 124 using control down'
+
+# focus window
+ctrl + alt + cmd - j : yabai -m window --focus west
+ctrl + alt + cmd - k : yabai -m window --focus south
+ctrl + alt + cmd - l : yabai -m window --focus north
+ctrl + alt + cmd - 0x29 : yabai -m window --focus east
+
+# swap managed window
+hyper - j : yabai -m window --swap west
+hyper - k : yabai -m window --swap south
+hyper - l : yabai -m window --swap north
+hyper - 0x29 : yabai -m window --swap east
+# swap with window under cursor
+hyper - g : yabai -m window --swap mouse
+
+
+# warp managed window
+ctrl + alt + cmd - u : yabai -m window --warp west
+ctrl + alt + cmd - i : yabai -m window --warp south
+ctrl + alt + cmd - o : yabai -m window --warp north
+ctrl + alt + cmd - p : yabai -m window --warp east
+
+# move window and follow focus
+#ctrl + alt + cmd - h : yabai -m window --space prev
+#ctrl + alt + cmd - 0x1B : yabai -m window --space next
+hyper - u : ~/.config/yabai/moveWindowLeft_FollowFocus.sh
+hyper - p : ~/.config/yabai/moveWindowRight_FollowFocus.sh
+
+
+# balance size of windows
+hyper - b : yabai -m space --balance
+
+
+# rotate bsp tree
+ctrl + alt + cmd - r : yabai -m space --rotate 90
+
+
+
+# shift + cmd - 2 : yabai -m window --space  2; yabai -m space --focus 2
+
+
+#ctrl + alt + cmd - h : ~/.config/yabai/moveWindowLeft.sh
+#ctrl + alt + cmd - 0x1B : ~/.config/yabai/moveWindowRight.sh
+#ctrl + alt + cmd - 0x2B : ~/.config/yabai/moveWindowLeft.sh
+#ctrl + alt + cmd - 0x2F : ~/.config/yabai/moveWindowRight.sh
+
+
+# toggle window zoom
+ctrl + alt + cmd - y : yabai -m window --toggle zoom-parent
+ctrl + alt + cmd - f : yabai -m window --toggle zoom-fullscreen
+
+# toggle window split type
+ctrl + alt + cmd - s : yabai -m window --toggle split
+ctrl + alt + cmd - h : yabai -m window --toggle split
+
+
+# float / unfloat window and center on screen
+hyper - h : yabai -m window --toggle float;\
+          yabai -m window --grid 4:4:1:0:2:4
+
+# restart yabai
+hyper - r : brew services restart yabai
+
+
+# toggle yabai on or off
+ctrl + alt + cmd - m : yabai -m space --layout $(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "float" else "bsp" end')
+
+
+# increase window size
+ctrl + alt + cmd - d : yabai -m window --resize left:-50:0
+ctrl + alt + cmd - v : yabai -m window --resize right:50:0
+# shift + alt - w : yabai -m window --resize top:0:-20
+
+# decrease window size
+hyper - d : yabai -m window --resize left:50:0
+hyper - v : yabai -m window --resize right:-50:0
+
+
+
+# open new finder window
+# hyper - n : open ~/Downloads
