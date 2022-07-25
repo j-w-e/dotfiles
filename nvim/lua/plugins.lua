@@ -51,6 +51,8 @@ packer.startup(function(use)
     --use 'gaalcaras/ncm-R'
     --use 'ncm2/ncm2'
     --use 'roxma/nvim-yarp'
+    use 'goolord/alpha-nvim'
+    use 'kyazdani42/nvim-web-devicons'
     use 'folke/which-key.nvim'
 
     -- Automatically set up your configuration after cloning packer.nvim
