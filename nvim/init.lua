@@ -1,7 +1,8 @@
 
--- 4. check vim-wiki for a potential note-taking solution
 -- 5. add smart-dd to n and v modes: https://www.reddit.com/r/neovim/comments/w0jzzv/smart_dd/
--- 6. add nvim-r
+-- 6. add sessions in to alpha, and convert dashboard to startify layout
+--      * https://github.com/goolord/alpha-nvim/blob/main/lua/alpha/themes/startify.lua is the startify setup file 
+--      * https://github.com/Shatur/neovim-session-manager is the sessions manager
 -- 7. work out how to implement "which_key_ignore" as a key description for mappings
 -- 8. check filetype on, filetype plugin on, and filetype indent on, or their lsp equivalents
 -- 9. ensure i'm displaying listchars. "set listchars=tab:▸\ ,lead:·,trail:·"
@@ -16,6 +17,7 @@
 --      * nvim-r bindings which conflict with ripgrep for example
 -- 19. get R completion working. 
 --      * matmarqs alsmost works. see https://github.com/matmarqs/dotfiles/blob/10c1820158d7736081d978b459e030e4ca6a9330/house/.config/nvim/init.lua. What does not work is the menu opening automatically
+-- 20. make sure I've imported all the sensible settings from my various branches, such as the ability to resume editing at a the most recent point 
 require "plugins"
 -- all configurations for plugins
 require "plugins/cmp"
@@ -38,6 +40,3 @@ require "settings/options"
 require "settings/styles"
 require "settings/autocmds"
 
--- setting for ncm_r to work
---vim.g.python3_host_prog='/usr/local/bin/python3'
---vim.g.python_host_prog='/usr/bin/python'
