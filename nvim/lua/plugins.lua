@@ -48,9 +48,9 @@ packer.startup(function(use)
     use 'famiu/bufdelete.nvim'
     use 'rhysd/clever-f.vim'
     use 'jalvesaq/Nvim-R'
-    use 'gaalcaras/ncm-R'
-    use 'ncm2/ncm2'
-    use 'roxma/nvim-yarp'
+    --use 'gaalcaras/ncm-R'
+    --use 'ncm2/ncm2'
+    --use 'roxma/nvim-yarp'
     use 'folke/which-key.nvim'
 
     -- Automatically set up your configuration after cloning packer.nvim

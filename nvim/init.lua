@@ -13,6 +13,9 @@
 -- 18. Bindings ideas:
 --      * move window? 
 --      * space space and arrows to shift between windows?
+--      * nvim-r bindings which conflict with ripgrep for example
+-- 19. get R completion working. 
+--      * matmarqs alsmost works. see https://github.com/matmarqs/dotfiles/blob/10c1820158d7736081d978b459e030e4ca6a9330/house/.config/nvim/init.lua. What does not work is the menu opening automatically
 require "plugins"
 -- all configurations for plugins
 require "plugins/configs/cmp"

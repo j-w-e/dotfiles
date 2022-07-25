@@ -124,16 +124,6 @@ _G.packer_plugins = {
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/lualine.nvim",
     url = "https://github.com/nvim-lualine/lualine.nvim"
   },
-  ["ncm-R"] = {
-    loaded = true,
-    path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/ncm-R",
-    url = "https://github.com/gaalcaras/ncm-R"
-  },
-  ncm2 = {
-    loaded = true,
-    path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/ncm2",
-    url = "https://github.com/ncm2/ncm2"
-  },
   ["null-ls.nvim"] = {
     loaded = true,
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
@@ -163,11 +153,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/nvim-treesitter",
     url = "https://github.com/nvim-treesitter/nvim-treesitter"
-  },
-  ["nvim-yarp"] = {
-    loaded = true,
-    path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/nvim-yarp",
-    url = "https://github.com/roxma/nvim-yarp"
   },
   ["packer.nvim"] = {
     loaded = true,

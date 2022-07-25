@@ -20,9 +20,9 @@ g.R_user_maps_only = 0 -- only set the mappings defined here
 --endfunction
 --nmap gz :call ZoomWindow()<CR>
 
-vim.cmd[[
-" NCM2
-autocmd BufEnter * call ncm2#enable_for_buffer()    " To enable ncm2 for all buffers.
-set completeopt=noinsert,menuone,noselect           " :help Ncm2PopupOpen for more
-" information.
-]]
+--vim.cmd[[
+--" NCM2
+--autocmd BufEnter * call ncm2#enable_for_buffer()    " To enable ncm2 for all buffers.
+--set completeopt=noinsert,menuone,noselect           " :help Ncm2PopupOpen for more
+--" information.
+--]]

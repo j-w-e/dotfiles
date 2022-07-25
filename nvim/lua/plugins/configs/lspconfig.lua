@@ -59,3 +59,5 @@ lspconfig.sumneko_lua.setup {
       },
    },
 }
+
+lspconfig.r_language_server.setup ({})
