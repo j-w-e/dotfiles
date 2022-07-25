@@ -53,6 +53,8 @@ packer.startup(function(use)
     --use 'roxma/nvim-yarp'
     use 'goolord/alpha-nvim'
     use 'kyazdani42/nvim-web-devicons'
+    use 'echasnovski/mini.nvim'
+    use 'JoseConseco/telescope_sessions_picker.nvim'
     use 'folke/which-key.nvim'
 
     -- Automatically set up your configuration after cloning packer.nvim

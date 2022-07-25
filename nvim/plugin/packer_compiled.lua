@@ -129,6 +129,11 @@ _G.packer_plugins = {
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/lualine.nvim",
     url = "https://github.com/nvim-lualine/lualine.nvim"
   },
+  ["mini.nvim"] = {
+    loaded = true,
+    path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/mini.nvim",
+    url = "https://github.com/echasnovski/mini.nvim"
+  },
   ["null-ls.nvim"] = {
     loaded = true,
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/null-ls.nvim",
@@ -183,6 +188,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/telescope.nvim",
     url = "https://github.com/nvim-telescope/telescope.nvim"
+  },
+  ["telescope_sessions_picker.nvim"] = {
+    loaded = true,
+    path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/telescope_sessions_picker.nvim",
+    url = "https://github.com/JoseConseco/telescope_sessions_picker.nvim"
   },
   ["which-key.nvim"] = {
     loaded = true,

@@ -43,3 +43,22 @@ keymap("i", "<c-o>", "<c-w>l", opts)
 -- vim.api.nvim_set_keymap('', 't', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false, hint_offset = -1 })<cr>", {})
 -- vim.api.nvim_set_keymap('', 'T', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false, hint_offset = 1 })<cr>", {})
 
+local function smart_d_visual()
+	local l, c = unpack(vim.api.nvim_win_get_cursor(0))
+	for _, line in ipairs(vim.api.nvim_buf_get_lines(0, l - 1, l, true)) do
+		if line:match("^%s*$") then
+			return "\"_d"
+		end
+	end
+	return "d"
+end
+local function smart_d_normal()
+  if vim.api.nvim_get_current_line():match("^%s*$") then
+    return "\"_dd"
+  else
+    return "dd"
+  end
+end
+
+vim.keymap.set("v", "d", smart_d_visual, { noremap = true, expr = true } )
+vim.keymap.set("n", "dd", smart_d_normal, { noremap = true, expr = true } )

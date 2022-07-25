@@ -1,8 +1,4 @@
-
--- 5. add smart-dd to n and v modes: https://www.reddit.com/r/neovim/comments/w0jzzv/smart_dd/
--- 6. add sessions in to alpha, and convert dashboard to startify layout
---      * https://github.com/goolord/alpha-nvim/blob/main/lua/alpha/themes/startify.lua is the startify setup file 
---      * https://github.com/Shatur/neovim-session-manager is the sessions manager
+-- 6. set up sessions for qmk, nvim-config
 -- 7. work out how to implement "which_key_ignore" as a key description for mappings
 -- 8. check filetype on, filetype plugin on, and filetype indent on, or their lsp equivalents
 -- 9. ensure i'm displaying listchars. "set listchars=tab:▸\ ,lead:·,trail:·"
@@ -34,6 +30,7 @@ require "plugins/hop"
 require "plugins/whichkey"
 require "plugins/nvim-r"
 require "plugins/alpha"
+require "plugins/mini"
 -- all settings
 require "settings/keymaps"
 require "settings/options"
