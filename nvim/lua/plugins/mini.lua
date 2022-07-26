@@ -1,4 +1,10 @@
-require('mini.sessions').setup({
+local present, mini = pcall(require, "mini.sessions")
+
+if not present then
+   return
+end
+
+mini.setup({
 	-- Whether to read latest session if Neovim opened without file arguments
 	autoread = false,
 

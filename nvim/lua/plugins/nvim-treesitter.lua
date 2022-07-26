@@ -6,7 +6,7 @@ end
 
 treesitter.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "lua" },
+  ensure_installed = { "lua", "r", "c" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,

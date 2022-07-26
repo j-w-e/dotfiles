@@ -41,9 +41,9 @@ packer.startup(function(use)
     use 'nvim-telescope/telescope.nvim'    -- finder, requires fzf and ripgrep
     use 'nvim-lualine/lualine.nvim'
     use 'akinsho/bufferline.nvim'
-    use 'kyazdani42/nvim-tree.lua' 
+    use 'kyazdani42/nvim-tree.lua'
     use 'jose-elias-alvarez/null-ls.nvim' -- see https://www.youtube.com/watch?v=b7OguLuaYvE
-    --use 'windwp/nvim-autopairs'
+    use 'windwp/nvim-autopairs'
     use 'phaazon/hop.nvim'
     use 'famiu/bufdelete.nvim'
     use 'rhysd/clever-f.vim'

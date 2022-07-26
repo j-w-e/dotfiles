@@ -27,6 +27,8 @@ opt.ignorecase = true
 opt.smartcase = true
 opt.showmode = false
 opt.wildmode = "longest:full,full"
+opt.list = true
+opt.listchars = "trail:·,tab:»·,eol:↲,multispace:   |,extends:>,precedes:<"
 
 -- vim settings specifically for whichkey
 opt.timeoutlen = 500

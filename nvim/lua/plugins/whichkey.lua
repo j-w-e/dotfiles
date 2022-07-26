@@ -45,9 +45,10 @@ whichkey.register({
         d = { "<cmd>Bdelete!<cr>", "really del buffer!" },
     },
     c = {
-        name = "code", 
-        a = "code actions",
+        name = "code",
+        a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "code actions" },
         f = { "<cmd>lua vim.lsp.buf.formatting_sync()<cr>", "format" },
+        r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "rename" },
     },
     D = { "go to type def" },
     e = { "open float" },
@@ -60,11 +61,15 @@ whichkey.register({
         w = { "<cmd>w<cr>", "save" },
         wq = { "<cmd>wq<cr>", "save-and-quit" },
     },
+    g = {
+        name = "go to",
+        r = { "<cmd>lua vim.lsp.buf.references()<cr>", "references" }
+    },
     n = { "<cmd>NvimTreeToggle<cr>", "nvim-tree" },
     q = { "<cmd>q<cr>", "quit" },
     r = {
         name = "rename",
-        g = "grep", 
+        g = "grep",
         n = "smart rename",
     },
     s = {
@@ -76,13 +81,13 @@ whichkey.register({
     },
     t = { "<cmd>Telescope<cr>", "telescope" },
     v = {
-        name = "vim config", 
+        name = "vim config",
         e = { "<cmd>e ~/.config/nvim/init.lua<cr>", "edit init.lua" },
         p = { "<cmd>e ~/.config/nvim/lua/plugins.lua<cr>", "edit plugins.lua" },
         r = { "<cmd>luafile ~/.config/nvim/init.lua<cr>", "reload init.lua" },
     },
     w = {
-        name = "window", 
+        name = "window",
         v = { "<cmd>vs<cr>", "vertical split" },
         s = { "<cmd>sp<cr>", "split" },
         c = { "<cmd>clo<cr>", "close" },

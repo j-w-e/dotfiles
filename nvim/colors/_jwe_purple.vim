@@ -43,7 +43,9 @@ hi LineNr guifg=#A599E9 ctermfg=140 guibg=#28284E ctermbg=235 gui=NONE cterm=NON
 hi CursorLineNr guifg=#E1EFFF ctermfg=195 guibg=#28284E ctermbg=235 gui=NONE cterm=NONE
 " hi MatchParen guifg=#2D2B55 ctermfg=236 guibg=#FAEFA5 ctermbg=229 gui=NONE cterm=NONE
 hi MatchParen guifg=NONE ctermfg=236 guibg=#7d44b2 ctermbg=229 gui=NONE cterm=NONE
-hi NonText guifg=#A599E9 ctermfg=140 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
+hi NonText guifg=#524C74 ctermfg=140 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
+hi link Whitespace NonText
+" hi NonText guifg=#A599E9 ctermfg=140 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
 hi Normal guifg=#E1EFFF ctermfg=195 guibg=#1e1d39 ctermbg=236 gui=NONE cterm=NONE
 hi PMenu guifg=#A599E9 ctermfg=140 guibg=#1F1F41 ctermbg=235 gui=NONE cterm=NONE
 hi PMenuSel guifg=#9EFFFF ctermfg=159 guibg=#2D2B55 ctermbg=236 gui=NONE cterm=NONE
