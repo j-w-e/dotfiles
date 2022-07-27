@@ -40,7 +40,7 @@ whichkey.setup({
 whichkey.register({
     b = {
         name = "buffer",
-        b = { "buffer list" },
+        b = { "<cmd>Telescope buffers<cr>", "buffer list" },
         q = { "<cmd>Bdelete<cr>", "del buffer" },
         d = { "<cmd>Bdelete!<cr>", "really del buffer!" },
     },
@@ -66,6 +66,11 @@ whichkey.register({
         r = { "<cmd>lua vim.lsp.buf.references()<cr>", "references" }
     },
     n = { "<cmd>NvimTreeToggle<cr>", "nvim-tree" },
+    p = {
+        name = "packer",
+        s = { "<cmd>PackerSync<cr>", "sync" },
+        c =  { "<cmd>PackerClean<cr>", "clean" },
+    },
     q = { "<cmd>q<cr>", "quit" },
     r = {
         name = "rename",

@@ -21,7 +21,7 @@ keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", opts)
 keymap("n", "<leader>rg", "<cmd>Telescope live_grep<cr>", opts)
 
 --Hugh's custom keymap settings
-keymap("n", "<leader>bb", "<cmd>Telescope buffers<cr>", opts)
+--keymap("n", "<leader>bb", "<cmd>Telescope buffers<cr>", opts)
 keymap("t", "<esc>", "<c-\\><c-n>", opts)
 keymap("n", "<c-j>", "<cmd>set paste<cr>m`o<esc>``<cmd>set nopaste<cr>", opts)
 keymap("n", "<c-k>", "<cmd>set paste<cr>m`O<esc>``<cmd>set nopaste<cr>", opts)
