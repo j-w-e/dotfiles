@@ -197,7 +197,7 @@ _G.packer_plugins = {
   ["telescope_sessions_picker.nvim"] = {
     loaded = true,
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/telescope_sessions_picker.nvim",
-    url = "https://github.com/JoseConseco/telescope_sessions_picker.nvim"
+    url = "https://github.com/j-w-e/telescope_sessions_picker.nvim"
   },
   ["which-key.nvim"] = {
     loaded = true,

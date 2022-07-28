@@ -1,5 +1,4 @@
 -- 7. work out how to implement "which_key_ignore" as a key description for mappings
--- 10. do I need wildmenu options for path+=**, wildignore=**/node_modules/** is what i had in v3, _jwe_.lua
 -- 14. configure lsp. again see v3. including setting omnifunc to a sensible keymappings. and enable document formatting if I can?
 -- 15. think about whether c-n, c-p, c-y and c-e are good enough for wildmenu, or whether i need to implement https://vi.stackexchange.com/questions/22627/switching-arrow-key-mappings-for-wildmenu-tab-completion 
 -- 18. Bindings ideas:

@@ -54,7 +54,8 @@ packer.startup(function(use)
     use 'goolord/alpha-nvim'
     use 'kyazdani42/nvim-web-devicons'
     use 'echasnovski/mini.nvim'
-    use 'JoseConseco/telescope_sessions_picker.nvim'
+    --use 'JoseConseco/telescope_sessions_picker.nvim'
+    use { 'j-w-e/telescope_sessions_picker.nvim', branch = 'devel' }
     use 'folke/which-key.nvim'
 
     -- Automatically set up your configuration after cloning packer.nvim

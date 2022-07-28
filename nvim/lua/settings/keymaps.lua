@@ -37,6 +37,8 @@ keymap("i", "<c-n>", "<c-w>h", opts)
 keymap("i", "<c-e>", "<c-w>j", opts)
 keymap("i", "<c-i>", "<c-w>k", opts)
 keymap("i", "<c-o>", "<c-w>l", opts)
+keymap("i", "<a-backspace>", "<c-w>", opts)
+keymap("c", "<a-backspace>", "<c-w>", opts)
 -- hop set-up
 -- vim.api.nvim_set_keymap('', 'f', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = false })<cr>", {})
 -- vim.api.nvim_set_keymap('', 'F', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = false })<cr>", {})
