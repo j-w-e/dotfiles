@@ -1,4 +1,8 @@
 library(tidyverse)
+data("midwest", package = "ggplot2")
+
+
+
 # \rf               " Connect to R console.
 # \rq               " Quit R console.
 # \ro               " Open object bowser.
@@ -8,7 +12,6 @@ library(tidyverse)
 # ,nt, tp, tn       " Tab navigation.
 
 theme_set(theme_bw())
-data("midwest", package = "ggplot2")
 
 gg  <- ggplot(midwest, aes(x=area, y = poptotal)) +
         geom_point(aes(col = state, size = popdensity)) +
