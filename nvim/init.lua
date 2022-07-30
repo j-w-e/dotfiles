@@ -1,17 +1,14 @@
 -- 7. work out how to implement "which_key_ignore" as a key description for mappings
 -- 14. configure lsp. again see v3. including setting omnifunc to a sensible keymappings. and enable document formatting if I can?
--- 15. think about whether c-n, c-p, c-y and c-e are good enough for wildmenu, or whether i need to implement https://vi.stackexchange.com/questions/22627/switching-arrow-key-mappings-for-wildmenu-tab-completion 
+-- 15. think about whether c-n, c-p, c-y and c-e are good enough for wildmenu, or whether i need to implement https://vi.stackexchange.com/questions/22627/switching-arrow-key-mappings-for-wildmenu-tab-completion
 -- 18. Bindings ideas:
---      * move window? 
+--      * move window?
 --      * space space and arrows to shift between windows?
 --      * nvim-r bindings which conflict with ripgrep for example
--- 19. get R completion working. 
+-- 19. get R completion working.
 --      * matmarqs alsmost works. see https://github.com/matmarqs/dotfiles/blob/10c1820158d7736081d978b459e030e4ca6a9330/house/.config/nvim/init.lua. What does not work is the menu opening automatically
--- 20. make sure I've imported all the sensible settings from my various branches, such as the ability to resume editing at a the most recent point 
 -- 21. set up a session to work in R
--- 23. add trailspace keymaps
--- 24. fix the which key keymaps, and then the lsp. 
--- 25. fix the jump settings so that I can jump to a specific word and not just the line start
+-- 24. fix the which key keymaps, and then the lsp.
 
 -- PACKER setup {{{1
 -- packer blah {{{2
@@ -44,7 +41,7 @@ if not present then
 end
 -- plugin calls {{{2
 packer.startup(function(use)
-    use 'wbthomason/packer.nvim'           -- packer manages itself 
+    use 'wbthomason/packer.nvim'           -- packer manages itself
     use 'nvim-lua/plenary.nvim'            -- avoids callbacks, used by other plugins
     --use 'nvim-lua/popup.nvim'              -- popup for other plugins
     use 'nvim-treesitter/nvim-treesitter'  -- language parsing completion engine
@@ -73,6 +70,7 @@ packer.startup(function(use)
 end)
 
 -- all settings {{{1
+
 -- whichkey {{{2
 local opts = { noremap = true, silent = true }
 local keymap = vim.api.nvim_set_keymap
@@ -124,6 +122,7 @@ if present then
             a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "code actions" },
             f = { "<cmd>lua vim.lsp.buf.formatting_sync()<cr>", "format" },
             r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "rename" },
+            t = { "<cmd>lua MiniTrailspace.trim()<cr>", "rename" },
         },
         D = { "go to type def" },
         e = { "open float" },
@@ -156,7 +155,8 @@ if present then
             name = "search",
             n = { "<cmd>noh<cr>", "no highlight" },
             t = { "<cmd>Telescope current_buffer_fuzzy_find sorting_strategy=ascending layout_config={\"prompt_position\":\"top\"}<cr>", "find in current buf" },
-            l = { "<cmd>lua MiniJump2d.start(MiniJump2d.builtin_opts.single_character)<cr>", "jump to letter" },
+            l = { "<cmd>lua MiniJump2d.start({ spotter = MiniJump2d.builtin_opts.word_start.spotter, allowed_lines = { cursor_at = true, cursor_before = false, cursor_after = false }, allowed_windows = { not_current = false }, hooks = {after_jump = function() end}})<cr>", "jump to letter" },
+
         },
         t = { "<cmd>Telescope<cr>", "telescope" },
         v = {
@@ -247,7 +247,31 @@ vim.api.nvim_create_autocmd(
     { "InsertEnter", "WinLeave" },
     { pattern = "*", command = "set nocursorline", group = cursorGroup }
 )
+-- restore last cursor position
+local restoreCursor = vim.api.nvim_create_augroup("restoreCursor", { clear = true})
+vim.api.nvim_create_autocmd(
+    { "BufReadPost" },
+    { pattern = "*", command = [[call setpos(".", getpos("'\""))]], group = restoreCursor }
+    -- This is the lua equivalent of the following vim command:
+-- vim.cmd[[
+-- autocmd BufReadPost *
+--   \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+--   \   exe "normal! g`\"" |
+--   \ endif
+-- ]]
+    )
 
+-- restore folds
+local restoreFolds = vim.api.nvim_create_augroup("restoreFolds", { clear = true })
+vim.api.nvim_create_autocmd(
+    { "BufWinLeave" },
+    { pattern = "*", command = "mkview", group = restoreFolds }
+)
+
+vim.api.nvim_create_autocmd(
+    { "BufWinEnter" },
+    { pattern = "*", command = "silent! loadview", group = restoreFolds }
+)
 -- PLUGIN CONFIG {{{1
 
 
@@ -295,7 +319,7 @@ if present then
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
         vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-        --removed the following, because I am unlikely to use them. 
+        --removed the following, because I am unlikely to use them.
         --vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
         --vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
         --vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
@@ -343,7 +367,7 @@ end
 local present, nvimtreesitter = pcall(require, "nvim-treesitter")
 
 if present then
-    nvimtreesitter.setup({ 
+    nvimtreesitter.setup({
         ensure_installed = { "lua", "r", "c" },
         sync_install = false,
         auto_install = true,
@@ -400,12 +424,12 @@ if present then
     minibase.setup({
         palette = palette
     })
-    vim.cmd[[ 
-        hi MiniStatuslineDevinfo guibg=#2f283a 
+    vim.cmd[[
+        hi MiniStatuslineDevinfo guibg=#2f283a
         hi MiniStatuslineFileinfo guibg=#2f283a
         hi MiniTrailspace guibg=#1e122d guifg=#595363
     ]]
-    -- vim.cmd [[hi link MiniTrailspace Comment]] 
+    -- vim.cmd [[hi link MiniTrailspace Comment]]
 end
 
 -- bufremove {{{3
@@ -414,7 +438,7 @@ local present, minibuf = pcall(require, "mini.bufremove")
 
 if present then
     minibuf.setup()
-end 
+end
 
 -- comment {{{3
 
@@ -428,7 +452,7 @@ end
 
 local present, minicomp = pcall(require, "mini.completion")
 
-if present then 
+if present then
     minicomp.setup({
         mappings = {
             force_twostep = '<A-Space>',
@@ -484,14 +508,13 @@ if present then
         allowed_lines = {
             cursor_at = false,
         },
-        spotter = jump_line_start.spotter,
-        hooks = { after_jump = jump_line_start.hooks.after_jump }
+        spotter = jump_line_start.spotter, hooks = { after_jump = jump_line_start.hooks.after_jump }
     })
 end
 -- pairs
 local present, minipairs = pcall(require, "mini.pairs")
 
-if present then 
+if present then
     minipairs.setup({
     })
 end
@@ -512,7 +535,7 @@ end
 -- starter {{{3
 local present, ministart = pcall(require, "mini.starter")
 
-if present then 
+if present then
     ministart.setup({
         evaluate_single = true,
         items = {
@@ -533,7 +556,7 @@ end
 -- statusline {{{3
 local present, ministatus = pcall(require, "mini.statusline")
 
-if present then 
+if present then
     ministatus.setup({ })
 end
 
@@ -541,14 +564,14 @@ end
 -- surround {{{3
 local present, minisurround = pcall(require, "mini.surround")
 
-if present then 
+if present then
     minisurround.setup({ })
 end
 
 -- tabline {{{3
 local present, minitab = pcall(require, "mini.tabline")
 
-if present then 
+if present then
     minitab.setup({ })
 end
 
@@ -556,8 +579,8 @@ end
 -- trailspace {{{3
 local present, minitrail = pcall(require, "mini.trailspace")
 
-if present then 
+if present then
     minitrail.setup({ })
 end
 
-
+--}}}}}}}}}
