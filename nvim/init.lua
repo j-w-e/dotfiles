@@ -1,4 +1,3 @@
--- 7. work out how to implement "which_key_ignore" as a key description for mappings
 -- 14. configure lsp. again see v3. including setting omnifunc to a sensible keymappings. and enable document formatting if I can?
 -- 15. think about whether c-n, c-p, c-y and c-e are good enough for wildmenu, or whether i need to implement https://vi.stackexchange.com/questions/22627/switching-arrow-key-mappings-for-wildmenu-tab-completion
 -- 18. Bindings ideas:
@@ -9,9 +8,10 @@
 --      * matmarqs alsmost works. see https://github.com/matmarqs/dotfiles/blob/10c1820158d7736081d978b459e030e4ca6a9330/house/.config/nvim/init.lua. What does not work is the menu opening automatically
 -- 21. set up a session to work in R
 -- 24. fix the which key keymaps, and then the lsp.
+-- 25. use keymap.desc to make sure I have whichkey descriptsiont for everything. see :h nvim_set_keymap()
 
--- PACKER setup {{{1
--- packer blah {{{2
+-- PACKER and plugin commands {{{1
+-- packer set-up {{{2
 local fn = vim.fn
 -- Automatically install packer on initial startup
 local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
@@ -71,13 +71,63 @@ end)
 
 -- all settings {{{1
 
--- whichkey {{{2
+-- keymaps {{{2
+
 local opts = { noremap = true, silent = true }
 local keymap = vim.api.nvim_set_keymap
 keymap("", "<Space>", "<Nop>", opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+keymap("t", "<esc>", "<c-\\><c-n>", opts)
+keymap("n", "<c-j>", "<cmd>set paste<cr>m`o<esc>``<cmd>set nopaste<cr>", opts)
+keymap("n", "<c-k>", "<cmd>set paste<cr>m`O<esc>``<cmd>set nopaste<cr>", opts)
+keymap("i", "<a-backspace>", "<c-w>", opts)
+keymap("c", "<a-backspace>", "<c-w>", opts)
+
+-- local function smart_d_visual()
+--     local l, c = unpack(vim.api.nvim_win_get_cursor(0))
+--     for _, line in ipairs(vim.api.nvim_buf_get_lines(0, l - 1, l, true)) do
+--         if line:match("^%s*$") then
+--             return "\"_d"
+--         end
+--     end
+--     return "d"
+-- end
+local function smart_d_normal()
+    if vim.api.nvim_get_current_line():match("^%s*$") then
+        return "\"_dd"
+    else
+        return "dd"
+    end
+end
+
+-- vim.keymap.set("v", "d", smart_d_visual, { noremap = true, expr = true } )
+vim.keymap.set("n", "dd", smart_d_normal, { noremap = true, expr = true } )
+
+-- mapping to ensure <cr> is consistent in the popup menu
+local keys = {
+    ['cr']        = vim.api.nvim_replace_termcodes('<CR>', true, true, true),
+    ['ctrl-y']    = vim.api.nvim_replace_termcodes('<C-y>', true, true, true),
+    ['ctrl-y_cr'] = vim.api.nvim_replace_termcodes('<C-y><CR>', true, true, true),
+}
+
+_G.cr_action = function()
+    if vim.fn.pumvisible() ~= 0 then
+        -- If popup is visible, confirm selected item or add new line otherwise
+        local item_selected = vim.fn.complete_info()['selected'] ~= -1
+        return item_selected and keys['ctrl-y'] or keys['ctrl-y_cr']
+    else
+        -- If popup is not visible, use plain `<CR>`. You might want to customize
+        -- according to other plugins. For example, to use 'mini.pairs', replace
+        -- next line with `return require('mini.pairs').cr()`
+        return keys['cr']
+    end
+end
+
+vim.api.nvim_set_keymap('i', '<CR>', 'v:lua._G.cr_action()', { noremap = true, expr = true })
+
+-- whichkey {{{2
 local present, whichkey = pcall(require, "which-key")
 
 if present then
@@ -130,7 +180,6 @@ if present then
             name = "file",
             r = { "<cmd>Telescope oldfiles<cr>", "recent files" },
             n = { "<cmd>enew<cr>", "new file" },
-            e = { "edit file" },
             f = { "<cmd>Telescope find_files<cr>", "find files" },
             w = { "<cmd>w<cr>", "save" },
             wq = { "<cmd>wq<cr>", "save-and-quit" },
@@ -139,6 +188,7 @@ if present then
             name = "go to",
             r = { "<cmd>lua vim.lsp.buf.references()<cr>", "references" }
         },
+        m = { "<cmd>marks<cr>", "show marks" },
         n = { "<cmd>NvimTreeToggle<cr>", "nvim-tree" },
         p = {
             name = "packer",
@@ -147,16 +197,14 @@ if present then
         },
         q = { "<cmd>q<cr>", "quit" },
         r = {
-            name = "rename",
-            g = "grep",
-            n = "smart rename",
+            name = "r",
         },
         s = {
             name = "search",
+            g = { "<cmd>Telescope live_grep<cr>", "find in current buf" },
+            l = { "<cmd>lua MiniJump2d.start({ spotter = MiniJump2d.builtin_opts.word_start.spotter, allowed_lines = { cursor_at = true, cursor_before = false, cursor_after = false }, allowed_windows = { not_current = false }, hooks = {after_jump = function() end}})<cr>", "jump to letter" },
             n = { "<cmd>noh<cr>", "no highlight" },
             t = { "<cmd>Telescope current_buffer_fuzzy_find sorting_strategy=ascending layout_config={\"prompt_position\":\"top\"}<cr>", "find in current buf" },
-            l = { "<cmd>lua MiniJump2d.start({ spotter = MiniJump2d.builtin_opts.word_start.spotter, allowed_lines = { cursor_at = true, cursor_before = false, cursor_after = false }, allowed_windows = { not_current = false }, hooks = {after_jump = function() end}})<cr>", "jump to letter" },
-
         },
         t = { "<cmd>Telescope<cr>", "telescope" },
         v = {
@@ -177,36 +225,6 @@ if present then
         },
     }, { prefix = "<leader>" })
 end
--- keymaps {{{2
-
--- keymap("n", "<leader>rg", "<cmd>Telescope live_grep<cr>", opts)
-
-keymap("t", "<esc>", "<c-\\><c-n>", opts)
-keymap("n", "<c-j>", "<cmd>set paste<cr>m`o<esc>``<cmd>set nopaste<cr>", opts)
-keymap("n", "<c-k>", "<cmd>set paste<cr>m`O<esc>``<cmd>set nopaste<cr>", opts)
-keymap("i", "<a-backspace>", "<c-w>", opts)
-keymap("c", "<a-backspace>", "<c-w>", opts)
-
--- local function smart_d_visual()
---     local l, c = unpack(vim.api.nvim_win_get_cursor(0))
---     for _, line in ipairs(vim.api.nvim_buf_get_lines(0, l - 1, l, true)) do
---         if line:match("^%s*$") then
---             return "\"_d"
---         end
---     end
---     return "d"
--- end
-local function smart_d_normal()
-    if vim.api.nvim_get_current_line():match("^%s*$") then
-        return "\"_dd"
-    else
-        return "dd"
-    end
-end
-
--- vim.keymap.set("v", "d", smart_d_visual, { noremap = true, expr = true } )
-vim.keymap.set("n", "dd", smart_d_normal, { noremap = true, expr = true } )
-
 
 
 -- standard options {{{2
@@ -223,7 +241,7 @@ opt.relativenumber = true
 opt.numberwidth = 4
 opt.ruler = false
 opt.cursorline = true
-opt.signcolumn = 'yes:2'
+opt.signcolumn = 'yes:1'
 opt.scrolloff = 12
 opt.mouse = 'a'
 opt.splitbelow = true
@@ -265,13 +283,22 @@ vim.api.nvim_create_autocmd(
 local restoreFolds = vim.api.nvim_create_augroup("restoreFolds", { clear = true })
 vim.api.nvim_create_autocmd(
     { "BufWinLeave" },
-    { pattern = "*", command = "mkview", group = restoreFolds }
+    { pattern = "?*", command = "mkview", group = restoreFolds }
 )
 
 vim.api.nvim_create_autocmd(
     { "BufWinEnter" },
-    { pattern = "*", command = "silent! loadview", group = restoreFolds }
+    { pattern = "?*", command = "silent! loadview", group = restoreFolds }
 )
+
+-- Highlight the region on yank
+local highlight = vim.api.nvim_create_augroup("highlight", { clear = true })
+vim.api.nvim_create_autocmd('TextYankPost', {
+    group = highlight,
+    callback = function()
+        vim.highlight.on_yank({ higroup = 'Visual', timeout = 120 })
+    end,
+})
 -- PLUGIN CONFIG {{{1
 
 
