@@ -1,12 +1,12 @@
 library(tidyverse)
 data("midwest", package = "ggplot2")
 
-
+midwest$per
 
 # \rf               " Connect to R console.
 # \rq               " Quit R console.
 # \ro               " Open object bowser.
-# \d \ss \aa        " Execution modes. 
+# \d \ss \aa        " Execution modes.
 # ?help
 # ,nn               " NERDTree.
 # ,nt, tp, tn       " Tab navigation.
@@ -26,6 +26,6 @@ gg  <- ggplot(midwest, aes(x=area, y = poptotal)) +
 
 plot(gg) # Opens an external window with the plot.
 
-midwest$county # To show synchronous auto completion. 
+midwest$county # To show synchronous auto completion.
 
 View(midwest) # Opens an external window to display a portion of the tibble.

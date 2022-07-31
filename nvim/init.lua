@@ -9,6 +9,7 @@
 -- 21. set up a session to work in R
 -- 24. fix the which key keymaps, and then the lsp.
 -- 25. use keymap.desc to make sure I have whichkey descriptsiont for everything. see :h nvim_set_keymap()
+-- 26. fix smart_d_visual so that it doesn't send a deletion to the black-hole buffer if the current line is blank, even if other lines are not blank. 
 
 -- PACKER and plugin commands {{{1
 -- packer set-up {{{2
@@ -84,6 +85,8 @@ keymap("n", "<c-j>", "<cmd>set paste<cr>m`o<esc>``<cmd>set nopaste<cr>", opts)
 keymap("n", "<c-k>", "<cmd>set paste<cr>m`O<esc>``<cmd>set nopaste<cr>", opts)
 keymap("i", "<a-backspace>", "<c-w>", opts)
 keymap("c", "<a-backspace>", "<c-w>", opts)
+keymap("v", "<tab>", ">", opts)
+keymap("v", "<s-tab>", "<", opts)
 
 -- local function smart_d_visual()
 --     local l, c = unpack(vim.api.nvim_win_get_cursor(0))
@@ -299,6 +302,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
         vim.highlight.on_yank({ higroup = 'Visual', timeout = 120 })
     end,
 })
+
 -- PLUGIN CONFIG {{{1
 
 
@@ -483,6 +487,9 @@ if present then
     minicomp.setup({
         mappings = {
             force_twostep = '<A-Space>',
+        },
+        lsp_completion = {
+            source_func = 'omnifunc',
         }
     })
     local keys = {
