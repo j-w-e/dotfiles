@@ -61,6 +61,7 @@ packer.startup(function(use)
     use 'kyazdani42/nvim-web-devicons'
     use 'lewis6991/gitsigns.nvim'
     use 'echasnovski/mini.nvim'
+    use 'lifepillar/vim-mucomplete'
     --use 'JoseConseco/telescope_sessions_picker.nvim'
     use { 'j-w-e/telescope_sessions_picker.nvim', branch = 'devel' }
     use 'folke/which-key.nvim'
@@ -256,6 +257,7 @@ opt.wildmode = "longest:full,full"
 opt.list = true
 opt.listchars = "trail:·,tab:»·,eol:↲,multispace:   |,extends:>,precedes:<"
 opt.timeoutlen = 500
+opt.completeopt = 'noselect,noinsert,menuone,preview'
 
 -- autocommands {{{2
 -- show cursorline only in active window
@@ -331,6 +333,8 @@ if present then
         vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
         -- Hugh's note to self: line above could end v:lua.MiniCompletion.completefunc_lsp
         -- see `h mini.completion`
+        -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.MiniCompletion.completefunc_lsp')
+
         local vim_version = vim.version()
 
         if vim_version.minor > 7 then
@@ -385,6 +389,17 @@ if present then
     })
 end
 
+-- mucomplete {{{3
+vim.cmd[[
+let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#chains = {
+            \ 'default' : ['omni', 'path'],
+            \ }
+let g:mucomplete#chains['rmd'] = {
+            \ 'default' : ['user', 'path', 'uspl'],
+            \ 'rmdrChunk' : ['omni', 'path'],
+            \ }
+]]
 -- nvim-tree {{{3
 
 local present, nvimtree = pcall(require, "nvim-tree")
@@ -480,43 +495,43 @@ if present then
 end
 
 -- completion {{{3
-
-local present, minicomp = pcall(require, "mini.completion")
-
-if present then
-    minicomp.setup({
-        mappings = {
-            force_twostep = '<A-Space>',
-        },
-        lsp_completion = {
-            source_func = 'omnifunc',
-        }
-    })
-    local keys = {
-        ['cr']        = vim.api.nvim_replace_termcodes('<CR>', true, true, true),
-        ['ctrl-y']    = vim.api.nvim_replace_termcodes('<C-y>', true, true, true),
-        ['ctrl-y_cr'] = vim.api.nvim_replace_termcodes('<C-y><CR>', true, true, true),
-    }
-
-    vim.api.nvim_set_keymap('i', '<Tab>',   [[pumvisible() ? "\<C-n>" : "\<Tab>"]],   { noremap = true, expr = true })
-    vim.api.nvim_set_keymap('i', '<S-Tab>', [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], { noremap = true, expr = true })
-
-    _G.cr_action = function()
-        if vim.fn.pumvisible() ~= 0 then
-            -- If popup is visible, confirm selected item or add new line otherwise
-            local item_selected = vim.fn.complete_info()['selected'] ~= -1
-            return item_selected and keys['ctrl-y'] or keys['ctrl-y_cr']
-        else
-            -- If popup is not visible, use plain `<CR>`. You might want to customize
-            -- according to other plugins. For example, to use 'mini.pairs', replace
-            -- next line with `return require('mini.pairs').cr()`
-            return require('mini.pairs').cr()
-            --return keys['cr']
-        end
-    end
-
-  vim.api.nvim_set_keymap('i', '<CR>', 'v:lua._G.cr_action()', { noremap = true, expr = true })
-end
+--
+-- local present, minicomp = pcall(require, "mini.completion")
+--
+-- if present then
+--     minicomp.setup({
+--         mappings = {
+--             force_twostep = '<A-Space>',
+--         },
+--         lsp_completion = {
+--             source_func = 'omnifunc',
+--         }
+--     })
+--     local keys = {
+--         ['cr']        = vim.api.nvim_replace_termcodes('<CR>', true, true, true),
+--         ['ctrl-y']    = vim.api.nvim_replace_termcodes('<C-y>', true, true, true),
+--         ['ctrl-y_cr'] = vim.api.nvim_replace_termcodes('<C-y><CR>', true, true, true),
+--     }
+--
+--     vim.api.nvim_set_keymap('i', '<Tab>',   [[pumvisible() ? "\<C-n>" : "\<Tab>"]],   { noremap = true, expr = true })
+--     vim.api.nvim_set_keymap('i', '<S-Tab>', [[pumvisible() ? "\<C-p>" : "\<S-Tab>"]], { noremap = true, expr = true })
+--
+--     _G.cr_action = function()
+--         if vim.fn.pumvisible() ~= 0 then
+--             -- If popup is visible, confirm selected item or add new line otherwise
+--             local item_selected = vim.fn.complete_info()['selected'] ~= -1
+--             return item_selected and keys['ctrl-y'] or keys['ctrl-y_cr']
+--         else
+--             -- If popup is not visible, use plain `<CR>`. You might want to customize
+--             -- according to other plugins. For example, to use 'mini.pairs', replace
+--             -- next line with `return require('mini.pairs').cr()`
+--             return require('mini.pairs').cr()
+--             --return keys['cr']
+--         end
+--     end
+--
+--   vim.api.nvim_set_keymap('i', '<CR>', 'v:lua._G.cr_action()', { noremap = true, expr = true })
+-- end
 
 -- jump {{{3
 

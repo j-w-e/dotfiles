@@ -129,6 +129,11 @@ _G.packer_plugins = {
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/telescope_sessions_picker.nvim",
     url = "https://github.com/j-w-e/telescope_sessions_picker.nvim"
   },
+  ["vim-mucomplete"] = {
+    loaded = true,
+    path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/vim-mucomplete",
+    url = "https://github.com/lifepillar/vim-mucomplete"
+  },
   ["which-key.nvim"] = {
     loaded = true,
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/which-key.nvim",
