@@ -48,14 +48,12 @@ packer.startup(function(use)
     --use 'williamboman/nvim-lsp-installer'  -- UI for fetching/downloading LSPs
     --use 'neovim/nvim-lspconfig'            -- language server protocol implementation
 
-    --use 'nvim-lua/popup.nvim'              -- popup for other plugins
     use 'hrsh7th/nvim-cmp'                 -- THE vim completion engine
     use 'hrsh7th/cmp-omni'                 -- THE vim completion engine
-    --use 'L3MON4D3/LuaSnip'                 -- more snippets
-    --use 'saadparwaiz1/cmp_luasnip'         -- even more snippets
     --use 'hrsh7th/cmp-nvim-lsp'
-    --use 'hrsh7th/cmp-buffer'
-    --use 'hrsh7th/cmp-path'
+    use 'hrsh7th/cmp-buffer'
+    use 'hrsh7th/cmp-path'
+    use 'hrsh7th/cmp-nvim-lua'
     --use 'jose-elias-alvarez/null-ls.nvim' -- see https://www.youtube.com/watch?v=b7OguLuaYvE
 
     use 'nvim-telescope/telescope.nvim'    -- finder, requires fzf and ripgrep
@@ -322,9 +320,20 @@ if present then
             completion = cmp.config.window.bordered(),
             documentation = cmp.config.window.bordered(),
         }, 
+        mapping = cmp.mapping.preset.insert({
+            ['<left>'] = cmp.mapping.select_prev_item(),
+            ['<right>'] = cmp.mapping.select_next_item(),
+            ['<cr>'] = cmp.mapping.confirm({ select = true }), 
+            ['<esc>'] = cmp.mapping({
+                i = cmp.mapping.abort(),
+                -- c = cmp.mapping.close(),
+            }),
+        }),
         sources = cmp.config.sources({
             { name = 'omni' }, 
             { name = 'buffer' },
+            { name = 'path'},
+            { name = 'nvim_lua'},
         })
     })
 end
