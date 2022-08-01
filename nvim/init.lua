@@ -167,8 +167,8 @@ if present then
         b = {
             name = "buffer",
             b = { "<cmd>Telescope buffers<cr>", "buffer list" },
-            q = { "<cmd>lua MiniBufremove.delete()<cr>", "del buffer" },
-            d = { "<cmd>lua MiniBufremove.delete(0, true)<cr>", "really del buffer!" },
+            d = { "<cmd>lua MiniBufremove.delete()<cr>", "del buffer" },
+            q = { "<cmd>lua MiniBufremove.delete(0, true)<cr>", "really del buffer!" },
             n = { "<cmd>bn<cr>", "next buffer" },
             p = { "<cmd>bp<cr>", "prev buffer" },
         },
@@ -203,6 +203,12 @@ if present then
         q = { "<cmd>q<cr>", "quit" },
         r = {
             name = "r",
+            s = {
+                name = "send",
+            },
+            o = {
+                name = "object",
+            },
         },
         s = {
             name = "search",
@@ -310,7 +316,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 
 -- general {{{2
--- cmp
+-- cmp {{{3
 
 local present, cmp = pcall(require, "cmp")
 
@@ -323,7 +329,7 @@ if present then
         mapping = cmp.mapping.preset.insert({
             ['<left>'] = cmp.mapping.select_prev_item(),
             ['<right>'] = cmp.mapping.select_next_item(),
-            ['<cr>'] = cmp.mapping.confirm({ select = true }), 
+            ['<cr>'] = cmp.mapping.confirm(), 
             ['<esc>'] = cmp.mapping({
                 i = cmp.mapping.abort(),
                 -- c = cmp.mapping.close(),
@@ -429,6 +435,39 @@ end
 --             \ 'rmdrChunk' : ['omni', 'path'],
 --             \ }
 -- ]]
+-- nvim-r {{{3
+vim.cmd[[
+let R_auto_start = 2
+let R_assign = 2
+let R_user_maps_only = 1
+]]
+
+local nvimrmappings = vim.api.nvim_create_augroup("nvim-r-mappings", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+    group = nvimrmappings,
+    pattern = "r",
+    -- callback = customNvimRMappings(),
+    callback = function()
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rf", "<Plug>RStart", {desc = "start r"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rc", "<Plug>RClose", {desc = "close r"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rq", "<Plug>RStop", {desc = "stop r"})
+
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>l", "<Plug>RSendLine", {desc = "send line"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>d", "<Plug>RDSendLine", {desc = "send line and down"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rsa", "<Plug>RESendFile", {desc = "send file"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rsf", "<Plug>RESendFunction", {desc = "send function"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rss", "<Plug>RESendSelection", {desc = "send selection"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rso", "<Plug>RSendSelAndInsertOutput", {desc = "send sel / insert"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rp", "<Plug>REDSendParagraph", {desc = "send paragraph"})
+
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>os", "<cmd>call RAction(\"str\")<cr>", {desc = "object str"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>ot", "<cmd>call RAction(\"tail\")<cr>", {desc = "object tail"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>oh", "<cmd>call RAction(\"head\")<cr>", {desc = "object head"})
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>og", "<cmd>call RAction(\"glimpse\")<cr>", {desc = "object glimpse"})
+
+        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rh", "<Plug>RHelp", {desc = "help"})
+    end
+})
 -- nvim-tree {{{3
 
 local present, nvimtree = pcall(require, "nvim-tree")
