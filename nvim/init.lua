@@ -49,7 +49,8 @@ packer.startup(function(use)
     --use 'neovim/nvim-lspconfig'            -- language server protocol implementation
 
     --use 'nvim-lua/popup.nvim'              -- popup for other plugins
-    --use 'hrsh7th/nvim-cmp'                 -- THE vim completion engine
+    use 'hrsh7th/nvim-cmp'                 -- THE vim completion engine
+    use 'hrsh7th/cmp-omni'                 -- THE vim completion engine
     --use 'L3MON4D3/LuaSnip'                 -- more snippets
     --use 'saadparwaiz1/cmp_luasnip'         -- even more snippets
     --use 'hrsh7th/cmp-nvim-lsp'
@@ -63,7 +64,7 @@ packer.startup(function(use)
     use 'kyazdani42/nvim-web-devicons'
     use 'lewis6991/gitsigns.nvim'
     use 'echasnovski/mini.nvim'
-    use 'lifepillar/vim-mucomplete'
+    --use 'lifepillar/vim-mucomplete'
     --use 'JoseConseco/telescope_sessions_picker.nvim'
     use { 'j-w-e/telescope_sessions_picker.nvim', branch = 'devel' }
     use 'folke/which-key.nvim'
@@ -311,6 +312,23 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 
 -- general {{{2
+-- cmp
+
+local present, cmp = pcall(require, "cmp")
+
+if present then 
+    cmp.setup({
+        window = {
+            completion = cmp.config.window.bordered(),
+            documentation = cmp.config.window.bordered(),
+        }, 
+        sources = cmp.config.sources({
+            { name = 'omni' }, 
+            { name = 'buffer' },
+        })
+    })
+end
+
 -- gitsigns {{{3
 
 local present, gitsigns = pcall(require, "gitsigns")
@@ -392,16 +410,16 @@ if present then
 end
 
 -- mucomplete {{{3
-vim.cmd[[
-let g:mucomplete#enable_auto_at_startup = 1
-let g:mucomplete#chains = {
-            \ 'default' : ['omni', 'path'],
-            \ }
-let g:mucomplete#chains['rmd'] = {
-            \ 'default' : ['user', 'path', 'uspl'],
-            \ 'rmdrChunk' : ['omni', 'path'],
-            \ }
-]]
+-- vim.cmd[[
+-- let g:mucomplete#enable_auto_at_startup = 1
+-- let g:mucomplete#chains = {
+--             \ 'default' : ['omni', 'path'],
+--             \ }
+-- let g:mucomplete#chains['rmd'] = {
+--             \ 'default' : ['user', 'path', 'uspl'],
+--             \ 'rmdrChunk' : ['omni', 'path'],
+--             \ }
+-- ]]
 -- nvim-tree {{{3
 
 local present, nvimtree = pcall(require, "nvim-tree")

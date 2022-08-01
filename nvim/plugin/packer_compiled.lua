@@ -74,6 +74,11 @@ _G.packer_plugins = {
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/Nvim-R",
     url = "https://github.com/jalvesaq/Nvim-R"
   },
+  ["cmp-omni"] = {
+    loaded = true,
+    path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/cmp-omni",
+    url = "https://github.com/hrsh7th/cmp-omni"
+  },
   ["gitsigns.nvim"] = {
     loaded = true,
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/gitsigns.nvim",
@@ -83,6 +88,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/mini.nvim",
     url = "https://github.com/echasnovski/mini.nvim"
+  },
+  ["nvim-cmp"] = {
+    loaded = true,
+    path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/nvim-cmp",
+    url = "https://github.com/hrsh7th/nvim-cmp"
   },
   ["nvim-tree.lua"] = {
     loaded = true,
@@ -118,11 +128,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/telescope_sessions_picker.nvim",
     url = "https://github.com/j-w-e/telescope_sessions_picker.nvim"
-  },
-  ["vim-mucomplete"] = {
-    loaded = true,
-    path = "/Users/hughearp/.local/share/nvim/site/pack/packer/start/vim-mucomplete",
-    url = "https://github.com/lifepillar/vim-mucomplete"
   },
   ["which-key.nvim"] = {
     loaded = true,
