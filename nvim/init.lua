@@ -55,6 +55,9 @@ packer.startup(function(use)
     use 'hrsh7th/cmp-path'
     use 'hrsh7th/cmp-nvim-lua'
     --use 'jose-elias-alvarez/null-ls.nvim' -- see https://www.youtube.com/watch?v=b7OguLuaYvE
+    use 'L3MON4D3/LuaSnip'
+    use 'saadparwaiz1/cmp_luasnip'
+    use 'rafamadriz/friendly-snippets'
 
     use 'nvim-telescope/telescope.nvim'    -- finder, requires fzf and ripgrep
     use 'kyazdani42/nvim-tree.lua'
@@ -132,6 +135,16 @@ end
 
 vim.api.nvim_set_keymap('i', '<CR>', 'v:lua._G.cr_action()', { noremap = true, expr = true })
 
+-- mappings specifically for luasnip
+vim.cmd[[" press <Tab> to expand or jump in a snippet. These can also be mapped separately
+" via <Plug>luasnip-expand-snippet and <Plug>luasnip-jump-next.
+imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' 
+" -1 for jumping backwards.
+inoremap <silent> <S-Tab> <cmd>lua require'luasnip'.jump(-1)<Cr>
+
+snoremap <silent> <Tab> <cmd>lua require('luasnip').jump(1)<Cr>
+snoremap <silent> <S-Tab> <cmd>lua require('luasnip').jump(-1)<Cr>
+]]
 -- whichkey {{{2
 local present, whichkey = pcall(require, "which-key")
 
@@ -322,6 +335,11 @@ local present, cmp = pcall(require, "cmp")
 
 if present then 
     cmp.setup({
+        snippet = {
+            expand = function(args)
+                require'luasnip'.lsp_expand(args.body)
+            end
+        },
         window = {
             completion = cmp.config.window.bordered(),
             documentation = cmp.config.window.bordered(),
@@ -335,7 +353,19 @@ if present then
                 -- c = cmp.mapping.close(),
             }),
         }),
+        enabled = function ()
+            -- disable completion in comments 
+            local context = require("cmp.config.context")
+            -- keep command mode completion enabled when cursor is in a comment
+            if vim.api.nvim_get_mode().mode == 'c' then
+                return true
+            else
+                return not context.in_treesitter_capture("comment")
+                and not context.in_syntax_group("Comment")
+            end
+        end,
         sources = cmp.config.sources({
+            { name = 'luasnip' }, 
             { name = 'omni' }, 
             { name = 'buffer' },
             { name = 'path'},
@@ -351,6 +381,9 @@ local present, gitsigns = pcall(require, "gitsigns")
 if present then
     gitsigns.setup({ })
 end
+
+-- luasnip {{{3
+require("luasnip.loaders.from_vscode").lazy_load()
 
 -- lsp {{{3
 
