@@ -473,6 +473,7 @@ vim.cmd[[
 let R_auto_start = 2
 let R_assign = 2
 let R_user_maps_only = 1
+let r_syntax_folding = 1
 ]]
 
 local nvimrmappings = vim.api.nvim_create_augroup("nvim-r-mappings", { clear = true })
@@ -677,7 +678,7 @@ if present then
         autowrite = false,
         directory = '~/.local/share/nvim/session',--<"session" subdir of user data directory from |stdpath()|>,
         file = 'dirSession.vim',
-        force = { read = false, write = false, delete = false },
+        force = { read = false, write = true, delete = false },
         verbose = { read = false, write = true, delete = true },
     })
 end
