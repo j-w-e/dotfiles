@@ -3,9 +3,6 @@
 -- 18. Bindings ideas:
 --      * move window?
 --      * space space and arrows to shift between windows?
---      * nvim-r bindings which conflict with ripgrep for example
--- 19. get R completion working.
---      * matmarqs alsmost works. see https://github.com/matmarqs/dotfiles/blob/10c1820158d7736081d978b459e030e4ca6a9330/house/.config/nvim/init.lua. What does not work is the menu opening automatically
 -- 21. set up a session to work in R
 -- 24. fix the which key keymaps, and then the lsp.
 -- 25. use keymap.desc to make sure I have whichkey descriptsiont for everything. see :h nvim_set_keymap()
@@ -65,6 +62,7 @@ packer.startup(function(use)
     use 'kyazdani42/nvim-web-devicons'
     use 'lewis6991/gitsigns.nvim'
     use 'echasnovski/mini.nvim'
+    use 'karb94/neoscroll.nvim'
     --use 'lifepillar/vim-mucomplete'
     --use 'JoseConseco/telescope_sessions_picker.nvim'
     use { 'j-w-e/telescope_sessions_picker.nvim', branch = 'devel' }
@@ -76,6 +74,14 @@ packer.startup(function(use)
 end)
 
 -- all settings {{{1
+
+-- gui settings {{{2
+vim.cmd [[
+if exists("g:neovide")
+    let g:neovide_scroll_animation_length = 0.1
+    "set guifont=Sauce\ Code\ Pro\ Mono:h15
+endif
+]]
 
 -- keymaps {{{2
 
@@ -279,52 +285,6 @@ opt.listchars = "trail:·,tab:»·,eol:↲,multispace:   |,extends:>,precedes:<"
 opt.timeoutlen = 500
 opt.completeopt = 'noselect,noinsert,menuone,preview'
 
--- autocommands {{{2
--- show cursorline only in active window
-local cursorGroup = vim.api.nvim_create_augroup("CursorLine", { clear = true })
-vim.api.nvim_create_autocmd(
-    { "InsertLeave", "WinEnter" },
-    { pattern = "*", command = "set cursorline", group = cursorGroup }
-)
-vim.api.nvim_create_autocmd(
-    { "InsertEnter", "WinLeave" },
-    { pattern = "*", command = "set nocursorline", group = cursorGroup }
-)
--- restore last cursor position
-local restoreCursor = vim.api.nvim_create_augroup("restoreCursor", { clear = true})
-vim.api.nvim_create_autocmd(
-    { "BufReadPost" },
-    { pattern = "*", command = [[call setpos(".", getpos("'\""))]], group = restoreCursor }
-    -- This is the lua equivalent of the following vim command:
--- vim.cmd[[
--- autocmd BufReadPost *
---   \ if line("'\"") >= 1 && line("'\"") <= line("$") |
---   \   exe "normal! g`\"" |
---   \ endif
--- ]]
-    )
-
--- restore folds
-local restoreFolds = vim.api.nvim_create_augroup("restoreFolds", { clear = true })
-vim.api.nvim_create_autocmd(
-    { "BufWinLeave" },
-    { pattern = "?*", command = "mkview", group = restoreFolds }
-)
-
-vim.api.nvim_create_autocmd(
-    { "BufWinEnter" },
-    { pattern = "?*", command = "silent! loadview", group = restoreFolds }
-)
-
--- Highlight the region on yank
-local highlight = vim.api.nvim_create_augroup("highlight", { clear = true })
-vim.api.nvim_create_autocmd('TextYankPost', {
-    group = highlight,
-    callback = function()
-        vim.highlight.on_yank({ higroup = 'Visual', timeout = 120 })
-    end,
-})
-
 -- PLUGIN CONFIG {{{1
 
 
@@ -468,6 +428,17 @@ end
 --             \ 'rmdrChunk' : ['omni', 'path'],
 --             \ }
 -- ]]
+
+-- neo-scroll {{{3
+
+local present, neoscroll = pcall(require, "neoscroll")
+
+if present then
+    neoscroll.setup({
+        respect_scrolloff = true,
+        easing_function = 'quadratic',
+    })
+end
 -- nvim-r {{{3
 vim.cmd[[
 let R_auto_start = 2
@@ -540,7 +511,7 @@ if present then
     })
 end
 
--- telescope {{{2
+-- telescope {{{3
 
 local present, telescope = pcall(require, "telescope")
 
@@ -662,7 +633,16 @@ if present then
         spotter = jump_line_start.spotter, hooks = { after_jump = jump_line_start.hooks.after_jump }
     })
 end
--- pairs
+
+-- misc {{{3
+local present, minimisc = pcall(require, "mini.misc")
+
+if present then
+    minimisc.setup({
+    })
+end
+
+-- pairs {{{3
 local present, minipairs = pcall(require, "mini.pairs")
 
 if present then
@@ -735,3 +715,60 @@ if present then
 end
 
 --}}}}}}}}}
+-- autocommands {{{1
+-- show cursorline only in active window
+local cursorGroup = vim.api.nvim_create_augroup("CursorLine", { clear = true })
+vim.api.nvim_create_autocmd(
+    { "InsertLeave", "WinEnter" },
+    { pattern = "*", command = "set cursorline", group = cursorGroup }
+)
+vim.api.nvim_create_autocmd(
+    { "InsertEnter", "WinLeave" },
+    { pattern = "*", command = "set nocursorline", group = cursorGroup }
+)
+-- restore last cursor position
+local restoreCursor = vim.api.nvim_create_augroup("restoreCursor", { clear = true})
+vim.api.nvim_create_autocmd(
+    { "BufReadPost" },
+    { pattern = "*", command = [[call setpos(".", getpos("'\""))]], group = restoreCursor }
+    -- This is the lua equivalent of the following vim command:
+-- vim.cmd[[
+-- autocmd BufReadPost *
+--   \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+--   \   exe "normal! g`\"" |
+--   \ endif
+-- ]]
+    )
+
+-- restore folds
+local restoreFolds = vim.api.nvim_create_augroup("restoreFolds", { clear = true })
+vim.api.nvim_create_autocmd(
+    { "BufWinLeave" },
+    { pattern = "?*", command = "mkview", group = restoreFolds }
+)
+
+vim.api.nvim_create_autocmd(
+    { "BufWinEnter" },
+    { pattern = "?*", command = "silent! loadview", group = restoreFolds }
+)
+
+-- Highlight the region on yank
+local highlight = vim.api.nvim_create_augroup("highlight", { clear = true })
+vim.api.nvim_create_autocmd('TextYankPost', {
+    group = highlight,
+    callback = function()
+        vim.highlight.on_yank({ higroup = 'Visual', timeout = 120 })
+    end,
+})
+
+-- from https://github.com/echasnovski/nvim/blob/master/lua/ec/settings.lua
+vim.cmd([[augroup CustomSettings]])
+  vim.cmd([[autocmd!]])
+  -- Don't auto-wrap comments and don't insert comment leader after hitting 'o'
+  vim.cmd([[autocmd FileType * setlocal formatoptions-=c formatoptions-=o]])
+  -- But insert comment leader after hitting <CR> and respect 'numbered' lists
+  vim.cmd([[autocmd FileType * setlocal formatoptions+=r formatoptions+=n]])
+
+  -- Allow nested 'default' comment leaders to be treated as comment leader
+  vim.cmd([[autocmd FileType * lua pcall(require('mini.misc').use_nested_comments)]])
+vim.cmd([[augroup END]])
