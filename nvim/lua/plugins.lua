@@ -1,3 +1,5 @@
+-- PACKER and plugin commands {{{1
+-- packer set-up {{{2
 local fn = vim.fn
 -- Automatically install packer on initial startup
 local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
@@ -15,6 +17,7 @@ vim.cmd [[
    augroup packer_user_config
    autocmd!
    autocmd BufWritePost plugins.lua source <afile> | PackerSync
+   autocmd BufEnter .lua set fdm=marker
    augroup end
 ]]
 
@@ -24,42 +27,49 @@ local present, packer = pcall(require, "packer")
 if not present then
     return
 end
-
+-- plugin calls {{{2
 packer.startup(function(use)
-    use 'wbthomason/packer.nvim'           -- packer manages itself 
+    use 'wbthomason/packer.nvim'           -- packer manages itself
     use 'nvim-lua/plenary.nvim'            -- avoids callbacks, used by other plugins
-    use 'nvim-lua/popup.nvim'              -- popup for other plugins
     use 'nvim-treesitter/nvim-treesitter'  -- language parsing completion engine
-    use 'williamboman/nvim-lsp-installer'  -- UI for fetching/downloading LSPs
-    use 'neovim/nvim-lspconfig'            -- language server protocol implementation
+    --use 'williamboman/nvim-lsp-installer'  -- UI for fetching/downloading LSPs
+    --use 'neovim/nvim-lspconfig'            -- language server protocol implementation
+
     use 'hrsh7th/nvim-cmp'                 -- THE vim completion engine
-    use 'L3MON4D3/LuaSnip'                 -- more snippets
-    use 'saadparwaiz1/cmp_luasnip'         -- even more snippets
-    use 'hrsh7th/cmp-nvim-lsp'
+    use 'hrsh7th/cmp-omni'                 
+    --use 'hrsh7th/cmp-nvim-lsp'
     use 'hrsh7th/cmp-buffer'
     use 'hrsh7th/cmp-path'
+    use 'hrsh7th/cmp-nvim-lua'
+    --use 'jose-elias-alvarez/null-ls.nvim' -- see https://www.youtube.com/watch?v=b7OguLuaYvE
+    use 'L3MON4D3/LuaSnip'
+    use 'saadparwaiz1/cmp_luasnip'
+    use 'rafamadriz/friendly-snippets'
+
     use 'nvim-telescope/telescope.nvim'    -- finder, requires fzf and ripgrep
-    use 'nvim-lualine/lualine.nvim'
-    use 'akinsho/bufferline.nvim'
     use 'kyazdani42/nvim-tree.lua'
-    use 'jose-elias-alvarez/null-ls.nvim' -- see https://www.youtube.com/watch?v=b7OguLuaYvE
-    use 'windwp/nvim-autopairs'
-    use 'phaazon/hop.nvim'
-    use 'famiu/bufdelete.nvim'
-    use 'rhysd/clever-f.vim'
     use 'jalvesaq/Nvim-R'
-    --use 'gaalcaras/ncm-R'
-    --use 'ncm2/ncm2'
-    --use 'roxma/nvim-yarp'
-    use 'goolord/alpha-nvim'
     use 'kyazdani42/nvim-web-devicons'
+    use 'lewis6991/gitsigns.nvim'
     use 'echasnovski/mini.nvim'
+    use 'karb94/neoscroll.nvim'
+    use 'renerocksai/telekasten.nvim'
+    -- use {
+    --     'phaazon/mind.nvim',
+    --     branch = 'v2',
+    --     requires = { 'nvim-lua/plenary.nvim' },
+    --     config = function()
+    --         require'mind'.setup()
+    --     end
+    -- }
+    use 'gaoDean/autolist.nvim'
+    use 'nguyenvukhang/nvim-toggler'
+   --use 'lifepillar/vim-mucomplete'
     --use 'JoseConseco/telescope_sessions_picker.nvim'
+    --use 'phaazon/mind.nvim'
     use { 'j-w-e/telescope_sessions_picker.nvim', branch = 'devel' }
     use 'folke/which-key.nvim'
 
-    -- Automatically set up your configuration after cloning packer.nvim
-    -- Put this at the end after all plugins
     if Packer_Bootstrap then
         require('packer').sync()
     end

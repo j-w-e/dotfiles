@@ -7,72 +7,14 @@
 -- 24. fix the which key keymaps, and then the lsp.
 -- 25. use keymap.desc to make sure I have whichkey descriptsiont for everything. see :h nvim_set_keymap()
 -- 26. fix smart_d_visual so that it doesn't send a deletion to the black-hole buffer if the current line is blank, even if other lines are not blank. 
+-- 27. tweaks to make telekasten work better:
+--      * add a template for new notes
+--      * see if I can work out a way to categorise meeting notes easily
+--      * disable most snippets
+--      * write something that automatically populates a list of references to a tag?
+--      * add a cover page, with a session, that has quick links to all the pages i might need on a regular basis
 
--- PACKER and plugin commands {{{1
--- packer set-up {{{2
-local fn = vim.fn
--- Automatically install packer on initial startup
-local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-if fn.empty(fn.glob(install_path)) > 0 then
-    Packer_Bootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
-    print "---------------------------------------------------------"
-    print "Press Enter to install packer and plugins."
-    print "After install -- close and reopen Neovim to load configs!"
-    print "---------------------------------------------------------"
-    vim.cmd [[packadd packer.nvim]]
-end
-
--- Autocommand to reload neovim when you save plugins.lua
-vim.cmd [[
-   augroup packer_user_config
-   autocmd!
-   autocmd BufWritePost init.lua source <afile> | PackerSync
-   autocmd BufEnter init.lua set fdm=marker
-   augroup end
-]]
-
--- Use a protected call
-local present, packer = pcall(require, "packer")
-
-if not present then
-    return
-end
--- plugin calls {{{2
-packer.startup(function(use)
-    use 'wbthomason/packer.nvim'           -- packer manages itself
-    use 'nvim-lua/plenary.nvim'            -- avoids callbacks, used by other plugins
-    use 'nvim-treesitter/nvim-treesitter'  -- language parsing completion engine
-    --use 'williamboman/nvim-lsp-installer'  -- UI for fetching/downloading LSPs
-    --use 'neovim/nvim-lspconfig'            -- language server protocol implementation
-
-    use 'hrsh7th/nvim-cmp'                 -- THE vim completion engine
-    use 'hrsh7th/cmp-omni'                 -- THE vim completion engine
-    --use 'hrsh7th/cmp-nvim-lsp'
-    use 'hrsh7th/cmp-buffer'
-    use 'hrsh7th/cmp-path'
-    use 'hrsh7th/cmp-nvim-lua'
-    --use 'jose-elias-alvarez/null-ls.nvim' -- see https://www.youtube.com/watch?v=b7OguLuaYvE
-    use 'L3MON4D3/LuaSnip'
-    use 'saadparwaiz1/cmp_luasnip'
-    use 'rafamadriz/friendly-snippets'
-
-    use 'nvim-telescope/telescope.nvim'    -- finder, requires fzf and ripgrep
-    use 'kyazdani42/nvim-tree.lua'
-    use 'jalvesaq/Nvim-R'
-    use 'kyazdani42/nvim-web-devicons'
-    use 'lewis6991/gitsigns.nvim'
-    use 'echasnovski/mini.nvim'
-    use 'karb94/neoscroll.nvim'
-    --use 'lifepillar/vim-mucomplete'
-    --use 'JoseConseco/telescope_sessions_picker.nvim'
-    use { 'j-w-e/telescope_sessions_picker.nvim', branch = 'devel' }
-    use 'folke/which-key.nvim'
-
-    if Packer_Bootstrap then
-        require('packer').sync()
-    end
-end)
-
+require 'plugins'
 -- all settings {{{1
 
 -- gui settings {{{2
@@ -202,9 +144,10 @@ if present then
         e = { "open float" },
         f = {
             name = "file",
-            r = { "<cmd>Telescope oldfiles<cr>", "recent files" },
-            n = { "<cmd>enew<cr>", "new file" },
             f = { "<cmd>Telescope find_files<cr>", "find files" },
+            n = { "<cmd>enew<cr>", "new file" },
+            r = { "<cmd>Telescope oldfiles<cr>", "recent files" },
+            t = { "<cmd>NvimTreeToggle<cr>", "nvim-tree" },
             w = { "<cmd>w<cr>", "save" },
             wq = { "<cmd>wq<cr>", "save-and-quit" },
         },
@@ -213,7 +156,15 @@ if present then
             r = { "<cmd>lua vim.lsp.buf.references()<cr>", "references" }
         },
         m = { "<cmd>marks<cr>", "show marks" },
-        n = { "<cmd>NvimTreeToggle<cr>", "nvim-tree" },
+        n = {
+            name = "notes",
+            f = { "<cmd>lua require('telekasten').find_notes()<CR>", "find notes" },
+            h = { "<cmd>lua require('telekasten').follow_link()<CR>", "follow link" },
+            i = { "<cmd>lua require('telekasten').insert_link()<CR>", "insert link" },
+            n = { "<cmd>lua require('telekasten').new_note()<CR>", "find notes" },
+            t = { "<cmd>lua require('telekasten').toggle_todo()<CR>", "toggle to do" },
+            y = { "<cmd>lua require('telekasten').yank_notelink()<CR>", "yank link to note" },
+        },
         p = {
             name = "packer",
             s = { "<cmd>PackerSync<cr>", "sync" },
@@ -289,6 +240,14 @@ opt.completeopt = 'noselect,noinsert,menuone,preview'
 
 
 -- general {{{2
+-- autolist {{{3
+
+local present, autolist = pcall(require, "autolist")
+
+if present then
+    autolist.setup({})
+end
+
 -- cmp {{{3
 
 local present, cmp = pcall(require, "cmp")
@@ -343,7 +302,41 @@ if present then
 end
 
 -- luasnip {{{3
-require("luasnip.loaders.from_vscode").lazy_load()
+-- require("luasnip.loaders.from_vscode").lazy_load()
+local present, ls = pcall(require, "luasnip")
+
+if present then
+    local fmt = require("luasnip.extras.fmt").fmt
+    local date_input = function(args, snip, old_state, fmt)
+        local fmt = fmt or "%Y-%m-%d"
+        return ls.snippet_node(nil, ls.insert_node(1, os.date(fmt)))
+    end
+    ls.add_snippets("telekasten", {
+        ls.snippet("novel", {
+            ls.text_node("It was a dark and stormy night on "),
+            ls.dynamic_node(1, date_input, {}, "%A, %B %d of %Y"),
+            ls.text_node(" and the clocks were striking thirteen."),
+        }),
+        ls.snippet("see", {
+            ls.text_node("see email from "),
+            ls.insert_node(1, "Lian"),
+            ls.text_node(", subject \""),
+            ls.insert_node(2, "subject"),
+            ls.text_node("\""),
+        })
+    })
+
+    --     -- ls.add_snippets("all", {
+    --     -- s("see-email", {
+    --     -- t("see email from "), i(1, "from"), t(", subject: "), i(2, "subject"), 
+    --     -- i(1, "cond"), t(" ? "), i(2, "then"), t(" : "), i(3, "else")
+    --     -- })
+    --     --    s("ternary", {
+    --     -- 	-- equivalent to "${1:cond} ? ${2:then} : ${3:else}"
+    --     -- i(1, "cond"), t(" ? "), i(2, "then"), t(" : "), i(3, "else")
+    --     -- })
+    --     -- })
+end
 
 -- lsp {{{3
 
@@ -511,6 +504,20 @@ if present then
     })
 end
 
+-- telekasten {{{3
+local present, telekasten = pcall(require, "telekasten")
+
+if present then
+    telekasten.setup({
+        home = vim.fn.expand("~/Documents/notes"),
+        take_over_my_home = true,
+        tag_notation = "#tag",
+    })
+
+    keymap("n", "<leader>n", "<cmd>lua require('telekasten').panel()<CR>", opts)
+    -- nnoremap <leader>z :lua require('telekasten').panel()<CR>
+end
+
 -- telescope {{{3
 
 local present, telescope = pcall(require, "telescope")
@@ -530,6 +537,15 @@ if present then
             extensions = { }
         }}
     telescope.load_extension('sessions_picker')
+end
+
+
+-- toggler {{{3
+
+local present, toggler = pcall(require, "nvim-toggler")
+
+if present then
+    toggler.setup({})
 end
 
 -- Mini {{{2
@@ -714,7 +730,6 @@ if present then
     minitrail.setup({ })
 end
 
---}}}}}}}}}
 -- autocommands {{{1
 -- show cursorline only in active window
 local cursorGroup = vim.api.nvim_create_augroup("CursorLine", { clear = true })
