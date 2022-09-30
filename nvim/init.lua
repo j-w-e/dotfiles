@@ -8,11 +8,9 @@
 -- 25. use keymap.desc to make sure I have whichkey descriptsiont for everything. see :h nvim_set_keymap()
 -- 26. fix smart_d_visual so that it doesn't send a deletion to the black-hole buffer if the current line is blank, even if other lines are not blank. 
 -- 27. tweaks to make telekasten work better:
---      * add a template for new notes
 --      * see if I can work out a way to categorise meeting notes easily
---      * disable most snippets
 --      * write something that automatically populates a list of references to a tag?
---      * add a cover page, with a session, that has quick links to all the pages i might need on a regular basis
+-- 30. work out why the autolist plugin conflicts with checkboxes
 
 require 'plugins'
 -- all settings {{{1
@@ -40,6 +38,9 @@ keymap("i", "<a-backspace>", "<c-w>", opts)
 keymap("c", "<a-backspace>", "<c-w>", opts)
 keymap("v", "<tab>", ">", opts)
 keymap("v", "<s-tab>", "<", opts)
+keymap("n", "<leader>pp", "\"*p", opts)
+keymap("n", "<leader>y", "<cmd>let @*=@0<cr>", opts)
+keymap("n", "<leader>p", "\"0p", opts)
 
 -- local function smart_d_visual()
 --     local l, c = unpack(vim.api.nvim_win_get_cursor(0))
@@ -127,6 +128,7 @@ if present then
     whichkey.register({
         b = {
             name = "buffer",
+            a = { "<cmd>b#<cr>", "alternate buffer"},
             b = { "<cmd>Telescope buffers<cr>", "buffer list" },
             d = { "<cmd>lua MiniBufremove.delete()<cr>", "del buffer" },
             q = { "<cmd>lua MiniBufremove.delete(0, true)<cr>", "really del buffer!" },
@@ -158,17 +160,15 @@ if present then
         m = { "<cmd>marks<cr>", "show marks" },
         n = {
             name = "notes",
+            a = { "<cmd>lua require('telekasten').show_tags()<CR>", "show tags" },
+            b = { "<cmd>lua require('telekasten').show_backlinks()<CR>", "show backlinks" },
             f = { "<cmd>lua require('telekasten').find_notes()<CR>", "find notes" },
             h = { "<cmd>lua require('telekasten').follow_link()<CR>", "follow link" },
             i = { "<cmd>lua require('telekasten').insert_link()<CR>", "insert link" },
+            j = { "<cmd>lua require('telekasten').goto_today()<CR>", "go to today" },
             n = { "<cmd>lua require('telekasten').new_note()<CR>", "find notes" },
             t = { "<cmd>lua require('telekasten').toggle_todo()<CR>", "toggle to do" },
             y = { "<cmd>lua require('telekasten').yank_notelink()<CR>", "yank link to note" },
-        },
-        p = {
-            name = "packer",
-            s = { "<cmd>PackerSync<cr>", "sync" },
-            c =  { "<cmd>PackerClean<cr>", "clean" },
         },
         q = { "<cmd>q<cr>", "quit" },
         r = {
@@ -190,8 +190,13 @@ if present then
         t = { "<cmd>Telescope<cr>", "telescope" },
         v = {
             name = "vim config",
+            p = {
+                name = "packer",
+                p = { "<cmd>e ~/.config/nvim/lua/plugins.lua<cr>", "edit plugins.lua" },
+                s = { "<cmd>PackerSync<cr>", "sync" },
+                c =  { "<cmd>PackerClean<cr>", "clean" },
+            },
             e = { "<cmd>e ~/.config/nvim/init.lua<cr>", "edit init.lua" },
-            p = { "<cmd>e ~/.config/nvim/lua/plugins.lua<cr>", "edit plugins.lua" },
             r = { "<cmd>luafile ~/.config/nvim/init.lua<cr>", "reload init.lua" },
         },
         w = {
@@ -235,18 +240,22 @@ opt.list = true
 opt.listchars = "trail:·,tab:»·,eol:↲,multispace:   |,extends:>,precedes:<"
 opt.timeoutlen = 500
 opt.completeopt = 'noselect,noinsert,menuone,preview'
-
+vim.cmd[[ let g:markdown_folding = 1]]
 -- PLUGIN CONFIG {{{1
 
 
 -- general {{{2
 -- autolist {{{3
 
-local present, autolist = pcall(require, "autolist")
-
-if present then
-    autolist.setup({})
-end
+-- local present, autolist = pcall(require, "autolist")
+--
+-- if present then
+--     autolist.setup({
+--         invert_mapping = "",
+--         invert_toggles_checkbox = false,
+--         enabled_filetypes = { "markdown", "text" },
+--     })
+-- end
 
 -- cmp {{{3
 
@@ -286,7 +295,7 @@ if present then
         sources = cmp.config.sources({
             { name = 'luasnip' }, 
             { name = 'omni' }, 
-            { name = 'buffer' },
+            { name = 'buffer', keyword_length = 5 },
             { name = 'path'},
             { name = 'nvim_lua'},
         })
@@ -312,17 +321,12 @@ if present then
         return ls.snippet_node(nil, ls.insert_node(1, os.date(fmt)))
     end
     ls.add_snippets("telekasten", {
-        ls.snippet("novel", {
-            ls.text_node("It was a dark and stormy night on "),
-            ls.dynamic_node(1, date_input, {}, "%A, %B %d of %Y"),
-            ls.text_node(" and the clocks were striking thirteen."),
-        }),
         ls.snippet("see", {
             ls.text_node("see email from "),
             ls.insert_node(1, "Lian"),
-            ls.text_node(", subject \""),
+            ls.text_node(", subject \'"),
             ls.insert_node(2, "subject"),
-            ls.text_node("\""),
+            ls.text_node("\'"),
         })
     })
 
@@ -504,18 +508,28 @@ if present then
     })
 end
 
+-- scratch {{{3
+--vim.cmd[[
+--    let g:scratch_insert_autohide = 1 
+--    let g:scratch_filetype = markdown
+--    let g:scratch_horizontal = 0
+--]]
 -- telekasten {{{3
 local present, telekasten = pcall(require, "telekasten")
 
 if present then
     telekasten.setup({
-        home = vim.fn.expand("~/Documents/notes"),
+       home = vim.fn.expand("~/Documents/notes"),
         take_over_my_home = true,
         tag_notation = "#tag",
+        dailies = vim.fn.expand("~/Documents/notes") .. '/' .. 'dailies',
+        templates = vim.fn.expand("~/Documents/notes")  .. '/' .. 'templates',
+        template_new_note = vim.fn.expand("~/Documents/notes")  .. '/' .. 'templates/new_note.md',
+        template_new_daily =  vim.fn.expand("~/Documents/notes") .. '/' .. 'templates/new_daily_journal.md',
+        -- show_tags_theme = "get_cursor",
     })
 
     keymap("n", "<leader>n", "<cmd>lua require('telekasten').panel()<CR>", opts)
-    -- nnoremap <leader>z :lua require('telekasten').panel()<CR>
 end
 
 -- telescope {{{3

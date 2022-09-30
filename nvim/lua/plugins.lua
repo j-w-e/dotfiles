@@ -63,6 +63,8 @@ packer.startup(function(use)
     --     end
     -- }
     use 'gaoDean/autolist.nvim'
+    use 'sam4llis/nvim-lua-gf'
+    use 'mtth/scratch.vim'
     use 'nguyenvukhang/nvim-toggler'
    --use 'lifepillar/vim-mucomplete'
     --use 'JoseConseco/telescope_sessions_picker.nvim'
