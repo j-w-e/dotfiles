@@ -1,16 +1,15 @@
--- 14. configure lsp. again see v3. including setting omnifunc to a sensible keymappings. and enable document formatting if I can?
 -- 15. think about whether c-n, c-p, c-y and c-e are good enough for wildmenu, or whether i need to implement https://vi.stackexchange.com/questions/22627/switching-arrow-key-mappings-for-wildmenu-tab-completion
--- 18. Bindings ideas:
---      * move window?
---      * space space and arrows to shift between windows?
--- 21. set up a session to work in R
+-- 21. set up a session to work in R, and in Python
 -- 24. fix the which key keymaps, and then the lsp.
--- 25. use keymap.desc to make sure I have whichkey descriptsiont for everything. see :h nvim_set_keymap()
--- 26. fix smart_d_visual so that it doesn't send a deletion to the black-hole buffer if the current line is blank, even if other lines are not blank. 
+-- 25. use keymap.desc to make sure I have whichkey descriptsiont for everything. see :h nvim_set_keymap(). see for example leader p and leader y
+-- 26. fix smart_d_visual so that it doesn't send a deletion to the black-hole buffer if the current line is blank, even if other lines are not blank.
 -- 27. tweaks to make telekasten work better:
 --      * see if I can work out a way to categorise meeting notes easily
---      * write something that automatically populates a list of references to a tag?
+--      * write something that automatically populates a list of references to a tag? So that I can have a file with everything I need to chat to Lian about currently.
 -- 30. work out why the autolist plugin conflicts with checkboxes
+-- 32. Configure my Iron keymaps to be local to Python files
+-- 33. Give my Iron keymaps useful descriptors
+-- 34. Try to work out why my statusline does not seem to want to conform to what I expect
 
 require 'plugins'
 -- all settings {{{1
@@ -87,7 +86,7 @@ vim.api.nvim_set_keymap('i', '<CR>', 'v:lua._G.cr_action()', { noremap = true, e
 -- mappings specifically for luasnip
 vim.cmd[[" press <Tab> to expand or jump in a snippet. These can also be mapped separately
 " via <Plug>luasnip-expand-snippet and <Plug>luasnip-jump-next.
-imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' 
+imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>'
 " -1 for jumping backwards.
 inoremap <silent> <S-Tab> <cmd>lua require'luasnip'.jump(-1)<Cr>
 
@@ -138,9 +137,9 @@ if present then
         c = {
             name = "code",
             a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "code actions" },
-            f = { "<cmd>lua vim.lsp.buf.formatting_sync()<cr>", "format" },
+            f = { "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", "format" },
             r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "rename" },
-            t = { "<cmd>lua MiniTrailspace.trim()<cr>", "rename" },
+            t = { "<cmd>lua MiniTrailspace.trim()<cr>", "trim trailspace" },
         },
         D = { "go to type def" },
         e = { "open float" },
@@ -170,14 +169,14 @@ if present then
             t = { "<cmd>lua require('telekasten').toggle_todo()<CR>", "toggle to do" },
             y = { "<cmd>lua require('telekasten').yank_notelink()<CR>", "yank link to note" },
         },
+        o = {
+            name = "object",
+        },
         q = { "<cmd>q<cr>", "quit" },
         r = {
-            name = "r",
+            name = "repl",
             s = {
                 name = "send",
-            },
-            o = {
-                name = "object",
             },
         },
         s = {
@@ -197,6 +196,7 @@ if present then
                 c =  { "<cmd>PackerClean<cr>", "clean" },
             },
             e = { "<cmd>e ~/.config/nvim/init.lua<cr>", "edit init.lua" },
+            s = { "<cmd>lua MiniStarter.open()<cr>", "MiniStarter" },
             r = { "<cmd>luafile ~/.config/nvim/init.lua<cr>", "reload init.lua" },
         },
         w = {
@@ -261,7 +261,7 @@ vim.cmd[[ let g:markdown_folding = 1]]
 
 local present, cmp = pcall(require, "cmp")
 
-if present then 
+if present then
     cmp.setup({
         snippet = {
             expand = function(args)
@@ -271,18 +271,18 @@ if present then
         window = {
             completion = cmp.config.window.bordered(),
             documentation = cmp.config.window.bordered(),
-        }, 
+        },
         mapping = cmp.mapping.preset.insert({
             ['<left>'] = cmp.mapping.select_prev_item(),
             ['<right>'] = cmp.mapping.select_next_item(),
-            ['<cr>'] = cmp.mapping.confirm(), 
+            ['<cr>'] = cmp.mapping.confirm(),
             ['<esc>'] = cmp.mapping({
                 i = cmp.mapping.abort(),
                 -- c = cmp.mapping.close(),
             }),
         }),
         enabled = function ()
-            -- disable completion in comments 
+            -- disable completion in comments
             local context = require("cmp.config.context")
             -- keep command mode completion enabled when cursor is in a comment
             if vim.api.nvim_get_mode().mode == 'c' then
@@ -293,13 +293,21 @@ if present then
             end
         end,
         sources = cmp.config.sources({
-            { name = 'luasnip' }, 
-            { name = 'omni' }, 
+            { name = 'luasnip' },
+            { name = 'omni' },
             { name = 'buffer', keyword_length = 5 },
             { name = 'path'},
             { name = 'nvim_lua'},
         })
     })
+end
+
+-- fidget {{{3
+
+local present, fidget = pcall(require, "fidget")
+
+if present then
+    fidget.setup({ })
 end
 
 -- gitsigns {{{3
@@ -308,6 +316,43 @@ local present, gitsigns = pcall(require, "gitsigns")
 
 if present then
     gitsigns.setup({ })
+end
+
+-- iron {{{3
+local present, iron = pcall(require, "iron.core")
+
+if present then
+iron.setup({
+  config = {
+    should_map_plug = false,
+    repl_open_cmd = "vertical botright 80 split",
+    scratch_repl = true,
+    repl_definition = {
+      python = {
+        command = { "ipython", "--no-confirm-exit" },
+        format = require("iron.fts.common").bracketed_paste,
+      },
+    },
+  },
+  keymaps = {
+            send_line = "<leader>l",
+            interrupt = "<leader>rq",
+            exit = "<leader>rc",
+            clear = "<leader>rl",
+            cr = "<leader>r<cr>",
+            visual_send = "<leader>rs",
+            send_file = "<leader>rsa",
+  },
+})
+-- iron.setup = {
+    --     keymaps = {
+    --         send_motion = "<leader>rc",
+    --         send_mark = "<leader>rm",
+    --         mark_motion = "<leader>mc",
+    --         mark_visual = "<leader>mc",
+    --         remove_mark = "<leader>md",
+    --     }
+    -- }
 end
 
 -- luasnip {{{3
@@ -330,16 +375,15 @@ if present then
         })
     })
 
-    --     -- ls.add_snippets("all", {
-    --     -- s("see-email", {
-    --     -- t("see email from "), i(1, "from"), t(", subject: "), i(2, "subject"), 
-    --     -- i(1, "cond"), t(" ? "), i(2, "then"), t(" : "), i(3, "else")
-    --     -- })
-    --     --    s("ternary", {
-    --     -- 	-- equivalent to "${1:cond} ? ${2:then} : ${3:else}"
-    --     -- i(1, "cond"), t(" ? "), i(2, "then"), t(" : "), i(3, "else")
-    --     -- })
-    --     -- })
+    ls.add_snippets("telekasten", {
+        ls.snippet("link", {
+            ls.text_node("["),
+            ls.insert_node(1, "text"),
+            ls.text_node("]("),
+            ls.insert_node(2, "link"),
+            ls.text_node(")"),
+        })
+    })
 end
 
 -- lsp {{{3
@@ -409,22 +453,30 @@ if present then
         },
     }
 
-    lspconfig.r_language_server.setup ({
+    -- lspconfig.r_language_server.setup ({
+    --     on_attach = on_attach,
+    -- })
+
+    lspconfig.pylsp.setup({
         on_attach = on_attach,
     })
 end
 
--- mucomplete {{{3
--- vim.cmd[[
--- let g:mucomplete#enable_auto_at_startup = 1
--- let g:mucomplete#chains = {
---             \ 'default' : ['omni', 'path'],
---             \ }
--- let g:mucomplete#chains['rmd'] = {
---             \ 'default' : ['user', 'path', 'uspl'],
---             \ 'rmdrChunk' : ['omni', 'path'],
---             \ }
--- ]]
+-- mason {{{3
+
+local present, mason = pcall(require, "mason")
+
+if present then
+    mason.setup({ })
+end
+
+-- mason-lspconfig {{{3
+
+local present, mason_lspconfig = pcall(require, "mason-lspconfig")
+
+if present then
+    mason_lspconfig.setup({ })
+end
 
 -- neo-scroll {{{3
 
@@ -436,12 +488,27 @@ if present then
         easing_function = 'quadratic',
     })
 end
+
+-- null-ls {{{3
+
+local present, null_ls = pcall(require, "null-ls")
+
+if present then
+    null_ls.setup({
+        sources = {
+            null_ls.builtins.formatting.black,
+            null_ls.builtins.formatting.styler,
+        },
+    })
+end
+
 -- nvim-r {{{3
 vim.cmd[[
-let R_auto_start = 2
+""let R_auto_start = 2
 let R_assign = 2
 let R_user_maps_only = 1
 let r_syntax_folding = 1
+let rout_follow_colorscheme = 1
 ]]
 
 local nvimrmappings = vim.api.nvim_create_augroup("nvim-r-mappings", { clear = true })
@@ -458,8 +525,8 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.api.nvim_buf_set_keymap(0, "n", "<leader>d", "<Plug>RDSendLine", {desc = "send line and down"})
         vim.api.nvim_buf_set_keymap(0, "n", "<leader>rsa", "<Plug>RESendFile", {desc = "send file"})
         vim.api.nvim_buf_set_keymap(0, "n", "<leader>rsf", "<Plug>RESendFunction", {desc = "send function"})
-        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rss", "<Plug>RESendSelection", {desc = "send selection"})
-        vim.api.nvim_buf_set_keymap(0, "n", "<leader>rso", "<Plug>RSendSelAndInsertOutput", {desc = "send sel / insert"})
+        vim.api.nvim_buf_set_keymap(0, "v", "<leader>rs", "<Plug>RESendSelection", {desc = "send selection"})
+        vim.api.nvim_buf_set_keymap(0, "v", "<leader>ro", "<Plug>RSendSelAndInsertOutput", {desc = "send sel / insert"})
         vim.api.nvim_buf_set_keymap(0, "n", "<leader>rp", "<Plug>REDSendParagraph", {desc = "send paragraph"})
 
         vim.api.nvim_buf_set_keymap(0, "n", "<leader>os", "<cmd>call RAction(\"str\")<cr>", {desc = "object str"})
@@ -510,7 +577,7 @@ end
 
 -- scratch {{{3
 --vim.cmd[[
---    let g:scratch_insert_autohide = 1 
+--    let g:scratch_insert_autohide = 1
 --    let g:scratch_filetype = markdown
 --    let g:scratch_horizontal = 0
 --]]
@@ -718,9 +785,57 @@ end
 local present, ministatus = pcall(require, "mini.statusline")
 
 if present then
-    ministatus.setup({ })
-end
+    -- ministatus.setup({ })
+    -- The following code is an attempt to get lsp and formatter to display in the status line. It comes from this comment https://www.reddit.com/r/neovim/comments/xtynan/comment/iqtcq0s/?utm_source=share&utm_medium=web2x&context=3
+    Lsp = function()
+        local buf_clients = vim.lsp.buf_get_clients()
+        local supported_formatters = require("null-ls.sources").get_available(vim.bo.filetype)
+        local clients = {}
 
+        for _, client in pairs(buf_clients) do
+            if client.name ~= "null-ls" then
+                table.insert(clients, client.name)
+            end
+        end
+
+        for _, client in pairs(supported_formatters) do
+            table.insert(clients, client.name)
+        end
+
+        if #clients > 0 then
+            return table.concat(clients, ", ")
+        else
+            return "no LS"
+        end
+    end,
+
+---@diagnostic disable-next-line: redundant-value
+    ministatus.setup({
+        content = {
+            active = function()
+                local mode, mode_hl = ministatus.section_mode({ trunc_width = 120 })
+                local git           = ministatus.section_git({ trunc_width = 75 })
+                local diagnostics   = ministatus.section_diagnostics({ trunc_width = 75 })
+                local filename      = ministatus.section_filename({ trunc_width = 140 })
+                local fileinfo      = ministatus.section_fileinfo({ trunc_width = 120 })
+                local location      = ministatus.section_location({ trunc_width = 75 })
+                local lsp           = Lsp()
+
+                return ministatus.combine_groups({
+                    { hl = mode_hl,                  strings = { mode } },
+                    { hl = 'MiniStatuslineDevinfo',  strings = { git, diagnostics } },
+                    '%<', -- Mark general truncate point
+                    { hl = 'MiniStatuslineFilename', strings = { filename } },
+                    '%=', -- End left alignment
+                    { hl = 'MiniStatuslineFilename', strings = { lsp } },
+                    { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
+                    { hl = mode_hl,                  strings = { location } },
+                })
+            end,
+        },
+    })
+
+end
 
 -- surround {{{3
 local present, minisurround = pcall(require, "mini.surround")

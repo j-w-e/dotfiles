@@ -33,7 +33,9 @@ packer.startup(function(use)
     use 'nvim-lua/plenary.nvim'            -- avoids callbacks, used by other plugins
     use 'nvim-treesitter/nvim-treesitter'  -- language parsing completion engine
     --use 'williamboman/nvim-lsp-installer'  -- UI for fetching/downloading LSPs
-    --use 'neovim/nvim-lspconfig'            -- language server protocol implementation
+    use 'williamboman/mason.nvim'
+    use 'neovim/nvim-lspconfig'            -- language server protocol implementation
+    use 'williamboman/mason-lspconfig.nvim'
 
     use 'hrsh7th/nvim-cmp'                 -- THE vim completion engine
     use 'hrsh7th/cmp-omni'                 
@@ -41,10 +43,12 @@ packer.startup(function(use)
     use 'hrsh7th/cmp-buffer'
     use 'hrsh7th/cmp-path'
     use 'hrsh7th/cmp-nvim-lua'
-    --use 'jose-elias-alvarez/null-ls.nvim' -- see https://www.youtube.com/watch?v=b7OguLuaYvE
+    use 'jose-elias-alvarez/null-ls.nvim' -- see https://www.youtube.com/watch?v=b7OguLuaYvE
     use 'L3MON4D3/LuaSnip'
     use 'saadparwaiz1/cmp_luasnip'
     use 'rafamadriz/friendly-snippets'
+    use 'hkupty/iron.nvim'
+    use 'j-hui/fidget.nvim'
 
     use 'nvim-telescope/telescope.nvim'    -- finder, requires fzf and ripgrep
     use 'kyazdani42/nvim-tree.lua'
