@@ -35,3 +35,11 @@ endfunc
 setlocal foldexpr=Foldexpr_markdown(v:lnum)
 setlocal foldmethod=expr
 setlocal foldlevelstart=20
+
+setlocal softtabstop=4
+setlocal shiftwidth=4
+setlocal nolist
+setlocal breakindent
+setlocal showbreak=>>
+setlocal breakindentopt=shift:2
+" setlocal listchars="trail:·,eol:↲,extends:>,precedes:<"

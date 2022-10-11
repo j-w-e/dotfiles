@@ -1,6 +1,4 @@
--- 15. think about whether c-n, c-p, c-y and c-e are good enough for wildmenu, or whether i need to implement https://vi.stackexchange.com/questions/22627/switching-arrow-key-mappings-for-wildmenu-tab-completion
 -- 21. set up a session to work in R, and in Python
--- 24. fix the which key keymaps, and then the lsp.
 -- 25. use keymap.desc to make sure I have whichkey descriptsiont for everything. see :h nvim_set_keymap(). see for example leader p and leader y
 -- 26. fix smart_d_visual so that it doesn't send a deletion to the black-hole buffer if the current line is blank, even if other lines are not blank.
 -- 27. tweaks to make telekasten work better:
@@ -9,7 +7,11 @@
 -- 30. work out why the autolist plugin conflicts with checkboxes
 -- 32. Configure my Iron keymaps to be local to Python files
 -- 33. Give my Iron keymaps useful descriptors
--- 34. Try to work out why my statusline does not seem to want to conform to what I expect
+-- 35. If I go back to noice.nvim, see if I can implement the queued keys into the status line, now that I have set cmdheight=0
+-- 36. Work out how to call the telekasten show_tags() command, passing it the word under the cursor if that begins with a #, and if not open the standard show_tags() command.
+-- 37. Add in any telescope load_extension() commands that I need.
+-- 38. Change the way f and t work, so that they can repeat themselves.
+-- 39. Figure out why, in markdown, when I press <cr> on a line with a bullet, it adds two spaces to the next line. 
 
 require 'plugins'
 -- all settings {{{1
@@ -219,6 +221,7 @@ local opt = vim.opt
 
 g.netrw_banner = 0
 opt.termguicolors = true
+-- opt.cmdheight = 0
 opt.expandtab = true
 opt.shiftwidth = 4
 opt.smartindent = true
@@ -240,10 +243,10 @@ opt.list = true
 opt.listchars = "trail:·,tab:»·,eol:↲,multispace:   |,extends:>,precedes:<"
 opt.timeoutlen = 500
 opt.completeopt = 'noselect,noinsert,menuone,preview'
+vim.diagnostic.config({ severity_sort = true })
 vim.cmd[[ let g:markdown_folding = 1]]
+
 -- PLUGIN CONFIG {{{1
-
-
 -- general {{{2
 -- autolist {{{3
 
@@ -260,8 +263,13 @@ vim.cmd[[ let g:markdown_folding = 1]]
 -- cmp {{{3
 
 local present, cmp = pcall(require, "cmp")
+local luasnip = require("luasnip")
 
 if present then
+    local has_words_before = function()
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+    end
     cmp.setup({
         snippet = {
             expand = function(args)
@@ -272,19 +280,42 @@ if present then
             completion = cmp.config.window.bordered(),
             documentation = cmp.config.window.bordered(),
         },
-        mapping = cmp.mapping.preset.insert({
-            ['<left>'] = cmp.mapping.select_prev_item(),
-            ['<right>'] = cmp.mapping.select_next_item(),
+        mapping = {
+            ['<up>'] = cmp.mapping.select_prev_item(),
+            ['<down>'] = cmp.mapping.select_next_item(),
             ['<cr>'] = cmp.mapping.confirm(),
             ['<esc>'] = cmp.mapping({
                 i = cmp.mapping.abort(),
-                -- c = cmp.mapping.close(),
+                c = cmp.mapping.close(),
             }),
-        }),
+
+            ["<Tab>"] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                    cmp.select_next_item()
+                elseif luasnip.expand_or_jumpable() then
+                    luasnip.expand_or_jump()
+                elseif has_words_before() then
+                    cmp.complete()
+                else
+                    fallback()
+                end
+            end, { "i", "s", "c" }),
+
+            ["<S-Tab>"] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                    cmp.select_prev_item()
+                elseif luasnip.jumpable(-1) then
+                    luasnip.jump(-1)
+                else
+                    fallback()
+                end
+            end, { "i", "s", "c" }),
+
+        },
         enabled = function ()
             -- disable completion in comments
             local context = require("cmp.config.context")
-            -- keep command mode completion enabled when cursor is in a comment
+            -- keep command mode completion enabled when cursor is in a comment 
             if vim.api.nvim_get_mode().mode == 'c' then
                 return true
             else
@@ -295,9 +326,34 @@ if present then
         sources = cmp.config.sources({
             { name = 'luasnip' },
             { name = 'omni' },
-            { name = 'buffer', keyword_length = 5 },
+            { name = 'buffer', keyword_length = 4 },
             { name = 'path'},
             { name = 'nvim_lua'},
+        })
+    })
+    -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+    cmp.setup.cmdline({ '/', '?' }, {
+        mapping = cmp.mapping.preset.cmdline({
+            ['<Down>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
+            ['<Up>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
+        }),
+        -- mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+            { name = 'buffer' }
+        }
+    })
+
+    -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+    cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline({
+            ['<Down>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
+            ['<Up>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
+        }),
+        -- mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+            { name = 'path' }
+        }, {
+            { name = 'cmdline' }
         })
     })
 end
@@ -322,19 +378,22 @@ end
 local present, iron = pcall(require, "iron.core")
 
 if present then
-iron.setup({
-  config = {
-    should_map_plug = false,
-    repl_open_cmd = "vertical botright 80 split",
-    scratch_repl = true,
-    repl_definition = {
-      python = {
-        command = { "ipython", "--no-confirm-exit" },
-        format = require("iron.fts.common").bracketed_paste,
-      },
-    },
-  },
-  keymaps = {
+    iron.setup({
+        config = {
+            should_map_plug = false,
+            repl_open_cmd = "vertical botright 80 split",
+            scratch_repl = true,
+            repl_definition = {
+                python = {
+                    command = { "ipython", "--no-confirm-exit" },
+                    format = require("iron.fts.common").bracketed_paste,
+                },
+                sml = {
+                    command = { "sml" }
+                }
+            },
+        },
+        keymaps = {
             send_line = "<leader>l",
             interrupt = "<leader>rq",
             exit = "<leader>rc",
@@ -342,8 +401,8 @@ iron.setup({
             cr = "<leader>r<cr>",
             visual_send = "<leader>rs",
             send_file = "<leader>rsa",
-  },
-})
+        },
+    })
 -- iron.setup = {
     --     keymaps = {
     --         send_motion = "<leader>rc",
@@ -537,6 +596,7 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.api.nvim_buf_set_keymap(0, "n", "<leader>rh", "<Plug>RHelp", {desc = "help"})
     end
 })
+
 -- nvim-tree {{{3
 
 local present, nvimtree = pcall(require, "nvim-tree")
@@ -573,6 +633,32 @@ if present then
             enable = true
         },
     })
+    require('nvim-treesitter.configs').setup {
+        textobjects = {
+            select = {
+                enable = true,
+                keymaps = {
+                    -- You can use the capture groups defined in textobjects.scm
+                    ["af"] = "@function.outer",
+                    ["if"] = "@function.inner",
+                    ["ac"] = "@class.outer",
+                    -- you can optionally set descriptions to the mappings (used in the desc parameter of nvim_buf_set_keymap
+                    ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+                },
+                -- You can choose the select mode (default is charwise 'v')
+                -- selection_modes = {
+                --     ['@parameter.outer'] = 'v', -- charwise
+                --     ['@function.outer'] = 'V', -- linewise
+                --     ['@class.outer'] = '<c-v>', -- blockwise
+                -- },
+                -- If you set this to `true` (default is `false`) then any textobject is
+                -- extended to include preceding xor succeeding whitespace. Succeeding
+                -- whitespace has priority in order to act similarly to eg the built-in
+                -- `ap`.
+                include_surrounding_whitespace = true,
+            }
+        }
+    }
 end
 
 -- scratch {{{3
@@ -586,7 +672,7 @@ local present, telekasten = pcall(require, "telekasten")
 
 if present then
     telekasten.setup({
-       home = vim.fn.expand("~/Documents/notes"),
+        home = vim.fn.expand("~/Documents/notes"),
         take_over_my_home = true,
         tag_notation = "#tag",
         dailies = vim.fn.expand("~/Documents/notes") .. '/' .. 'dailies',
@@ -594,6 +680,7 @@ if present then
         template_new_note = vim.fn.expand("~/Documents/notes")  .. '/' .. 'templates/new_note.md',
         template_new_daily =  vim.fn.expand("~/Documents/notes") .. '/' .. 'templates/new_daily_journal.md',
         -- show_tags_theme = "get_cursor",
+        command_palette_theme = 'dropdown',
     })
 
     keymap("n", "<leader>n", "<cmd>lua require('telekasten').panel()<CR>", opts)
@@ -610,13 +697,19 @@ if present then
             layout_strategy = 'horizontal',
             layout_config = { prompt_position = "top" },
             sorting_strategy = 'ascending',
+            mappings = {
+                i = {
+                    ["<esc>"] = require('telescope.actions').close,
+                }
+            }
         },
         pickers = {
             sessions_picker = {
                 sessions_dir = vim.fn.stdpath('data') ..'/session/',  -- same as '/home/user/.local/share/nvim/session'
             },
             extensions = { }
-        }}
+        },
+    }
     telescope.load_extension('sessions_picker')
 end
 
@@ -630,6 +723,14 @@ if present then
 end
 
 -- Mini {{{2
+-- ai {{{3
+
+-- local present, miniai = pcall(require, "mini.ai")
+--
+-- if present then
+--     miniai.setup()
+-- end
+
 -- colors {{{3
 
 local present, minibase = pcall(require, "mini.base16")
@@ -709,9 +810,9 @@ local present, minijump = pcall(require, "mini.jump")
 
 if present then
     minijump.setup({
-        mappings = {
-            repeat_jump = ',',
-        }
+        -- mappings = {
+        --     repeat_jump = ',',
+        -- }
     })
 end
 
@@ -916,3 +1017,38 @@ vim.cmd([[augroup CustomSettings]])
   -- Allow nested 'default' comment leaders to be treated as comment leader
   vim.cmd([[autocmd FileType * lua pcall(require('mini.misc').use_nested_comments)]])
 vim.cmd([[augroup END]])
+
+
+vim.cmd([[
+augroup vimbettersml
+  au!
+
+  " ----- Keybindings -----
+  au FileType sml nnoremap <silent> <buffer> <leader>rt :SMLTypeQuery<CR>
+  au FileType sml nnoremap <silent> <buffer> gd :SMLJumpToDef<CR>
+
+  " open the REPL terminal buffer
+  au FileType sml nnoremap <silent> <buffer> <leader>rf :SMLReplStart<CR>
+  " close the REPL (mnemonic: k -> kill)
+  au FileType sml nnoremap <silent> <buffer> <leader>rc :SMLReplStop<CR>
+  " build the project (using CM if possible)
+  au FileType sml nnoremap <silent> <buffer> <leader>rb :SMLReplBuild<CR>
+  " for opening a structure, not a file
+  au FileType sml nnoremap <silent> <buffer> <leader>ro :SMLReplOpen<CR>
+  " use the current file into the REPL (even if using CM)
+  au FileType sml nnoremap <silent> <buffer> <leader>rsa :SMLReplUse<CR>
+  " clear the REPL screen
+  au FileType sml nnoremap <silent> <buffer> <leader>rl :SMLReplClear<CR>
+  " set the print depth to 100
+  au FileType sml nnoremap <silent> <buffer> <leader>rp :SMLReplPrintDepth<CR>
+
+  " ----- Other settings -----
+
+  " Uncomment to try out conceal characters
+  "au FileType sml setlocal conceallevel=2
+
+  " Uncomment to try out same-width conceal characters
+  "let g:sml_greek_tyvar_show_tick = 1
+augroup END
+
+]])

@@ -32,15 +32,16 @@ packer.startup(function(use)
     use 'wbthomason/packer.nvim'           -- packer manages itself
     use 'nvim-lua/plenary.nvim'            -- avoids callbacks, used by other plugins
     use 'nvim-treesitter/nvim-treesitter'  -- language parsing completion engine
-    --use 'williamboman/nvim-lsp-installer'  -- UI for fetching/downloading LSPs
+    use 'nvim-treesitter/nvim-treesitter-textobjects'
     use 'williamboman/mason.nvim'
     use 'neovim/nvim-lspconfig'            -- language server protocol implementation
     use 'williamboman/mason-lspconfig.nvim'
 
     use 'hrsh7th/nvim-cmp'                 -- THE vim completion engine
-    use 'hrsh7th/cmp-omni'                 
+    use 'hrsh7th/cmp-omni'
     --use 'hrsh7th/cmp-nvim-lsp'
     use 'hrsh7th/cmp-buffer'
+    use 'hrsh7th/cmp-cmdline'
     use 'hrsh7th/cmp-path'
     use 'hrsh7th/cmp-nvim-lua'
     use 'jose-elias-alvarez/null-ls.nvim' -- see https://www.youtube.com/watch?v=b7OguLuaYvE
@@ -48,6 +49,7 @@ packer.startup(function(use)
     use 'saadparwaiz1/cmp_luasnip'
     use 'rafamadriz/friendly-snippets'
     use 'hkupty/iron.nvim'
+
     use 'j-hui/fidget.nvim'
 
     use 'nvim-telescope/telescope.nvim'    -- finder, requires fzf and ripgrep
@@ -58,14 +60,31 @@ packer.startup(function(use)
     use 'echasnovski/mini.nvim'
     use 'karb94/neoscroll.nvim'
     use 'renerocksai/telekasten.nvim'
-    -- use {
-    --     'phaazon/mind.nvim',
-    --     branch = 'v2',
-    --     requires = { 'nvim-lua/plenary.nvim' },
+
+    use 'jez/vim-better-sml'
+    -- use 'marko-cerovac/material.nvim'
+
+    -- use { 'melkster/modicator.nvim',
+    --     after = 'material.nvim',
     --     config = function()
-    --         require'mind'.setup()
+    --         require('modicator').setup()
     --     end
     -- }
+
+    -- use({
+    --     "folke/noice.nvim",
+    --     event = "VimEnter",
+    --     config = function()
+    --         require("noice").setup()
+    --     end,
+    --     requires = {
+    --         -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+    --         "MunifTanjim/nui.nvim",
+    --         "rcarriga/nvim-notify",
+    --         "hrsh7th/nvim-cmp",
+    --     }
+    -- })
+
     use 'gaoDean/autolist.nvim'
     use 'sam4llis/nvim-lua-gf'
     use 'mtth/scratch.vim'
