@@ -61,6 +61,7 @@ packer.startup(function(use)
     use 'karb94/neoscroll.nvim'
     use 'renerocksai/telekasten.nvim'
 
+    use { 'rafcamlet/nvim-luapad', requires = "antoinemadec/FixCursorHold.nvim" }
     use 'jez/vim-better-sml'
     -- use 'marko-cerovac/material.nvim'
 
@@ -71,19 +72,19 @@ packer.startup(function(use)
     --     end
     -- }
 
-    -- use({
-    --     "folke/noice.nvim",
-    --     event = "VimEnter",
-    --     config = function()
-    --         require("noice").setup()
-    --     end,
-    --     requires = {
-    --         -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-    --         "MunifTanjim/nui.nvim",
-    --         "rcarriga/nvim-notify",
-    --         "hrsh7th/nvim-cmp",
-    --     }
-    -- })
+    use({
+        "folke/noice.nvim",
+        event = "VimEnter",
+        config = function()
+            require("noice").setup()
+        end,
+        requires = {
+            -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+            "MunifTanjim/nui.nvim",
+            "rcarriga/nvim-notify",
+            "hrsh7th/nvim-cmp",
+        }
+    })
 
     use 'gaoDean/autolist.nvim'
     use 'sam4llis/nvim-lua-gf'

@@ -1,5 +1,9 @@
+-- 20. Change all "keymap" mappings to use my function specifically. 
+        -- iron, which I might want to have set in a different file
+        -- and sml which is in the autocommands section
+        -- and nvim-R?
+        -- and lsp, potentially, which would require adjusting the keymap function to accept buffer-local options?
 -- 21. set up a session to work in R, and in Python
--- 25. use keymap.desc to make sure I have whichkey descriptsiont for everything. see :h nvim_set_keymap(). see for example leader p and leader y
 -- 26. fix smart_d_visual so that it doesn't send a deletion to the black-hole buffer if the current line is blank, even if other lines are not blank.
 -- 27. tweaks to make telekasten work better:
 --      * see if I can work out a way to categorise meeting notes easily
@@ -10,7 +14,6 @@
 -- 35. If I go back to noice.nvim, see if I can implement the queued keys into the status line, now that I have set cmdheight=0
 -- 36. Work out how to call the telekasten show_tags() command, passing it the word under the cursor if that begins with a #, and if not open the standard show_tags() command.
 -- 37. Add in any telescope load_extension() commands that I need.
--- 38. Change the way f and t work, so that they can repeat themselves.
 -- 39. Figure out why, in markdown, when I press <cr> on a line with a bullet, it adds two spaces to the next line. 
 
 require 'plugins'
@@ -26,32 +29,55 @@ endif
 
 -- keymaps {{{2
 
-local opts = { noremap = true, silent = true }
-local keymap = vim.api.nvim_set_keymap
-keymap("", "<Space>", "<Nop>", opts)
+vim.api.nvim_set_keymap("", "<Space>", "<Nop>", {  noremap = true, silent = true })
+local function keymap(mode, keys, cmd, desc)
+    vim.api.nvim_set_keymap(mode, keys, cmd, { noremap = true, silent = true, desc = desc })
+end
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-keymap("t", "<esc>", "<c-\\><c-n>", opts)
-keymap("n", "<c-j>", "<cmd>set paste<cr>m`o<esc>``<cmd>set nopaste<cr>", opts)
-keymap("n", "<c-k>", "<cmd>set paste<cr>m`O<esc>``<cmd>set nopaste<cr>", opts)
-keymap("i", "<a-backspace>", "<c-w>", opts)
-keymap("c", "<a-backspace>", "<c-w>", opts)
-keymap("v", "<tab>", ">", opts)
-keymap("v", "<s-tab>", "<", opts)
-keymap("n", "<leader>pp", "\"*p", opts)
-keymap("n", "<leader>y", "<cmd>let @*=@0<cr>", opts)
-keymap("n", "<leader>p", "\"0p", opts)
+keymap("t", "<esc>", "<c-\\><c-n>", "esc")
+keymap("n", "<c-j>", "<cmd>set paste<cr>m`o<esc>``<cmd>set nopaste<cr>",  "insert blank line below")
+keymap("n", "<c-k>", "<cmd>set paste<cr>m`O<esc>``<cmd>set nopaste<cr>", "insert blank line above")
+keymap("i", "<a-backspace>", "<c-w>", "delete word")
+keymap("c", "<a-backspace>", "<c-w>", "delete word")
+keymap("v", "<tab>", ">gv", "indent")
+keymap("v", "<s-tab>", "<gv", "de-indent")
+keymap("n", "<leader>pp", "\"*p", "paste from clipboard")
+-- keymap("n", "<leader>y", "<cmd>let @*=@0<cr>", { noremap = true, silent = true })
+keymap("n", "<leader>y", "<cmd>let @*=@0<cr>", "copy yank to clipboard")
+keymap("n", "<leader>p", "\"0p",  "paste from last yank" )
 
+-- local function smart_d()
+-- 	local l, c = unpack(vim.api.nvim_win_get_cursor(0))
+-- 	for _, line in ipairs(vim.api.nvim_buf_get_lines(0, l - 1, l, true)) do
+-- 		if line:match("^%s*$") then
+-- 			return "\"_d"
+-- 		end
+-- 	end
+-- 	return "d"
+-- end
+
+-- this almost works, but does not work if the first line is blank, but the last line is non-blank
 -- local function smart_d_visual()
---     local l, c = unpack(vim.api.nvim_win_get_cursor(0))
---     for _, line in ipairs(vim.api.nvim_buf_get_lines(0, l - 1, l, true)) do
---         if line:match("^%s*$") then
---             return "\"_d"
---         end
+--     local _, csrow, cscol, _ = unpack(vim.fn.getpos("'<"))
+--     local _, cerow, cecol, _ = unpack(vim.fn.getpos("'>"))
+--     local lines = vim.api.nvim_buf_get_lines(0, csrow, cerow, true)
+--     lines = table.concat(lines, "")
+--
+--     if lines:match("^%s*$") then
+--         return "\"_d"
 --     end
 --     return "d"
+--     -- for _, line in ipairs(lines) do
+--     --     if not table.concat(line,""):match("^%s*$") then
+--     --         return "d"
+--     --     end
+--     -- end
+--     -- return "\"_d"
 -- end
+-- vim.keymap.set("v", "d", smart_d_visual, { noremap = true, expr = true } )
+
 local function smart_d_normal()
     if vim.api.nvim_get_current_line():match("^%s*$") then
         return "\"_dd"
@@ -60,7 +86,6 @@ local function smart_d_normal()
     end
 end
 
--- vim.keymap.set("v", "d", smart_d_visual, { noremap = true, expr = true } )
 vim.keymap.set("n", "dd", smart_d_normal, { noremap = true, expr = true } )
 
 -- mapping to ensure <cr> is consistent in the popup menu
@@ -79,6 +104,7 @@ _G.cr_action = function()
         -- If popup is not visible, use plain `<CR>`. You might want to customize
         -- according to other plugins. For example, to use 'mini.pairs', replace
         -- next line with `return require('mini.pairs').cr()`
+        -- return require('mini.pairs').cr()
         return keys['cr']
     end
 end
@@ -144,7 +170,7 @@ if present then
             t = { "<cmd>lua MiniTrailspace.trim()<cr>", "trim trailspace" },
         },
         D = { "go to type def" },
-        e = { "open float" },
+        -- e = { "open float" },
         f = {
             name = "file",
             f = { "<cmd>Telescope find_files<cr>", "find files" },
@@ -450,11 +476,10 @@ end
 local present, lspconfig = pcall(require, "lspconfig")
 
 if present then
-    local opts = { noremap=true, silent=true }
-    vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
-    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-    vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-    --vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+    keymap('n', '<space>e', "<cmd>lua vim.diagnostic.open_float()<cr>", "open lsp float")
+    keymap('n', '[d', "<cmd>lua vim.diagnostic.goto_prev()<cr>", "prev diagnostic")
+    keymap('n', ']d', "<cmd>lua vim.diagnostic.goto_next()<cr>", "next diagnostic")
+    --keymap('n', '<space>q', "<cmd>lua vim.diagnostic.setloclist()<cr>, "setloclist")
 
     local on_attach = function(client, bufnr)
         -- Enable completion triggered by <c-x><c-o>
@@ -683,7 +708,7 @@ if present then
         command_palette_theme = 'dropdown',
     })
 
-    keymap("n", "<leader>n", "<cmd>lua require('telekasten').panel()<CR>", opts)
+    keymap("n", "<leader>n", "<cmd>lua require('telekasten').panel()<CR>", "show notes panel")
 end
 
 -- telescope {{{3
