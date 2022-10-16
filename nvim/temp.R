@@ -13,6 +13,11 @@ midwest$per
 
 theme_set(theme_bw())
 
+temp  <- function() {
+
+}
+
+
 gg <- ggplot(midwest, aes(x = area, y = poptotal)) +
   geom_point(aes(col = state, size = popdensity)) +
   geom_smooth(method = "loess", se = F) +

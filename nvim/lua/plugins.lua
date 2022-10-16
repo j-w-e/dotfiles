@@ -31,11 +31,14 @@ end
 packer.startup(function(use)
     use 'wbthomason/packer.nvim'           -- packer manages itself
     use 'nvim-lua/plenary.nvim'            -- avoids callbacks, used by other plugins
+    use 'nvim-telescope/telescope.nvim'    -- finder, requires fzf and ripgrep
     use 'nvim-treesitter/nvim-treesitter'  -- language parsing completion engine
     use 'nvim-treesitter/nvim-treesitter-textobjects'
     use 'williamboman/mason.nvim'
     use 'neovim/nvim-lspconfig'            -- language server protocol implementation
     use 'williamboman/mason-lspconfig.nvim'
+    use 'lewis6991/gitsigns.nvim'
+    use 'echasnovski/mini.nvim'
 
     use 'hrsh7th/nvim-cmp'                 -- THE vim completion engine
     use 'hrsh7th/cmp-omni'
@@ -48,18 +51,18 @@ packer.startup(function(use)
     use 'L3MON4D3/LuaSnip'
     use 'saadparwaiz1/cmp_luasnip'
     use 'rafamadriz/friendly-snippets'
-    use 'hkupty/iron.nvim'
 
+    use 'hkupty/iron.nvim'
+    use 'ziontee113/neo-minimap'
     use 'j-hui/fidget.nvim'
 
-    use 'nvim-telescope/telescope.nvim'    -- finder, requires fzf and ripgrep
     use 'kyazdani42/nvim-tree.lua'
     use 'jalvesaq/Nvim-R'
     use 'kyazdani42/nvim-web-devicons'
-    use 'lewis6991/gitsigns.nvim'
-    use 'echasnovski/mini.nvim'
     use 'karb94/neoscroll.nvim'
     use 'renerocksai/telekasten.nvim'
+
+    -- use 'abecodes/tabout.nvim'
 
     use { 'rafcamlet/nvim-luapad', requires = "antoinemadec/FixCursorHold.nvim" }
     use 'jez/vim-better-sml'

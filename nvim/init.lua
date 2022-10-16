@@ -1,9 +1,10 @@
+-- 19.5 Change all mappings to use vim.keymap.set() rather than vim.api.nvim_set_keymap(). vim.keymap.set() can take lua functions directly, for example
+--      see https://www.reddit.com/r/neovim/comments/vwud6m/whichkeynvim_whats_the_best_workflow/
 -- 20. Change all "keymap" mappings to use my function specifically. 
         -- iron, which I might want to have set in a different file
         -- and sml which is in the autocommands section
         -- and nvim-R?
         -- and lsp, potentially, which would require adjusting the keymap function to accept buffer-local options?
--- 21. set up a session to work in R, and in Python
 -- 26. fix smart_d_visual so that it doesn't send a deletion to the black-hole buffer if the current line is blank, even if other lines are not blank.
 -- 27. tweaks to make telekasten work better:
 --      * see if I can work out a way to categorise meeting notes easily
@@ -11,10 +12,10 @@
 -- 30. work out why the autolist plugin conflicts with checkboxes
 -- 32. Configure my Iron keymaps to be local to Python files
 -- 33. Give my Iron keymaps useful descriptors
--- 35. If I go back to noice.nvim, see if I can implement the queued keys into the status line, now that I have set cmdheight=0
 -- 36. Work out how to call the telekasten show_tags() command, passing it the word under the cursor if that begins with a #, and if not open the standard show_tags() command.
--- 37. Add in any telescope load_extension() commands that I need.
 -- 39. Figure out why, in markdown, when I press <cr> on a line with a bullet, it adds two spaces to the next line. 
+-- 41. add the right neo-minimap config for R
+-- 42. see if I want to use tabout, because the plugin conflicts with binding tab as my trigger to start autocompletion. (cmp gets triggered every time, meaning tabout never does)
 
 require 'plugins'
 -- all settings {{{1
@@ -59,7 +60,7 @@ keymap("n", "<leader>p", "\"0p",  "paste from last yank" )
 -- end
 
 -- this almost works, but does not work if the first line is blank, but the last line is non-blank
--- local function smart_d_visual()
+-- function smart_d_visual()
 --     local _, csrow, cscol, _ = unpack(vim.fn.getpos("'<"))
 --     local _, cerow, cecol, _ = unpack(vim.fn.getpos("'>"))
 --     local lines = vim.api.nvim_buf_get_lines(0, csrow, cerow, true)
@@ -86,7 +87,7 @@ local function smart_d_normal()
     end
 end
 
-vim.keymap.set("n", "dd", smart_d_normal, { noremap = true, expr = true } )
+vim.keymap.set("n", "dd", smart_d_normal, { noremap = true, expr = true, desc = "smart d"} )
 
 -- mapping to ensure <cr> is consistent in the popup menu
 local keys = {
@@ -193,7 +194,8 @@ if present then
             h = { "<cmd>lua require('telekasten').follow_link()<CR>", "follow link" },
             i = { "<cmd>lua require('telekasten').insert_link()<CR>", "insert link" },
             j = { "<cmd>lua require('telekasten').goto_today()<CR>", "go to today" },
-            n = { "<cmd>lua require('telekasten').new_note()<CR>", "find notes" },
+            n = { "<cmd>lua require('telekasten').new_note()<CR>", "new note" },
+            s = { "<cmd>lua require('telekasten').search_notes()<CR>", "search notes" },
             t = { "<cmd>lua require('telekasten').toggle_todo()<CR>", "toggle to do" },
             y = { "<cmd>lua require('telekasten').yank_notelink()<CR>", "yank link to note" },
         },
@@ -562,6 +564,33 @@ if present then
     mason_lspconfig.setup({ })
 end
 
+
+-- neo-minimap {{{3
+local neominimap = require("neo-minimap") -- for shorthand use later
+
+-- Lua
+neominimap.set("zi", "lua", { -- press `zi` to open the minimap, in `lua` files
+query = [[
+;; query
+((for_statement) @cap) ;; matches for loops
+((function_call (dot_index_expression) @field (#eq? @field "vim.keymap.set")) @cap) ;; matches vim.keymap.set
+((function_declaration) @cap) ;; matches function declarations
+]],
+search_patterns = {
+    { "function", "<C-j>", true }, -- jump to the next 'function' (Vim pattern)
+    { "function", "<C-k>", false }, -- jump to the previous 'function' (Vim pattern)
+},
+})
+
+-- neominimap.set("zi", "r", {  -- press `zi` to open the minimap, in `r` files
+-- query = [[
+-- ;; query
+-- ((for_statement) @cap) ;; matches for loops
+-- ((function_declaration) @cap) ;; matches function declarations
+-- ((left_assignment) @cap)
+-- ]],
+-- })
+
 -- neo-scroll {{{3
 
 local present, neoscroll = pcall(require, "neoscroll")
@@ -692,6 +721,33 @@ end
 --    let g:scratch_filetype = markdown
 --    let g:scratch_horizontal = 0
 --]]
+
+-- tabout {{{3
+local present, tabout = pcall(require, "tabout")
+
+if present then
+    require('tabout').setup {
+        tabkey = '<Tab>', -- key to trigger tabout, set to an empty string to disable
+        backwards_tabkey = '<S-Tab>', -- key to trigger backwards tabout, set to an empty string to disable
+        act_as_tab = true, -- shift content if tab out is not possible
+        act_as_shift_tab = false, -- reverse shift content if tab out is not possible (if your keyboard/terminal supports <S-Tab>)
+        default_tab = '<C-t>', -- shift default action (only at the beginning of a line, otherwise <TAB> is used)
+        default_shift_tab = '<C-d>', -- reverse shift default action,
+        enable_backwards = true, -- well ...
+        completion = true, -- if the tabkey is used in a completion pum
+        tabouts = {
+            {open = "'", close = "'"},
+            {open = '"', close = '"'},
+            {open = '`', close = '`'},
+            {open = '(', close = ')'},
+            {open = '[', close = ']'},
+            {open = '{', close = '}'}
+        },
+        ignore_beginning = true, --[[ if the cursor is at the beginning of a filled element it will rather tab out than shift the content ]]
+        exclude = {} -- tabout will ignore these filetypes
+    }
+end
+
 -- telekasten {{{3
 local present, telekasten = pcall(require, "telekasten")
 
@@ -704,11 +760,16 @@ if present then
         templates = vim.fn.expand("~/Documents/notes")  .. '/' .. 'templates',
         template_new_note = vim.fn.expand("~/Documents/notes")  .. '/' .. 'templates/new_note.md',
         template_new_daily =  vim.fn.expand("~/Documents/notes") .. '/' .. 'templates/new_daily_journal.md',
-        -- show_tags_theme = "get_cursor",
+        show_tags_theme = "dropdown",
+        -- telescope actions behavior
+        close_after_yanking = true,
+        insert_after_inserting = false,
         command_palette_theme = 'dropdown',
     })
 
     keymap("n", "<leader>n", "<cmd>lua require('telekasten').panel()<CR>", "show notes panel")
+    keymap("v", "<leader>nt", ":lua require('telekasten').toggle_todo()<CR>", "toggle to do")
+    keymap("n", "<leader>nc", "<cmd>lua require'telescope.builtin'.grep_string({cwd = '~/Documents/notes/', search = vim.fn.expand('<cWORD>')})<cr>", "find current tag")
 end
 
 -- telescope {{{3
@@ -946,6 +1007,8 @@ if present then
                 local fileinfo      = ministatus.section_fileinfo({ trunc_width = 120 })
                 local location      = ministatus.section_location({ trunc_width = 75 })
                 local lsp           = Lsp()
+                local noice_cmd    = require("noice").api.statusline.command.get()
+                local noice_mode   = require("noice").api.statusline.mode.get()
 
                 return ministatus.combine_groups({
                     { hl = mode_hl,                  strings = { mode } },
@@ -953,6 +1016,7 @@ if present then
                     '%<', -- Mark general truncate point
                     { hl = 'MiniStatuslineFilename', strings = { filename } },
                     '%=', -- End left alignment
+                    { hl = 'MiniStatuslineFileinfo', strings = { noice_cmd, noice_mode } },
                     { hl = 'MiniStatuslineFilename', strings = { lsp } },
                     { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
                     { hl = mode_hl,                  strings = { location } },
@@ -1077,3 +1141,4 @@ augroup vimbettersml
 augroup END
 
 ]])
+
