@@ -34,6 +34,7 @@ packer.startup(function(use)
     use 'nvim-telescope/telescope.nvim'    -- finder, requires fzf and ripgrep
     use 'nvim-treesitter/nvim-treesitter'  -- language parsing completion engine
     use 'nvim-treesitter/nvim-treesitter-textobjects'
+    use 'nvim-treesitter/playground'
     use 'williamboman/mason.nvim'
     use 'neovim/nvim-lspconfig'            -- language server protocol implementation
     use 'williamboman/mason-lspconfig.nvim'
@@ -53,6 +54,7 @@ packer.startup(function(use)
     use 'rafamadriz/friendly-snippets'
 
     use 'hkupty/iron.nvim'
+    -- use 'j-w-e/neo-minimap'
     use 'ziontee113/neo-minimap'
     use 'j-hui/fidget.nvim'
 
@@ -75,28 +77,45 @@ packer.startup(function(use)
     --     end
     -- }
 
-    use({
-        "folke/noice.nvim",
-        event = "VimEnter",
+    use {
+        'tamton-aquib/duck.nvim',
         config = function()
-            require("noice").setup()
-        end,
-        requires = {
-            -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-            "MunifTanjim/nui.nvim",
-            "rcarriga/nvim-notify",
-            "hrsh7th/nvim-cmp",
-        }
-    })
+            vim.keymap.set('n', '<leader>kd', function() require("duck").hatch("🐈") end, { desc = "release cat"})
+            vim.keymap.set('n', '<leader>kk', function() require("duck").cook() end, { noremap = true, desc = "kill cat" })
+        end
+    }
 
-    use 'gaoDean/autolist.nvim'
-    use 'sam4llis/nvim-lua-gf'
+    use ( {
+        'princejoogie/dir-telescope.nvim',
+        requires = "nvim-telescope/telescope.nvim",
+        config = function()
+            require("dir-telescope").setup()
+            vim.keymap.set('n', '<leader>sd', "<cmd>FileInDirectory<cr>", { noremap = true, silent = true, desc = "Find in dir" })
+        end,
+    } )
+
+    -- use({
+    --     "folke/noice.nvim",
+    --     event = "VimEnter",
+    --     config = function()
+    --         require("noice").setup()
+    --     end,
+    --     requires = {
+    --         -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+    --         "MunifTanjim/nui.nvim",
+    --         "rcarriga/nvim-notify",
+    --         "hrsh7th/nvim-cmp",
+    --     }
+    -- })
+
+    -- use 'gaoDean/autolist.nvim'
+    use 'sam4llis/nvim-lua-gf' -- adds the ability to go to a lua file with gf
     use 'mtth/scratch.vim'
     use 'nguyenvukhang/nvim-toggler'
    --use 'lifepillar/vim-mucomplete'
-    --use 'JoseConseco/telescope_sessions_picker.nvim'
     --use 'phaazon/mind.nvim'
-    use { 'j-w-e/telescope_sessions_picker.nvim', branch = 'devel' }
+    use 'JoseConseco/telescope_sessions_picker.nvim'
+    -- use { 'j-w-e/telescope_sessions_picker.nvim', branch = 'devel' }
     use 'folke/which-key.nvim'
 
     if Packer_Bootstrap then

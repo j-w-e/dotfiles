@@ -14,7 +14,6 @@
 -- 33. Give my Iron keymaps useful descriptors
 -- 36. Work out how to call the telekasten show_tags() command, passing it the word under the cursor if that begins with a #, and if not open the standard show_tags() command.
 -- 39. Figure out why, in markdown, when I press <cr> on a line with a bullet, it adds two spaces to the next line. 
--- 41. add the right neo-minimap config for R
 -- 42. see if I want to use tabout, because the plugin conflicts with binding tab as my trigger to start autocompletion. (cmp gets triggered every time, meaning tabout never does)
 
 require 'plugins'
@@ -314,13 +313,21 @@ if present then
             ['<cr>'] = cmp.mapping.confirm(),
             ['<esc>'] = cmp.mapping({
                 i = cmp.mapping.abort(),
-                c = cmp.mapping.close(),
+                -- c = cmp.mapping.abort(),
+                -- c = cmp.mapping.close(),
+                c = function()
+                    if cmp.visible() then
+                        cmp.close()
+                    else
+                        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-c>', true, true, true), 'n', true)
+                    end
+                end
             }),
 
             ["<Tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_next_item()
-                elseif luasnip.expand_or_jumpable() then
+                elseif luasnip.expand_or_locally_jumpable() then
                     luasnip.expand_or_jump()
                 elseif has_words_before() then
                     cmp.complete()
@@ -426,7 +433,7 @@ if present then
             interrupt = "<leader>rq",
             exit = "<leader>rc",
             clear = "<leader>rl",
-            cr = "<leader>r<cr>",
+            cr = "<leader><cr>",
             visual_send = "<leader>rs",
             send_file = "<leader>rsa",
         },
@@ -566,30 +573,47 @@ end
 
 
 -- neo-minimap {{{3
-local neominimap = require("neo-minimap") -- for shorthand use later
+local present, neominimap = pcall(require, "neo-minimap") -- for shorthand use later
 
+if present then
 -- Lua
 neominimap.set("zi", "lua", { -- press `zi` to open the minimap, in `lua` files
-query = [[
-;; query
-((for_statement) @cap) ;; matches for loops
-((function_call (dot_index_expression) @field (#eq? @field "vim.keymap.set")) @cap) ;; matches vim.keymap.set
-((function_declaration) @cap) ;; matches function declarations
-]],
-search_patterns = {
-    { "function", "<C-j>", true }, -- jump to the next 'function' (Vim pattern)
-    { "function", "<C-k>", false }, -- jump to the previous 'function' (Vim pattern)
-},
+    query = {
+        -- [[
+        -- ;; query
+        -- ((for_statement) @cap) ;; matches for loops
+        -- ((function_call (dot_index_expression) @field (#eq? @field "vim.keymap.set")) @cap) ;; matches vim.keymap.set
+        -- ((function_declaration) @cap) ;; matches function declarations
+        -- ]]
+    },
+    regex = {
+        { [[^--.*{{{]] }
+    },
+    width = 100, -- optional, defaults to 44, width of the minimap
+    height = 40, -- optional, defaults to 12, height of the minimap
+    auto_jump = false,
 })
 
--- neominimap.set("zi", "r", {  -- press `zi` to open the minimap, in `r` files
--- query = [[
--- ;; query
--- ((for_statement) @cap) ;; matches for loops
--- ((function_declaration) @cap) ;; matches function declarations
--- ((left_assignment) @cap)
--- ]],
--- })
+neominimap.set("zi", "r", {  -- press `zi` to open the minimap, in `r` files
+    query = {},
+    regex = {
+        { [[function]], [[^#.*----]], [[^ggPrintOrSave]] }
+    },
+    width = 100, -- optional, defaults to 44, width of the minimap
+    height = 40, -- optional, defaults to 12, height of the minimap
+    auto_jump = false,
+})
+
+neominimap.set("zi", "markdown", {  -- press `zi` to open the minimap, in `r` files
+    query = {},
+    regex = {
+        { [[^#]] }
+    },
+    width = 100, -- optional, defaults to 44, width of the minimap
+    height = 40, -- optional, defaults to 12, height of the minimap
+    auto_jump = false,
+})
+end
 
 -- neo-scroll {{{3
 
@@ -711,7 +735,25 @@ if present then
                 -- `ap`.
                 include_surrounding_whitespace = true,
             }
-        }
+        },
+        playground = {
+            enable = true,
+            disable = {},
+            updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+            persist_queries = false, -- Whether the query persists across vim sessions
+            keybindings = {
+                toggle_query_editor = 'o',
+                toggle_hl_groups = 'i',
+                toggle_injected_languages = 't',
+                toggle_anonymous_nodes = 'a',
+                toggle_language_display = 'I',
+                focus_language = 'f',
+                unfocus_language = 'F',
+                update = 'R',
+                goto_node = '<cr>',
+                show_help = '?',
+            },
+        },
     }
 end
 
@@ -770,6 +812,9 @@ if present then
     keymap("n", "<leader>n", "<cmd>lua require('telekasten').panel()<CR>", "show notes panel")
     keymap("v", "<leader>nt", ":lua require('telekasten').toggle_todo()<CR>", "toggle to do")
     keymap("n", "<leader>nc", "<cmd>lua require'telescope.builtin'.grep_string({cwd = '~/Documents/notes/', search = vim.fn.expand('<cWORD>')})<cr>", "find current tag")
+
+    -- local ft_to_parser = require"nvim-treesitter.parsers".filetype_to_parsername
+    -- ft_to_parser.telekasten = "markdown" -- the someft filetype will use the python parser and queries.
 end
 
 -- telescope {{{3
@@ -1007,8 +1052,8 @@ if present then
                 local fileinfo      = ministatus.section_fileinfo({ trunc_width = 120 })
                 local location      = ministatus.section_location({ trunc_width = 75 })
                 local lsp           = Lsp()
-                local noice_cmd    = require("noice").api.statusline.command.get()
-                local noice_mode   = require("noice").api.statusline.mode.get()
+                -- local noice_cmd    = require("noice").api.statusline.command.get()
+                -- local noice_mode   = require("noice").api.statusline.mode.get()
 
                 return ministatus.combine_groups({
                     { hl = mode_hl,                  strings = { mode } },
@@ -1016,7 +1061,7 @@ if present then
                     '%<', -- Mark general truncate point
                     { hl = 'MiniStatuslineFilename', strings = { filename } },
                     '%=', -- End left alignment
-                    { hl = 'MiniStatuslineFileinfo', strings = { noice_cmd, noice_mode } },
+                    -- { hl = 'MiniStatuslineFileinfo', strings = { noice_cmd, noice_mode } },
                     { hl = 'MiniStatuslineFilename', strings = { lsp } },
                     { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
                     { hl = mode_hl,                  strings = { location } },
@@ -1142,3 +1187,18 @@ augroup END
 
 ]])
 
+vim.cmd([[
+augroup set_directory
+  au!
+
+  " if vim is opened with a file passed from the command line, 
+  " set the working directory to the dir of that file
+  function SetWD()
+    if @% != ""
+        cd %:h
+    endif
+  endfunction
+
+  au VimEnter * call SetWD()
+augroup END
+]])
