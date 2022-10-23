@@ -9,11 +9,9 @@
 -- 27. tweaks to make telekasten work better:
 --      * see if I can work out a way to categorise meeting notes easily
 --      * write something that automatically populates a list of references to a tag? So that I can have a file with everything I need to chat to Lian about currently.
--- 30. work out why the autolist plugin conflicts with checkboxes
 -- 32. Configure my Iron keymaps to be local to Python files
 -- 33. Give my Iron keymaps useful descriptors
 -- 36. Work out how to call the telekasten show_tags() command, passing it the word under the cursor if that begins with a #, and if not open the standard show_tags() command.
--- 39. Figure out why, in markdown, when I press <cr> on a line with a bullet, it adds two spaces to the next line. 
 -- 42. see if I want to use tabout, because the plugin conflicts with binding tab as my trigger to start autocompletion. (cmp gets triggered every time, meaning tabout never does)
 
 require 'plugins'
@@ -277,20 +275,23 @@ vim.cmd[[ let g:markdown_folding = 1]]
 -- general {{{2
 -- autolist {{{3
 
--- local present, autolist = pcall(require, "autolist")
---
--- if present then
---     autolist.setup({
---         invert_mapping = "",
---         invert_toggles_checkbox = false,
---         enabled_filetypes = { "markdown", "text" },
---     })
--- end
+local present, autolist = pcall(require, "autolist")
+
+if present then
+    autolist.setup({
+        -- invert_mapping = "",
+        -- invert_toggles_checkbox = false,
+        enabled_filetypes = { "markdown", "text" },
+        lists = {
+            filetypes = { generic = { "telekasten", "markdown", "text" } }
+        },
+    })
+end
 
 -- cmp {{{3
 
 local present, cmp = pcall(require, "cmp")
-local luasnip = require("luasnip")
+local snip_present, luasnip = pcall(require, "luasnip")
 
 if present then
     local has_words_before = function()
@@ -1147,6 +1148,7 @@ vim.cmd([[augroup CustomSettings]])
   vim.cmd([[autocmd FileType * setlocal formatoptions-=c formatoptions-=o]])
   -- But insert comment leader after hitting <CR> and respect 'numbered' lists
   vim.cmd([[autocmd FileType * setlocal formatoptions+=r formatoptions+=n]])
+  vim.cmd([[autocmd FileType markdown,telekasten setlocal formatoptions-=r formatoptions-=n]])
 
   -- Allow nested 'default' comment leaders to be treated as comment leader
   vim.cmd([[autocmd FileType * lua pcall(require('mini.misc').use_nested_comments)]])

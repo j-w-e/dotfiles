@@ -108,7 +108,7 @@ packer.startup(function(use)
     --     }
     -- })
 
-    -- use 'gaoDean/autolist.nvim'
+    use 'gaoDean/autolist.nvim'
     use 'sam4llis/nvim-lua-gf' -- adds the ability to go to a lua file with gf
     use 'mtth/scratch.vim'
     use 'nguyenvukhang/nvim-toggler'
