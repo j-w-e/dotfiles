@@ -63,6 +63,7 @@ packer.startup(function(use)
     use 'kyazdani42/nvim-web-devicons'
     use 'karb94/neoscroll.nvim'
     use 'renerocksai/telekasten.nvim'
+    use 'tpope/vim-fugitive'
 
     -- use 'abecodes/tabout.nvim'
 

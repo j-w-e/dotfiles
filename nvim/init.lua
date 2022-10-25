@@ -187,13 +187,14 @@ if present then
             name = "notes",
             a = { "<cmd>lua require('telekasten').show_tags()<CR>", "show tags" },
             b = { "<cmd>lua require('telekasten').show_backlinks()<CR>", "show backlinks" },
+            d = { "<cmd>lua require('telekasten').goto_today()<CR>", "go to today" },
             f = { "<cmd>lua require('telekasten').find_notes()<CR>", "find notes" },
             h = { "<cmd>lua require('telekasten').follow_link()<CR>", "follow link" },
             i = { "<cmd>lua require('telekasten').insert_link()<CR>", "insert link" },
-            j = { "<cmd>lua require('telekasten').goto_today()<CR>", "go to today" },
             n = { "<cmd>lua require('telekasten').new_note()<CR>", "new note" },
             s = { "<cmd>lua require('telekasten').search_notes()<CR>", "search notes" },
             t = { "<cmd>lua require('telekasten').toggle_todo()<CR>", "toggle to do" },
+            w = { "<cmd>lua require('telekasten').goto_thisweek()<CR>", "go to today" },
             y = { "<cmd>lua require('telekasten').yank_notelink()<CR>", "yank link to note" },
         },
         o = {
@@ -291,7 +292,7 @@ end
 -- cmp {{{3
 
 local present, cmp = pcall(require, "cmp")
-local snip_present, luasnip = pcall(require, "luasnip")
+local _, luasnip = pcall(require, "luasnip")
 
 if present then
     local has_words_before = function()
@@ -803,7 +804,9 @@ if present then
         templates = vim.fn.expand("~/Documents/notes")  .. '/' .. 'templates',
         template_new_note = vim.fn.expand("~/Documents/notes")  .. '/' .. 'templates/new_note.md',
         template_new_daily =  vim.fn.expand("~/Documents/notes") .. '/' .. 'templates/new_daily_journal.md',
+        template_new_weekly =  vim.fn.expand("~/Documents/notes") .. '/' .. 'templates/weeklies.md',
         show_tags_theme = "dropdown",
+        journal_auto_open = true,
         -- telescope actions behavior
         close_after_yanking = true,
         insert_after_inserting = false,
