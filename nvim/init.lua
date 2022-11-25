@@ -13,6 +13,7 @@
 -- 33. Give my Iron keymaps useful descriptors
 -- 36. Work out how to call the telekasten show_tags() command, passing it the word under the cursor if that begins with a #, and if not open the standard show_tags() command.
 -- 42. see if I want to use tabout, because the plugin conflicts with binding tab as my trigger to start autocompletion. (cmp gets triggered every time, meaning tabout never does)
+-- 43. this link gives some useful info about default mappings: https://docs.google.com/spreadsheets/d/1EJMLr_MPrYiO1TKJ2MjNkR-fA5Wgxa782-f0Wtdpz0w/htmlview#
 
 require 'plugins'
 -- all settings {{{1
@@ -112,7 +113,7 @@ vim.api.nvim_set_keymap('i', '<CR>', 'v:lua._G.cr_action()', { noremap = true, e
 -- mappings specifically for luasnip
 vim.cmd[[" press <Tab> to expand or jump in a snippet. These can also be mapped separately
 " via <Plug>luasnip-expand-snippet and <Plug>luasnip-jump-next.
-imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>'
+imap <silent><expr> <Tab> luasnip#expand_or_locally_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>'
 " -1 for jumping backwards.
 inoremap <silent> <S-Tab> <cmd>lua require'luasnip'.jump(-1)<Cr>
 
@@ -280,8 +281,17 @@ local present, autolist = pcall(require, "autolist")
 
 if present then
     autolist.setup({
-        -- invert_mapping = "",
-        -- invert_toggles_checkbox = false,
+        invert = {
+            -- mapping = "<c-r>",
+            normal_mapping = "",
+            toggles_checkbox = true,
+            ul_marker = "-",
+            ol_incrementable = "1",
+            ol_delim = ".",
+        },
+        insert_mappings = {
+            invert = { "<c-l>+[catch]" },
+        },
         enabled_filetypes = { "markdown", "text" },
         lists = {
             filetypes = { generic = { "telekasten", "markdown", "text" } }

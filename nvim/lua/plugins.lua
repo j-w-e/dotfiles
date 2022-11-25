@@ -63,7 +63,10 @@ packer.startup(function(use)
     use 'kyazdani42/nvim-web-devicons'
     use 'karb94/neoscroll.nvim'
     use 'renerocksai/telekasten.nvim'
+    -- use { 'j-w-e/telekasten.nvim', branch = 'devel' }
     use 'tpope/vim-fugitive'
+    use 'samjwill/nvim-unception'
+    use 'romainl/vim-cool'
 
     -- use 'abecodes/tabout.nvim'
 
