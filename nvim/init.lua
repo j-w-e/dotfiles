@@ -1,6 +1,6 @@
 -- 19.5 Change all mappings to use vim.keymap.set() rather than vim.api.nvim_set_keymap(). vim.keymap.set() can take lua functions directly, for example
 --      see https://www.reddit.com/r/neovim/comments/vwud6m/whichkeynvim_whats_the_best_workflow/
--- 20. Change all "keymap" mappings to use my function specifically. 
+-- 20. Change all "keymap" mappings to use my function specifically.
         -- iron, which I might want to have set in a different file
         -- and sml which is in the autocommands section
         -- and nvim-R?
@@ -362,7 +362,7 @@ if present then
         enabled = function ()
             -- disable completion in comments
             local context = require("cmp.config.context")
-            -- keep command mode completion enabled when cursor is in a comment 
+            -- keep command mode completion enabled when cursor is in a comment
             if vim.api.nvim_get_mode().mode == 'c' then
                 return true
             else
@@ -653,7 +653,7 @@ end
 
 -- nvim-r {{{3
 vim.cmd[[
-""let R_auto_start = 2
+let R_auto_start = 0
 let R_assign = 2
 let R_user_maps_only = 1
 let r_syntax_folding = 1
@@ -677,6 +677,8 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.api.nvim_buf_set_keymap(0, "v", "<leader>rs", "<Plug>RESendSelection", {desc = "send selection"})
         vim.api.nvim_buf_set_keymap(0, "v", "<leader>ro", "<Plug>RSendSelAndInsertOutput", {desc = "send sel / insert"})
         vim.api.nvim_buf_set_keymap(0, "n", "<leader>rp", "<Plug>REDSendParagraph", {desc = "send paragraph"})
+        -- vim.api.nvim_buf_set_keymap(0, "o", "<leader>rm", "<Plug>REDSendMotion", {desc = "send motion"})
+        -- to do the above, i would need to work out how to set an operatorfunc. see :h map-operator
 
         vim.api.nvim_buf_set_keymap(0, "n", "<leader>os", "<cmd>call RAction(\"str\")<cr>", {desc = "object str"})
         vim.api.nvim_buf_set_keymap(0, "n", "<leader>ot", "<cmd>call RAction(\"tail\")<cr>", {desc = "object tail"})
@@ -870,11 +872,56 @@ end
 -- Mini {{{2
 -- ai {{{3
 
--- local present, miniai = pcall(require, "mini.ai")
---
--- if present then
---     miniai.setup()
--- end
+local present, miniai = pcall(require, "mini.ai")
+
+if present then
+    miniai.setup({
+        custom_textobjects = {
+            r = function()
+
+                local chars = "%,+"
+
+                local get_last_non_blank_char = function(s)
+                -- function to return the last non-blank character in a string
+                    local last_char = -1
+                    while string.sub(s, last_char, last_char) == " " do
+                        last_char = last_char - 1
+                    end
+                    return string.sub(s, last_char, last_char)
+                end
+
+                local is_part_of_multiline = function(s)
+                -- check if last non-blank character is one of the ones in chars
+                    if (string.find(chars, get_last_non_blank_char(s), 1, true)) then
+                        return true
+                    end
+                    return false
+                end
+
+                local current_line = vim.api.nvim_win_get_cursor(0)[1]
+                local from = {
+                    line = current_line,
+                    col = 1
+                }
+                local to = {
+                    line = current_line,
+                    col = 0
+                }
+
+                while is_part_of_multiline(vim.api.nvim_buf_get_lines(0, from.line - 2, from.line - 1, true)[1]) do
+                    from.line = from.line - 1
+                end
+                while is_part_of_multiline(vim.api.nvim_buf_get_lines(0, to.line , to.line + 1, true)[1]) do
+                    to.line = to.line + 1
+                end
+                from.line = from.line + 1  -- I don't know why I do this, but without it the function is too greedy
+                to.col = string.len(vim.api.nvim_buf_get_lines(0, to.line, to.line + 1, true)[1])
+                to.line = to.line + 1  -- I don't know why I do this, but without it the function isn't greedy enough!
+                return { from = from, to = to }
+            end
+        }
+    })
+end
 
 -- colors {{{3
 
@@ -948,6 +995,19 @@ end
 --
 --   vim.api.nvim_set_keymap('i', '<CR>', 'v:lua._G.cr_action()', { noremap = true, expr = true })
 -- end
+
+-- indentscope {{{3
+
+local present, miniindent = pcall(require, "mini.indentscope")
+
+if present then
+    miniindent.setup({
+        options = {
+          border = 'top',
+          try_as_border = true,
+        },
+    })
+end
 
 -- jump {{{3
 
@@ -1206,7 +1266,7 @@ vim.cmd([[
 augroup set_directory
   au!
 
-  " if vim is opened with a file passed from the command line, 
+  " if vim is opened with a file passed from the command line,
   " set the working directory to the dir of that file
   function SetWD()
     if @% != ""
