@@ -878,11 +878,13 @@ if present then
     miniai.setup({
         custom_textobjects = {
             r = function()
-
+                -- I should also try to work how how to deal with comments
+                -- and then work out how to not select the blank lines above a statement
+                -- and then work out how to not get errors at the start of a file
                 local chars = "%,+"
 
                 local get_last_non_blank_char = function(s)
-                -- function to return the last non-blank character in a string
+                    -- function to return the last non-blank character in a string
                     local last_char = -1
                     while string.sub(s, last_char, last_char) == " " do
                         last_char = last_char - 1
@@ -891,11 +893,16 @@ if present then
                 end
 
                 local is_part_of_multiline = function(s)
-                -- check if last non-blank character is one of the ones in chars
+                    -- check if last non-blank character is one of the ones in chars
                     if (string.find(chars, get_last_non_blank_char(s), 1, true)) then
                         return true
                     end
                     return false
+                end
+
+                local get_line = function(line_num)
+                    -- get the text of the line at line_num
+                    return vim.api.nvim_buf_get_lines(0, line_num - 1, line_num, true)[1]
                 end
 
                 local current_line = vim.api.nvim_win_get_cursor(0)[1]
@@ -908,15 +915,16 @@ if present then
                     col = 0
                 }
 
-                while is_part_of_multiline(vim.api.nvim_buf_get_lines(0, from.line - 2, from.line - 1, true)[1]) do
+                while is_part_of_multiline(get_line(from.line - 1)) do
                     from.line = from.line - 1
                 end
-                while is_part_of_multiline(vim.api.nvim_buf_get_lines(0, to.line , to.line + 1, true)[1]) do
-                    to.line = to.line + 1
+                if (is_part_of_multiline(get_line(current_line))) then
+                    while is_part_of_multiline(get_line(to.line + 1)) do
+                        to.line = to.line + 1
+                    end
+                    to.line = to.line + 1  -- I don't know why I do this, but without it the function isn't greedy enough!
                 end
-                from.line = from.line + 1  -- I don't know why I do this, but without it the function is too greedy
-                to.col = string.len(vim.api.nvim_buf_get_lines(0, to.line, to.line + 1, true)[1])
-                to.line = to.line + 1  -- I don't know why I do this, but without it the function isn't greedy enough!
+                to.col = string.len(get_line(current_line))
                 return { from = from, to = to }
             end
         }
