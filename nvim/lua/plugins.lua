@@ -98,6 +98,7 @@ packer.startup(function(use)
         end,
     } )
 
+    -- use { "Jxstxs/conceal.nvim", requires = "nvim-treesitter/nvim-treesitter" }
     -- use({
     --     "folke/noice.nvim",
     --     event = "VimEnter",

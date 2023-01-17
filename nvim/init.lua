@@ -405,6 +405,34 @@ if present then
     })
 end
 
+-- conceal {{{3
+local present, conceal = pcall(require, "conceal")
+
+if present then
+    conceal.setup({
+        ["lua"] = {
+            enabled = true,
+            ["local"] = {
+                enabled = true, -- to disable concealing for "local"
+                conceal = "L",
+            },
+            ["return"] = {
+                conceal = "R" -- to set the concealing to "R"
+            },
+            ["for"] = {
+                conceal = "F"
+            },
+            ["while"] = {
+                conceal = "W"
+            }
+        },
+    })
+    conceal.generate_conceals()
+    vim.keymap.set("n", "<leader>tc", function()
+        require("conceal").toggle_conceal()
+    end, { })
+end
+
 -- fidget {{{3
 
 local present, fidget = pcall(require, "fidget")
@@ -878,10 +906,11 @@ if present then
     miniai.setup({
         custom_textobjects = {
             r = function()
+                -- I need to check if the first non-blank char is ) and include the prev line anyway
                 -- I should also try to work how how to deal with comments
                 -- and then work out how to not select the blank lines above a statement
                 -- and then work out how to not get errors at the start of a file
-                local chars = "%,+"
+                local chars = "%,+("
 
                 local get_last_non_blank_char = function(s)
                     -- function to return the last non-blank character in a string
@@ -924,7 +953,7 @@ if present then
                     end
                     to.line = to.line + 1  -- I don't know why I do this, but without it the function isn't greedy enough!
                 end
-                to.col = string.len(get_line(current_line))
+                to.col = string.len(get_line(to.line))
                 return { from = from, to = to }
             end
         }
@@ -1044,6 +1073,13 @@ if present then
         spotter = jump_line_start.spotter, hooks = { after_jump = jump_line_start.hooks.after_jump }
     })
 end
+
+-- move
+-- local present, minimove = pcall(require, "mini.move")
+--
+-- if present then
+--     minimove.setup({ })
+-- end
 
 -- misc {{{3
 local present, minimisc = pcall(require, "mini.misc")
