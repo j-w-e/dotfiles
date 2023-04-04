@@ -5,7 +5,7 @@
 yabai -m config layout bsp
 
 # float system preferences. Most of these just diable Yabai form resizing them.
-yabai -m rule --add app="^System Preferences$" layer=above manage=off
+yabai -m rule --add app="^System Settings$" layer=above manage=off
 yabai -m rule --add app="^Disk Utility$" layer=above manage=off
 yabai -m rule --add app="^System Information$" layer=above manage=off
 yabai -m rule --add app="^Activity Monitor$" layer=above manage=off
