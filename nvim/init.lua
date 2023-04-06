@@ -164,7 +164,7 @@ if present then
         c = {
             name = "code",
             a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "code actions" },
-            f = { "<cmd>lua vim.lsp.buf.format({ timeout_ms = 2000 })<cr>", "format" },
+            f = { "<cmd>lua vim.lsp.buf.format({ timeout_ms = 5000 })<cr>", "format" },
             r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "rename" },
             t = { "<cmd>lua MiniTrailspace.trim()<cr>", "trim trailspace" },
         },
@@ -441,6 +441,24 @@ if present then
     fidget.setup({ })
 end
 
+-- fterm {{{3
+local present, fterm = pcall(require, "FTerm")
+
+if present then 
+    fterm.setup({
+        border = 'double',
+        blend = 10,
+        dimensions  = {
+            height = 0.8,
+            width = 0.8,
+        },
+    })
+
+    -- keybindings
+    vim.keymap.set('n', '<c-,>', '<CMD>lua require("FTerm").toggle()<CR>')
+    vim.keymap.set('t', '<esc>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
+end
+
 -- gitsigns {{{3
 
 local present, gitsigns = pcall(require, "gitsigns")
@@ -573,7 +591,7 @@ if present then
 
     local capabilities = vim.lsp.protocol.make_client_capabilities()
 
-    lspconfig.sumneko_lua.setup {
+    lspconfig.lua_ls.setup {
         on_attach = on_attach,
         capabilities = capabilities,
 
@@ -593,6 +611,10 @@ if present then
     lspconfig.pylsp.setup({
         on_attach = on_attach,
     })
+
+    lspconfig.clangd.setup {
+        on_attach = on_attach,
+    }
 end
 
 -- mason {{{3
@@ -894,7 +916,11 @@ end
 local present, toggler = pcall(require, "nvim-toggler")
 
 if present then
-    toggler.setup({})
+    toggler.setup({
+        inverses = {
+            [ 'TRUE' ] = 'FALSE',
+        },
+    })
 end
 
 -- Mini {{{2
@@ -1033,6 +1059,14 @@ end
 --   vim.api.nvim_set_keymap('i', '<CR>', 'v:lua._G.cr_action()', { noremap = true, expr = true })
 -- end
 
+-- cursorwork
+
+local present, minicursor = pcall(require, "mini.cursorword")
+
+if present then
+    minicursor.setup()
+end
+
 -- indentscope {{{3
 
 local present, miniindent = pcall(require, "mini.indentscope")
@@ -1094,6 +1128,17 @@ local present, minipairs = pcall(require, "mini.pairs")
 
 if present then
     minipairs.setup({
+        mappings = {
+            ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\][^%a]' },
+            ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\][^%a]' },
+            ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\][^%a]' },
+            [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].' },
+            [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
+            ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
+            ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[^\\].', register = { cr = false } },
+            ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[^%a\\].', register = { cr = false } },
+            ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[^\\].', register = { cr = false } },
+        },
     })
 end
 
@@ -1213,6 +1258,20 @@ if present then
 end
 
 -- autocommands {{{1
+
+-- copy last yank to clipboard on focuslost, and back to last yank/delete on focusgained
+local lastYank = vim.api.nvim_create_augroup("FocusLost", { clear = true })
+vim.api.nvim_create_autocmd(
+    { "FocusLost" }, 
+    { pattern = "*", command = "let @*=@0", group = lastYank }
+)
+local lastCopy = vim.api.nvim_create_augroup("FocusGained", { clear = true })
+vim.api.nvim_create_autocmd(
+    { "FocusGained" }, 
+    { pattern = "*", command = "let @\"=@*", group = lastCopy }
+)
+
+
 -- show cursorline only in active window
 local cursorGroup = vim.api.nvim_create_augroup("CursorLine", { clear = true })
 vim.api.nvim_create_autocmd(
