@@ -36,9 +36,16 @@ yabai -m config window_opacity off
 yabai -m config window_border on
 yabai -m config window_border_width 3
 yabai -m config window_border_radius 12
-yabai -m config active_window_border_color 0xFF7F00FF
-yabai -m config normal_window_border_color 0x00FFFFFF
-yabai -m config insert_feedback_color        0xffd75f5f
+# yabai -m config active_window_border_color 0xFF7F00FF # nicer colour, but doesn't have contrast with Monterey background
+yabai -m config active_window_border_color 0xFFBA86F6
+# yabai -m config normal_window_border_color 0x00FFFFFF
+yabai -m config normal_window_border_color 0xFF333333
+# yabai -m config insert_feedback_color      0xffd75f5f
+yabai -m config insert_feedback_color      0xffFF0000
+
+## an attempt to fix blurred windows, eg when scoot was active
+# see https://github.com/koekeishiya/yabai/issues/1471
+yabai -m config window_border_blur off
 
 ## some other settings
 yabai -m config auto_balance off
@@ -58,6 +65,20 @@ yabai -m config window_gap 10
 #Limelight addon (Kill it and start it each time Yabai starts)
 # killall limelight &>/dev/null
 # limelight &>/dev/null &
+
+## An attempt to fix this: https://github.com/koekeishiya/yabai/issues/68
+# Refresh yabai if a tab in finder or terminal is created or moved to new window
+yabai -m signal --add event=window_created app="^Terminal$|^Finder$" \
+    action="yabai -m space --focus next && sleep 0.01 && yabai -m space --focus prev"
+
+yabai -m signal --add event=window_destroyed app="^Terminal$|^Finder$" \
+    action="yabai -m space --focus next && sleep 0.01 && yabai -m space --focus recent"
+
+yabai -m signal --add event=window_moved app="^Terminal$|^Finder$" \
+    action="yabai -m space --focus next && sleep 0.01 && yabai -m space --focus recent"
+
+yabai -m signal --add event=window_resized app="^Terminal$|^Finder$" \
+    action="yabai -m space --focus next && sleep 0.01 && yabai -m space --focus recent"
 
 echo "yabai configuration loaded.."
 
