@@ -53,6 +53,8 @@ packer.startup(function(use)
     use 'saadparwaiz1/cmp_luasnip'
     use 'rafamadriz/friendly-snippets'
 
+    use "numToStr/FTerm.nvim"
+
     use 'hkupty/iron.nvim'
     -- use 'j-w-e/neo-minimap'
     use 'ziontee113/neo-minimap'
@@ -71,7 +73,7 @@ packer.startup(function(use)
     -- use 'abecodes/tabout.nvim'
 
     use { 'rafcamlet/nvim-luapad', requires = "antoinemadec/FixCursorHold.nvim" }
-    use 'jez/vim-better-sml'
+    -- use 'jez/vim-better-sml'
     -- use 'marko-cerovac/material.nvim'
 
     -- use { 'melkster/modicator.nvim',
@@ -99,27 +101,29 @@ packer.startup(function(use)
     } )
 
     -- use { "Jxstxs/conceal.nvim", requires = "nvim-treesitter/nvim-treesitter" }
-    -- use({
-    --     "folke/noice.nvim",
-    --     event = "VimEnter",
-    --     config = function()
-    --         require("noice").setup()
-    --     end,
-    --     requires = {
-    --         -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-    --         "MunifTanjim/nui.nvim",
-    --         "rcarriga/nvim-notify",
-    --         "hrsh7th/nvim-cmp",
-    --     }
-    -- })
+    use 'folke/tokyonight.nvim'
+    use { "catppuccin/nvim", as = "catppuccin" }
+    use({
+        "folke/noice.nvim",
+        event = "VimEnter",
+        config = function()
+            require("noice").setup()
+        end,
+        requires = {
+            -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+            "MunifTanjim/nui.nvim",
+            "rcarriga/nvim-notify",
+            "hrsh7th/nvim-cmp",
+        }
+    })
 
     use 'gaoDean/autolist.nvim'
     use 'sam4llis/nvim-lua-gf' -- adds the ability to go to a lua file with gf
-    use 'mtth/scratch.vim'
+    -- use 'mtth/scratch.vim'
     use 'nguyenvukhang/nvim-toggler'
    --use 'lifepillar/vim-mucomplete'
     --use 'phaazon/mind.nvim'
-    use 'JoseConseco/telescope_sessions_picker.nvim'
+    -- use 'JoseConseco/telescope_sessions_picker.nvim'
     -- use { 'j-w-e/telescope_sessions_picker.nvim', branch = 'devel' }
     use 'folke/which-key.nvim'
 

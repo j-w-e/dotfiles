@@ -18,14 +18,6 @@
 require 'plugins'
 -- all settings {{{1
 
--- gui settings {{{2
-vim.cmd [[
-if exists("g:neovide")
-    let g:neovide_scroll_animation_length = 0.1
-    "set guifont=Sauce\ Code\ Pro\ Mono:h15
-endif
-]]
-
 -- keymaps {{{2
 
 vim.api.nvim_set_keymap("", "<Space>", "<Nop>", {  noremap = true, silent = true })
@@ -270,6 +262,7 @@ opt.list = true
 opt.listchars = "trail:·,tab:»·,eol:↲,multispace:   |,extends:>,precedes:<"
 opt.timeoutlen = 500
 opt.completeopt = 'noselect,noinsert,menuone,preview'
+opt.autochdir = true
 vim.diagnostic.config({ severity_sort = true })
 vim.cmd[[ let g:markdown_folding = 1]]
 
@@ -298,6 +291,48 @@ if present then
         },
     })
 end
+
+-- catputtcin {{{3
+local present, catppuccin = pcall(require, "catputtcin")
+
+require("catppuccin").setup {
+    flavour = "mocha", -- latte, frappe, macchiato, mocha
+    term_colors = true,
+    transparent_background = false,
+    no_italic = false,
+    no_bold = false,
+    styles = {
+        comments = {},
+        conditionals = {},
+        loops = {},
+        functions = {},
+        keywords = {},
+        strings = {},
+        variables = {},
+        numbers = {},
+        booleans = {},
+        properties = {},
+        types = {},
+    },
+    color_overrides = {
+        mocha = {
+            base = "#1e122d",
+            mantle = "#1e122d",
+            crust = "#1e122d",
+        },
+    },
+    highlight_overrides = {
+        mocha = function(C)
+            return {
+                TabLineSel = { bg = C.pink },
+                CmpBorder = { fg = C.surface2 },
+                Pmenu = { bg = C.none },
+                TelescopeBorder = { link = "FloatBorder" },
+            }
+        end,
+    },
+}
+
 
 -- cmp {{{3
 
@@ -481,9 +516,9 @@ if present then
                     command = { "ipython", "--no-confirm-exit" },
                     format = require("iron.fts.common").bracketed_paste,
                 },
-                sml = {
-                    command = { "sml" }
-                }
+                -- sml = {
+                --     command = { "sml" }
+                -- }
             },
         },
         keymaps = {
@@ -900,14 +935,14 @@ if present then
                 }
             }
         },
-        pickers = {
-            sessions_picker = {
-                sessions_dir = vim.fn.stdpath('data') ..'/session/',  -- same as '/home/user/.local/share/nvim/session'
-            },
-            extensions = { }
-        },
+        -- pickers = {
+        --     sessions_picker = {
+        --         sessions_dir = vim.fn.stdpath('data') ..'/session/',  -- same as '/home/user/.local/share/nvim/session'
+        --     },
+        --     extensions = { }
+        -- },
     }
-    telescope.load_extension('sessions_picker')
+    -- telescope.load_extension('sessions_picker')
 end
 
 
@@ -1331,39 +1366,39 @@ vim.cmd([[augroup CustomSettings]])
 vim.cmd([[augroup END]])
 
 
-vim.cmd([[
-augroup vimbettersml
-  au!
-
-  " ----- Keybindings -----
-  au FileType sml nnoremap <silent> <buffer> <leader>rt :SMLTypeQuery<CR>
-  au FileType sml nnoremap <silent> <buffer> gd :SMLJumpToDef<CR>
-
-  " open the REPL terminal buffer
-  au FileType sml nnoremap <silent> <buffer> <leader>rf :SMLReplStart<CR>
-  " close the REPL (mnemonic: k -> kill)
-  au FileType sml nnoremap <silent> <buffer> <leader>rc :SMLReplStop<CR>
-  " build the project (using CM if possible)
-  au FileType sml nnoremap <silent> <buffer> <leader>rb :SMLReplBuild<CR>
-  " for opening a structure, not a file
-  au FileType sml nnoremap <silent> <buffer> <leader>ro :SMLReplOpen<CR>
-  " use the current file into the REPL (even if using CM)
-  au FileType sml nnoremap <silent> <buffer> <leader>rsa :SMLReplUse<CR>
-  " clear the REPL screen
-  au FileType sml nnoremap <silent> <buffer> <leader>rl :SMLReplClear<CR>
-  " set the print depth to 100
-  au FileType sml nnoremap <silent> <buffer> <leader>rp :SMLReplPrintDepth<CR>
-
-  " ----- Other settings -----
-
-  " Uncomment to try out conceal characters
-  "au FileType sml setlocal conceallevel=2
-
-  " Uncomment to try out same-width conceal characters
-  "let g:sml_greek_tyvar_show_tick = 1
-augroup END
-
-]])
+-- vim.cmd([[
+-- augroup vimbettersml
+--   au!
+--
+--   " ----- Keybindings -----
+--   au FileType sml nnoremap <silent> <buffer> <leader>rt :SMLTypeQuery<CR>
+--   au FileType sml nnoremap <silent> <buffer> gd :SMLJumpToDef<CR>
+--
+--   " open the REPL terminal buffer
+--   au FileType sml nnoremap <silent> <buffer> <leader>rf :SMLReplStart<CR>
+--   " close the REPL (mnemonic: k -> kill)
+--   au FileType sml nnoremap <silent> <buffer> <leader>rc :SMLReplStop<CR>
+--   " build the project (using CM if possible)
+--   au FileType sml nnoremap <silent> <buffer> <leader>rb :SMLReplBuild<CR>
+--   " for opening a structure, not a file
+--   au FileType sml nnoremap <silent> <buffer> <leader>ro :SMLReplOpen<CR>
+--   " use the current file into the REPL (even if using CM)
+--   au FileType sml nnoremap <silent> <buffer> <leader>rsa :SMLReplUse<CR>
+--   " clear the REPL screen
+--   au FileType sml nnoremap <silent> <buffer> <leader>rl :SMLReplClear<CR>
+--   " set the print depth to 100
+--   au FileType sml nnoremap <silent> <buffer> <leader>rp :SMLReplPrintDepth<CR>
+--
+--   " ----- Other settings -----
+--
+--   " Uncomment to try out conceal characters
+--   "au FileType sml setlocal conceallevel=2
+--
+--   " Uncomment to try out same-width conceal characters
+--   "let g:sml_greek_tyvar_show_tick = 1
+-- augroup END
+--
+-- ]])
 
 vim.cmd([[
 augroup set_directory
