@@ -102,7 +102,7 @@ packer.startup(function(use)
 
     -- use { "Jxstxs/conceal.nvim", requires = "nvim-treesitter/nvim-treesitter" }
     use 'folke/tokyonight.nvim'
-    use { "catppuccin/nvim", as = "catppuccin" }
+    -- use { "catppuccin/nvim", as = "catppuccin" }
     use({
         "folke/noice.nvim",
         event = "VimEnter",

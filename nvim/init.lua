@@ -295,43 +295,45 @@ end
 -- catputtcin {{{3
 local present, catppuccin = pcall(require, "catputtcin")
 
-require("catppuccin").setup {
-    flavour = "mocha", -- latte, frappe, macchiato, mocha
-    term_colors = true,
-    transparent_background = false,
-    no_italic = false,
-    no_bold = false,
-    styles = {
-        comments = {},
-        conditionals = {},
-        loops = {},
-        functions = {},
-        keywords = {},
-        strings = {},
-        variables = {},
-        numbers = {},
-        booleans = {},
-        properties = {},
-        types = {},
-    },
-    color_overrides = {
-        mocha = {
-            base = "#1e122d",
-            mantle = "#1e122d",
-            crust = "#1e122d",
+if present then
+    catppuccin.setup {
+        flavour = "mocha", -- latte, frappe, macchiato, mocha
+        term_colors = true,
+        transparent_background = false,
+        no_italic = false,
+        no_bold = false,
+        styles = {
+            comments = {},
+            conditionals = {},
+            loops = {},
+            functions = {},
+            keywords = {},
+            strings = {},
+            variables = {},
+            numbers = {},
+            booleans = {},
+            properties = {},
+            types = {},
         },
-    },
-    highlight_overrides = {
-        mocha = function(C)
-            return {
-                TabLineSel = { bg = C.pink },
-                CmpBorder = { fg = C.surface2 },
-                Pmenu = { bg = C.none },
-                TelescopeBorder = { link = "FloatBorder" },
-            }
-        end,
-    },
-}
+        color_overrides = {
+            mocha = {
+                base = "#1e122d",
+                mantle = "#1e122d",
+                crust = "#1e122d",
+            },
+        },
+        highlight_overrides = {
+            mocha = function(C)
+                return {
+                    TabLineSel = { bg = C.pink },
+                    CmpBorder = { fg = C.surface2 },
+                    Pmenu = { bg = C.none },
+                    TelescopeBorder = { link = "FloatBorder" },
+                }
+            end,
+        },
+    }
+end
 
 
 -- cmp {{{3
@@ -479,7 +481,7 @@ end
 -- fterm {{{3
 local present, fterm = pcall(require, "FTerm")
 
-if present then 
+if present then
     fterm.setup({
         border = 'double',
         blend = 10,
@@ -547,11 +549,11 @@ end
 local present, ls = pcall(require, "luasnip")
 
 if present then
-    local fmt = require("luasnip.extras.fmt").fmt
-    local date_input = function(args, snip, old_state, fmt)
-        local fmt = fmt or "%Y-%m-%d"
-        return ls.snippet_node(nil, ls.insert_node(1, os.date(fmt)))
-    end
+    -- local fmt = require("luasnip.extras.fmt").fmt
+    -- local date_input = function(args, snip, old_state, fmt)
+    --     local fmt = fmt or "%Y-%m-%d"
+    --     return ls.snippet_node(nil, ls.insert_node(1, os.date(fmt)))
+    -- end
     ls.add_snippets("telekasten", {
         ls.snippet("see", {
             ls.text_node("see email from "),
@@ -1296,12 +1298,12 @@ end
 -- copy last yank to clipboard on focuslost, and back to last yank/delete on focusgained
 local lastYank = vim.api.nvim_create_augroup("FocusLost", { clear = true })
 vim.api.nvim_create_autocmd(
-    { "FocusLost" }, 
+    { "FocusLost" },
     { pattern = "*", command = "let @*=@0", group = lastYank }
 )
 local lastCopy = vim.api.nvim_create_augroup("FocusGained", { clear = true })
 vim.api.nvim_create_autocmd(
-    { "FocusGained" }, 
+    { "FocusGained" },
     { pattern = "*", command = "let @\"=@*", group = lastCopy }
 )
 
