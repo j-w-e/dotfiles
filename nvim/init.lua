@@ -557,17 +557,16 @@ if present then
             ls.text_node("see email from "),
             ls.insert_node(1, "Lian"),
             ls.text_node(", subject \'"),
-            ls.insert_node(2, "subject"),
+            ls.insert_node(0),
             ls.text_node("\'"),
         })
     })
-
     ls.add_snippets("telekasten", {
         ls.snippet("link", {
             ls.text_node("["),
             ls.insert_node(1, "text"),
             ls.text_node("]("),
-            ls.insert_node(2, "link"),
+            ls.insert_node(0, ""),
             ls.text_node(")"),
         })
     })
