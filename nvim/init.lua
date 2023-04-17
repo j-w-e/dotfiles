@@ -1,3 +1,4 @@
+-- find out why I have two completion menus now
 -- 19.5 Change all mappings to use vim.keymap.set() rather than vim.api.nvim_set_keymap(). vim.keymap.set() can take lua functions directly, for example
 --      see https://www.reddit.com/r/neovim/comments/vwud6m/whichkeynvim_whats_the_best_workflow/
 -- 20. Change all "keymap" mappings to use my function specifically.
