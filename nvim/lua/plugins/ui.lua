@@ -27,16 +27,4 @@ return {
       vim.cmd([[colorscheme tokyonight]])
     end,
   },
-  -- { "gaoDean/autolist.nvim",
-    -- ft = { "markdown", "telekasten", "text", },
-    -- config = function()
-    --   require("autolist").setup()
-    --   vim.keymap.set("i", "<CR>", "<CR><cmd>AutolistNewBullet<cr>")
-    --   -- functions to recalculate list on edit
-    --   vim.keymap.set("n", ">>", ">><cmd>AutolistRecalculate<cr>" )
-    --   vim.keymap.set("n", "<<", "<<<cmd>AutolistRecalculate<cr>")
-    --   vim.keymap.set("n", "dd", "dd<cmd>AutolistRecalculate<cr>")
-    --   vim.keymap.set("v", "d", "d<cmd>AutolistRecalculate<cr>")
-    -- end
-  -- }
 }

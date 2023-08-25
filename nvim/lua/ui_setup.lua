@@ -104,7 +104,7 @@ local ministart = require("mini.starter")
 ministart.setup({
   evaluate_single = true,
   items = {
-    ministart.sections.sessions(5, true),
+    ministart.sections.sessions(5, false),
     ministart.sections.recent_files(10, false),
     ministart.sections.builtin_actions(),
   },

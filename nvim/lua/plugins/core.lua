@@ -25,7 +25,7 @@ return {
     },
   },
 
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim', opts = { } },
   { 'lewis6991/gitsigns.nvim', opts = { } },
   { 'nvim-tree/nvim-web-devicons', opts = { } },
 
