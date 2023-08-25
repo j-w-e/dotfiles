@@ -1,6 +1,0 @@
--- local keymap = vim.api.nvim_set_keymap
-vim.api.nvim_buf_set_keymap(0, "n", "<leader>rf", "<cmd>IronRepl<cr>", {desc = "start repl"})
-
-vim.api.nvim_buf_set_keymap(0, "n", "<leader>d", "<cmd>lua require(\"iron.core\").send_line()<cr>j", {desc = "send line and down"})
-vim.api.nvim_buf_set_keymap(0, "n", "<leader>rp", "vaf<cmd>lua require(\"iron.core\").visual_send()<cr>", {desc = "send function"})
-vim.api.nvim_buf_set_keymap(0, "i", "<m-r>", "<cmd>lua require(\"iron.core\").send_line()<cr><c-o>j", {desc = "send line"})

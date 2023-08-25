@@ -70,7 +70,7 @@ hyper - h : yabai -m window --toggle float;\
           yabai -m window --grid 4:4:1:0:2:4
 
 # restart yabai
-hyper - r : brew services restart yabai
+hyper - r : yabai --restart-service
 
 
 # toggle yabai on or off
