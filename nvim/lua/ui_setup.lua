@@ -1,6 +1,5 @@
 require('mini.animate').setup()
 require('mini.basics').setup()
-require('mini.bracketed').setup()
 require('mini.comment').setup()
 require('mini.files').setup()
 require('mini.jump2d').setup({ })
@@ -8,6 +7,22 @@ require('mini.surround').setup()
 require('mini.tabline').setup()
 require('mini.trailspace').setup()
 
+require('mini.bracketed').setup({
+  buffer     = { suffix = 'b', options = {} },
+  comment    = { suffix = 'c', options = {} },
+  conflict   = { suffix = 'x', options = {} },
+  diagnostic = { suffix = 'd', options = {} },
+  file       = { suffix = '' },
+  indent     = { suffix = '' },
+  jump       = { suffix = 'j', options = {} },
+  location   = { suffix = 'l', options = {} },
+  oldfile    = { suffix = '' },
+  quickfix   = { suffix = 'q', options = {} },
+  treesitter = { suffix = 't', options = {} },
+  undo       = { suffix = '' },
+  window     = { suffix = 'w', options = {} },
+  yank       = { suffix = 'y', options = {} },
+})
 require('mini.indentscope').setup({
   options = {
     border = 'both',

@@ -11,6 +11,7 @@ defaults = {
   }
 }
 
+---@diagnostic disable-next-line: missing-fields
 require('nvim-treesitter.configs').setup {
   ensure_installed = { 'c', 'lua', 'markdown', 'python', 'r', 'vimdoc', 'vim', 'yaml' },
   auto_install = false,
@@ -155,6 +156,7 @@ local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup {}
 
+---@diagnostic disable-next-line: missing-fields
 cmp.setup {
   window = {
     completion = cmp.config.window.bordered(),
@@ -166,35 +168,41 @@ cmp.setup {
     end,
   },
   mapping = cmp.mapping.preset.insert {
-    ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<C-p>'] = cmp.mapping.select_prev_item(),
+    ['<down>'] = cmp.mapping.select_next_item(),
+    ['<up>'] = cmp.mapping.select_prev_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete {},
+    ['<C-u>'] = cmp.mapping.scroll_docs(4),
+    ['<esc>'] = cmp.mapping(function (fallback)
+      if cmp.visible() then
+        cmp.abort()
+      else
+        fallback()
+      end
+    end),
     ["<CR>"] = cmp.mapping({
       i = function(fallback)
         if cmp.visible() and cmp.get_active_entry() then
-          cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+          cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = false })
+        elseif cmp.visible() then
+          cmp.close()
         else
           fallback()
         end
       end,
-      s = cmp.mapping.confirm({ select = true }),
-      c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
+      s = cmp.mapping.confirm({ select = false }),
+      c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = false }),
     }),
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
-        cmp.select_next_item()
+        cmp.mapping.complete_common_string()
       elseif luasnip.expand_or_locally_jumpable() then
         luasnip.expand_or_jump()
       else
         fallback()
       end
-    end, { 'i', 's' }),
+    end, { 'i', 's', 'c' }),
     ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.locally_jumpable(-1) then
+      if luasnip.locally_jumpable(-1) then
         luasnip.jump(-1)
       else
         fallback()
@@ -204,7 +212,7 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
-    -- { name = 'omni' },
+    { name = 'omni' },
     { name = 'nvim_lua' },
     { name = 'path' },
   }, {
@@ -213,22 +221,26 @@ cmp.setup {
 }
 
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+---@diagnostic disable-next-line: missing-fields
 cmp.setup.cmdline({ '/', '?' }, {
-  mapping = cmp.mapping.preset.cmdline({
+  mapping = cmp.mapping.preset.cmdline{
     ['<Down>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
     ['<Up>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
-  }),
+    ['<tab>'] = { c = cmp.mapping.complete_common_string() },
+  },
   sources = {
     { name = 'buffer' }
   }
 })
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+---@diagnostic disable-next-line: missing-fields
 cmp.setup.cmdline(':', {
-  mapping = cmp.mapping.preset.cmdline({
+  mapping = cmp.mapping.preset.cmdline{
     ['<Down>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
     ['<Up>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
-  }),
+    ['<tab>'] = { c = cmp.mapping.complete_common_string() },
+  },
   sources = cmp.config.sources({
     { name = 'path' }
   }, {

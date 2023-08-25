@@ -9,6 +9,8 @@
 -- 9. Find a more purple colorscheme?
 -- 10. Add a command to set the wd if opening with a file?
 -- 11. Set up a formatter?
+-- 12. Think about switching to epwalsh/obsidian.nvim
+-- 43. this link gives some useful info about default mappings: https://docs.google.com/spreadsheets/d/1EJMLr_MPrYiO1TKJ2MjNkR-fA5Wgxa782-f0Wtdpz0w/htmlview#
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -28,4 +30,4 @@ require('lazy').setup("plugins")
 require("autocommands")
 require("core_setup")
 require("ui_setup")
-require("remap")
+require("remaps")
