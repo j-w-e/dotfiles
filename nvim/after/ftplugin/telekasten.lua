@@ -1,3 +1,12 @@
+vim.opt.ts = 4
+vim.opt.sw = 4
+
+require('mini.indentscope').setup({
+  options = {
+    border = 'top',
+    try_as_border = true,
+  }
+})
 local k = vim.keymap.set
 
 k("n", "<leader>na", "<cmd>lua require('telekasten').show_tags()<CR>", { desc = "show tags" })

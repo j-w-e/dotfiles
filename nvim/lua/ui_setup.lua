@@ -1,16 +1,16 @@
 require('mini.animate').setup()
 require('mini.basics').setup()
+require('mini.bracketed').setup()
 require('mini.comment').setup()
 require('mini.files').setup()
 require('mini.jump2d').setup({ })
-require('mini.pairs').setup()
 require('mini.surround').setup()
 require('mini.tabline').setup()
 require('mini.trailspace').setup()
 
 require('mini.indentscope').setup({
   options = {
-    border = 'top',
+    border = 'both',
     try_as_border = true,
   }
 })
@@ -24,7 +24,28 @@ require('mini.jump').setup({
   }
 })
 
-ministatus = require("mini.statusline")
+require('mini.pairs').setup({
+  mappings = {
+    ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\][^%a]' },
+    ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\][^%a]' },
+    ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\][^%a]' },
+    [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].' },
+    [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
+    ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
+    ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[^\\].', register = { cr = false } },
+    ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[^%a\\].', register = { cr = false } },
+    ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[^\\].', register = { cr = false } },
+  },
+})
+require('mini.sessions').setup({
+  autowrite = false,
+  directory = '~/.local/share/nvim/session',--<"session" subdir of user data directory from |stdpath()|>,
+  file = 'dirSession.vim',
+  force = { read = false, write = true, delete = false },
+  verbose = { read = false, write = true, delete = true },
+})
+
+local ministatus = require("mini.statusline")
 
 -- The following code is an attempt to get lsp and formatter to display in the status line.
 -- It comes from this comment https://www.reddit.com/r/neovim/comments/xtynan/comment/iqtcq0s/?utm_source=share&utm_medium=web2x&context=3
@@ -79,37 +100,17 @@ ministatus.setup({
   },
 })
 
-
-require'nvim-treesitter.configs'.setup {
-  -- A list of parser names, or "all" (the five listed parsers should always be installed)
-  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "r", "markdown", "yaml" },
-
-  -- Install parsers synchronously (only applied to `ensure_installed`)
-  sync_install = false,
-
-  -- Automatically install missing parsers when entering buffer
-  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-  auto_install = false,
-
-  -- List of parsers to ignore installing (for "all")
-  ignore_install = { "javascript" },
-
-  highlight = {
-    enable = true,
-
-    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-    -- the name of the parser)
-    -- list of language that will be disabled
-    -- disable = { "c", "rust" },
-    -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
-    disable = function(lang, buf)
-        local max_filesize = 100 * 1024 -- 100 KB
-        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-        if ok and stats and stats.size > max_filesize then
-            return true
-        end
-    end,
-
+local ministart = require("mini.starter")
+ministart.setup({
+  evaluate_single = true,
+  items = {
+    ministart.sections.sessions(5, true),
+    ministart.sections.recent_files(10, false),
+    ministart.sections.builtin_actions(),
   },
-}
+  content_hooks = {
+    ministart.gen_hook.adding_bullet(),
+    ministart.gen_hook.indexing(),
+    ministart.gen_hook.aligning('center', 'center'),
+  },
+})

@@ -1,5 +1,8 @@
 return {
   { 'echasnovski/mini.nvim', version = false },
+  { 'nguyenvukhang/nvim-toggler',
+    opts = { inverses = { [ 'TRUE' ] = 'FALSE', }, },
+  },
   {
     "folke/noice.nvim",
     event = "VeryLazy",
@@ -15,21 +18,6 @@ return {
       "rcarriga/nvim-notify",
     }
   },
-    { 'lewis6991/gitsigns.nvim',
-    config = true,
-  },
-  { 'nvim-tree/nvim-web-devicons',
-    config = true,
-  },
-  {
-    'nguyenvukhang/nvim-toggler',
-    config = {
-      inverses = {
-        [ 'TRUE' ] = 'FALSE',
-      },
-    },
-  },
-
   -- colorscheme
   {
     'folke/tokyonight.nvim',
@@ -39,4 +27,16 @@ return {
       vim.cmd([[colorscheme tokyonight]])
     end,
   },
+  -- { "gaoDean/autolist.nvim",
+    -- ft = { "markdown", "telekasten", "text", },
+    -- config = function()
+    --   require("autolist").setup()
+    --   vim.keymap.set("i", "<CR>", "<CR><cmd>AutolistNewBullet<cr>")
+    --   -- functions to recalculate list on edit
+    --   vim.keymap.set("n", ">>", ">><cmd>AutolistRecalculate<cr>" )
+    --   vim.keymap.set("n", "<<", "<<<cmd>AutolistRecalculate<cr>")
+    --   vim.keymap.set("n", "dd", "dd<cmd>AutolistRecalculate<cr>")
+    --   vim.keymap.set("v", "d", "d<cmd>AutolistRecalculate<cr>")
+    -- end
+  -- }
 }
