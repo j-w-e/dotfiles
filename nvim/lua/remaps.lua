@@ -44,6 +44,7 @@ nmap('<leader>/', builtin.current_buffer_fuzzy_find, "find in current buffer")
 nmap('<leader>sw', builtin.grep_string, "search current word")
 nmap('<leader>sd', builtin.diagnostics, "search diagnostics")
 nmap("<leader>sn", "<cmd>noh<cr>", "no highlight")
+nmap('<leader>tt', "<cmd>Telescope<cr>", "open Telescope")
 
 -- Windows / buffers
 nmap("<leader>bn", "<cmd>bn<cr>", "next buffer")
