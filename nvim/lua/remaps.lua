@@ -5,7 +5,7 @@ local nmap = function(keys, func, desc)
     vim.keymap.set('n', keys, func, {silent = true, desc = desc })
 end
 
-map({ 'n', 'v' }, '<Space>', '<Nop>', "leader")
+-- map({ 'n', 'v' }, '<Space>', '<Nop>', "leader")
 
 -- Basic navigation / usage
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
@@ -15,6 +15,9 @@ map("c", "<a-backspace>", "<c-w>", "delete word" )
 map("v", ">", ">gv", "indent" )
 map("v", "<", "<gv", "de-indent" )
 nmap('<leader>tm', "<cmd>Noice telescope<cr>", "message history" )
+nmap('<leader>vs', MiniStarter.open, "show start screen" )
+nmap('<leader>vl', "<cmd>Lazy<cr>", "show Lazy" )
+nmap('<leader>vm', "<cmd>Mason<cr>", "show Mason" )
 
 -- Files
 nmap("<leader>fe", "<cmd>lua MiniFiles.open()<cr>", "file tree" )
@@ -48,6 +51,7 @@ nmap("<c-l>", "<C-w>l", "focus right window")
 -- map({"n", "v"}, "n", "<cmd>lua vim.cmd('normal! n'); MiniAnimate.execute_after('scroll', 'normal! zvzz')<cr>", "next match" )
 
 -- Code
+nmap("<leader>cm", "<cmd>make<cr>", "make")
 map({ "n", "v" }, "<leader>i", require('nvim-toggler').toggle, "invert" )
 nmap("<leader>ct", "<cmd>lua MiniTrailspace.trim()<cr>", "trim whitespace" )
 -- diagnostic keymaps

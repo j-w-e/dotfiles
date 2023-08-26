@@ -215,7 +215,6 @@ cmp.setup {
     { name = 'omni' },
     { name = 'nvim_lua' },
     { name = 'path' },
-  }, {
     { name = 'buffer', keyword_length = 4 },
   },
 }
@@ -242,8 +241,7 @@ cmp.setup.cmdline(':', {
     ['<tab>'] = { c = cmp.mapping.complete_common_string() },
   },
   sources = cmp.config.sources({
-    { name = 'path' }
-  }, {
+    { name = 'path' },
     { name = 'cmdline' }
   })
 })

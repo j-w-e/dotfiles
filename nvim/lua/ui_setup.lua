@@ -65,7 +65,7 @@ local ministatus = require("mini.statusline")
 -- The following code is an attempt to get lsp and formatter to display in the status line.
 -- It comes from this comment https://www.reddit.com/r/neovim/comments/xtynan/comment/iqtcq0s/?utm_source=share&utm_medium=web2x&context=3
 Lsp = function()
-  local buf_clients = vim.lsp.buf_get_clients()
+  local buf_clients = vim.lsp.get_active_clients()
   -- local supported_formatters = require("null-ls.sources").get_available(vim.bo.filetype)
   local clients = {}
 
@@ -129,3 +129,5 @@ ministart.setup({
     ministart.gen_hook.aligning('center', 'center'),
   },
 })
+
+vim.cmd([[colorscheme tokyonight]])

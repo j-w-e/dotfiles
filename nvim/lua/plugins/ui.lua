@@ -21,10 +21,10 @@ return {
   -- colorscheme
   {
     'folke/tokyonight.nvim',
-    opts = { style = "moon" },
-    config = function()
-      -- load the colorscheme here
-      vim.cmd([[colorscheme tokyonight]])
-    end,
+    opts = { style = "night" },
+    -- config = function()
+    --   -- load the colorscheme here
+    --   vim.cmd([[colorscheme tokyonight]])
+    -- end,
   },
 }
