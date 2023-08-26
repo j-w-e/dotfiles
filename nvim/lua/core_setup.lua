@@ -93,9 +93,11 @@ local on_attach = function(_, bufnr)
   nmap('<leader>D', vim.lsp.buf.type_definition, 'Type [D]efinition')
   nmap('<leader>cs', require('telescope.builtin').lsp_document_symbols, 'code symbols in doc')
   -- nmap('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+  nmap('<leader>cf', vim.lsp.buf.format, "format current buffer with LSP")
 
   -- See `:help K` for why this keymap
   nmap("K", vim.lsp.buf.hover, "Hover Documentation")
+  -- the following used to be <c-k>, but I changed that to allow windor navigation
   nmap("<leader>ck", vim.lsp.buf.signature_help, "Signature Documentation")
 
   -- Lesser used LSP functionality
@@ -107,9 +109,9 @@ local on_attach = function(_, bufnr)
   -- end, '[W]orkspace [L]ist Folders')
 
   -- Create a command `:Format` local to the LSP buffer
-  vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
-    vim.lsp.buf.format()
-  end, { desc = 'Format current buffer with LSP' })
+  -- vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+  --   vim.lsp.buf.format()
+  -- end, { desc = 'Format current buffer with LSP' })
 end
 
 -- Enable the following language servers
@@ -126,6 +128,7 @@ local servers = {
       telemetry = { enable = false },
     },
   },
+  r_language_server = {},
 }
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
