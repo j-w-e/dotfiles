@@ -18,6 +18,11 @@ return {
       "rcarriga/nvim-notify",
     }
   },
+  { 'samjwill/nvim-unception',
+    config = function()
+      vim.g.unception_open_buffer_in_new_tab = true
+    end},
+  { 'numToStr/FTerm.nvim', opts = { } },
   -- colorscheme
   {
     'folke/tokyonight.nvim',

@@ -1,13 +1,13 @@
 require('telescope').setup {
-defaults = {
-  layout_strategy = 'horizontal',
-  layout_config = { prompt_position = "top" },
-  sorting_strategy = 'ascending',
-  mappings = {
-    i = {
-      ["<esc>"] = require('telescope.actions').close,
+  defaults = {
+    layout_strategy = 'horizontal',
+    layout_config = { prompt_position = "top" },
+    sorting_strategy = 'ascending',
+    mappings = {
+      i = {
+        ["<esc>"] = require('telescope.actions').close,
+      },
     },
-  },
   }
 }
 
@@ -175,7 +175,7 @@ cmp.setup {
     ['<up>'] = cmp.mapping.select_prev_item(),
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-u>'] = cmp.mapping.scroll_docs(4),
-    ['<esc>'] = cmp.mapping(function (fallback)
+    ['<esc>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.abort()
       else
@@ -214,18 +214,38 @@ cmp.setup {
   },
   sources = {
     { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-    { name = 'omni' },
+    {
+      name = 'luasnip',
+      -- -- the following should disable luasnip in comments, but does not seem to work
+      -- -- see https://www.reddit.com/r/neovim/comments/160vhde/is_there_a_method_to_prevent_nvimcmp_from/
+      -- option = { use_show_condition = true },
+      -- entry_filter = function()
+      --   local context = require("cmp.config.context")
+      --   return not context.in_treesitter_capture("string") and not context.in_syntax_group("String")
+      -- end,
+    },
     { name = 'nvim_lua' },
     { name = 'path' },
-    { name = 'buffer', keyword_length = 4 },
+    { name = 'buffer',  keyword_length = 4 },
+  },
+  formatting = {
+    format = function(entry, vim_item)
+      vim_item.menu = ({
+        buffer = "[Buffer]",
+        nvim_lsp = "[LSP]",
+        luasnip = "[LuaSnip]",
+        nvim_lua = "[Lua]",
+        cmp_nvim_r = "[nvim-r]",
+      })[entry.source.name]
+      return vim_item
+    end
   },
 }
 
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
 ---@diagnostic disable-next-line: missing-fields
 cmp.setup.cmdline({ '/', '?' }, {
-  mapping = cmp.mapping.preset.cmdline{
+  mapping = cmp.mapping.preset.cmdline {
     ['<Down>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
     ['<Up>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
     ['<tab>'] = { c = cmp.mapping.complete_common_string() },
@@ -238,7 +258,7 @@ cmp.setup.cmdline({ '/', '?' }, {
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 ---@diagnostic disable-next-line: missing-fields
 cmp.setup.cmdline(':', {
-  mapping = cmp.mapping.preset.cmdline{
+  mapping = cmp.mapping.preset.cmdline {
     ['<Down>'] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
     ['<Up>'] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
     ['<tab>'] = { c = cmp.mapping.complete_common_string() },
