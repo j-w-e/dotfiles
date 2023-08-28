@@ -25,7 +25,7 @@ nmap("<leader>fw", "<cmd>w<cr>", "save")
 nmap("<leader>q", "<cmd>q<cr>", "quit")
 
 -- Terminal
--- (I don't know if I need both of these mapppings in each context, but I think there might be 
+-- (I don't know if I need both of these mapppings in each context, but I think there might be
 -- a problem with remapping esc in the terminal?)
 nmap("<c-,>", require('FTerm').open, "open float term")
 nmap("<leader>,", require('FTerm').open, "open float term")
@@ -69,3 +69,11 @@ nmap("<leader>ct", "<cmd>lua MiniTrailspace.trim()<cr>", "trim whitespace")
 
 -- Notes
 nmap("<leader>n", require('telekasten').panel, "show notes panel")
+
+-- yank ring
+vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
+vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
+vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleForward)")
+vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleBackward)")
+vim.keymap.set({"n","x"}, "y", "<Plug>(YankyYank)")
+nmap('<leader>ty', '<cmd>lua require("telescope").extensions.yank_history.yank_history()<cr>', "search current word")

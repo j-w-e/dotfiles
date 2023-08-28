@@ -130,6 +130,46 @@ ministart.setup({
   },
 })
 
+  local list_patterns = {
+    neorg_1 = "%-",
+    neorg_2 = "%-%-",
+    neorg_3 = "%-%-%-",
+    neorg_4 = "%-%-%-%-",
+    neorg_5 = "%-%-%-%-%-",
+    unordered = "[-+*]", -- - + *
+    digit = "%d+[.)]", -- 1. 2. 3.
+    ascii = "%a[.)]", -- a) b) c)
+    roman = "%u*[.)]", -- I. II. III.
+    latex_item = "\\item",
+  }
+require('autolist').setup({
+  lists = { -- configures list behaviours
+    -- Each key in lists represents a filetype.
+    -- The value is a table of all the list patterns that the filetype implements.
+    -- See how to define your custom list below in the readme.
+    -- You must put the file name for the filetype, not the file extension
+    -- To get the "file name", it is just =:set filetype?= or =:se ft?=.
+    markdown = {
+      list_patterns.unordered,
+      list_patterns.digit,
+      list_patterns.ascii, -- for example this specifies activate the ascii list
+      list_patterns.roman, -- type for markdown files.
+    },
+    telekasten = {
+      list_patterns.unordered,
+      list_patterns.digit,
+      list_patterns.ascii,
+      list_patterns.roman,
+    },
+    text = {
+      list_patterns.unordered,
+      list_patterns.digit,
+      list_patterns.ascii,
+      list_patterns.roman,
+    },
+  }
+})
+
 -- vim.cmd([[colorscheme tokyonight]])
 local setup = require('mini.hues').setup
 setup({ background = '#29193d', foreground = '#ba85fa', accent = 'blue'})

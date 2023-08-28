@@ -231,10 +231,10 @@ cmp.setup {
   formatting = {
     format = function(entry, vim_item)
       vim_item.menu = ({
-        buffer = "[Buffer]",
-        nvim_lsp = "[LSP]",
-        luasnip = "[LuaSnip]",
-        nvim_lua = "[Lua]",
+        buffer = "[buf]",
+        nvim_lsp = "[lsp]",
+        luasnip = "[snip]",
+        nvim_lua = "[lua]",
         cmp_nvim_r = "[nvim-r]",
       })[entry.source.name]
       return vim_item
