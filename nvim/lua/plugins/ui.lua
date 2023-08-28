@@ -1,7 +1,8 @@
 return {
-  { 'echasnovski/mini.nvim', version = false },
-  { 'nguyenvukhang/nvim-toggler',
-    opts = { inverses = { [ 'TRUE' ] = 'FALSE', }, },
+  { 'echasnovski/mini.nvim',       version = false },
+  {
+    'nguyenvukhang/nvim-toggler',
+    opts = { inverses = { ['TRUE'] = 'FALSE', }, },
   },
   {
     "folke/noice.nvim",
@@ -18,18 +19,35 @@ return {
       "rcarriga/nvim-notify",
     }
   },
-  { 'samjwill/nvim-unception',
+  {
+    'samjwill/nvim-unception',
     config = function()
       vim.g.unception_open_buffer_in_new_tab = true
-    end},
-  { 'numToStr/FTerm.nvim', opts = { } },
+    end
+  },
+  { 'numToStr/FTerm.nvim',         opts = {} },
+  { 'tzachar/highlight-undo.nvim', opts = {} },
+  -- hardtime should teach me how to use vim, but interferes with <cr> mappings...
+  -- {
+  --   "m4xshen/hardtime.nvim",
+  --   dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
+  --   opts = {
+  --     disabled_keys = {
+  --       ["<Right>"] = {},
+  --       ["<Left>"] = {},
+  --       ["<Up>"] = {},
+  --       ["<Down>"] = {},
+  --     },
+  --     restricted_keys = {
+  --       ["<cr>"] = {},
+  --     }
+  --   }
+  -- },
   -- colorscheme
   {
-    'folke/tokyonight.nvim',
-    opts = { style = "night" },
+    'shaunsingh/moonlight.nvim',
     -- config = function()
-    --   -- load the colorscheme here
-    --   vim.cmd([[colorscheme tokyonight]])
+    --   require('moonlight').set()
     -- end,
   },
 }
