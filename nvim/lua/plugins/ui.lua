@@ -46,22 +46,7 @@ return {
   },
   { 'numToStr/FTerm.nvim',         opts = {} },
   { 'tzachar/highlight-undo.nvim', opts = {} },
-  -- hardtime should teach me how to use vim, but interferes with <cr> mappings...
-  -- {
-  --   "m4xshen/hardtime.nvim",
-  --   dependencies = { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" },
-  --   opts = {
-  --     disabled_keys = {
-  --       ["<Right>"] = {},
-  --       ["<Left>"] = {},
-  --       ["<Up>"] = {},
-  --       ["<Down>"] = {},
-  --     },
-  --     restricted_keys = {
-  --       ["<cr>"] = {},
-  --     }
-  --   }
-  -- },
+
   -- colorscheme
   {
     'shaunsingh/moonlight.nvim',

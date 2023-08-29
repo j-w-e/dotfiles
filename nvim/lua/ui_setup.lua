@@ -1,11 +1,16 @@
 require('mini.animate').setup()
-require('mini.basics').setup()
 require('mini.comment').setup()
 require('mini.files').setup()
 require('mini.jump2d').setup({ })
 require('mini.surround').setup()
 require('mini.tabline').setup()
 require('mini.trailspace').setup()
+
+require('mini.basics').setup({
+  mappings = {
+      option_toggle_prefix = [[<leader>to]],
+  },
+})
 
 require('mini.bracketed').setup({
   buffer     = { suffix = 'b', options = {} },
@@ -41,12 +46,13 @@ require('mini.jump').setup({
 
 require('mini.pairs').setup({
   mappings = {
+    -- ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^%S][^%S]", register = { cr = false } },
     ['('] = { action = 'open', pair = '()', neigh_pattern = '[^\\][^%a]' },
     ['['] = { action = 'open', pair = '[]', neigh_pattern = '[^\\][^%a]' },
     ['{'] = { action = 'open', pair = '{}', neigh_pattern = '[^\\][^%a]' },
-    [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\].' },
-    [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\].' },
-    ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\].' },
+    [')'] = { action = 'close', pair = '()', neigh_pattern = '[^\\][^%S]' },
+    [']'] = { action = 'close', pair = '[]', neigh_pattern = '[^\\][^%S]' },
+    ['}'] = { action = 'close', pair = '{}', neigh_pattern = '[^\\][^%S]' },
     ['"'] = { action = 'closeopen', pair = '""', neigh_pattern = '[^\\].', register = { cr = false } },
     ["'"] = { action = 'closeopen', pair = "''", neigh_pattern = '[^%a\\].', register = { cr = false } },
     ['`'] = { action = 'closeopen', pair = '``', neigh_pattern = '[^\\].', register = { cr = false } },

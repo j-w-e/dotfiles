@@ -11,6 +11,7 @@
 -- 12. Think about switching to epwalsh/obsidian.nvim
 -- 13. this link gives some useful info about default mappings: https://docs.google.com/spreadsheets/d/1EJMLr_MPrYiO1TKJ2MjNkR-fA5Wgxa782-f0Wtdpz0w/htmlview#
 -- 14. fix ftplugin so that it calls markdown from telekasten, rather than repeating the code
+-- 15. test whether my conditions in mini.pairs are correct
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
