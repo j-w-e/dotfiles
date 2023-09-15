@@ -42,5 +42,6 @@
     "editor_keybindings": "vim",
     "source_with_echo": true,
     "rainbow_parentheses": true,
-    "indent_guides": "rainbowlines"
+    "indent_guides": "rainbowlines",
+    "num_spaces_for_tab": 4
 }

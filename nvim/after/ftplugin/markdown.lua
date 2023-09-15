@@ -1,5 +1,6 @@
-vim.opt_local.ts = 4
-vim.opt_local.sw = 4
+vim.opt_local.ts   = 4
+vim.opt_local.sw   = 4
+vim.opt_local.wrap = true
 
 vim.keymap.set("i", "<tab>", "<cmd>AutolistTab<cr>")
 vim.keymap.set("i", "<s-tab>", "<cmd>AutolistShiftTab<cr>")

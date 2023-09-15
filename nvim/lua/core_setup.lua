@@ -128,7 +128,7 @@ local servers = {
       telemetry = { enable = false },
     },
   },
-  r_language_server = {},
+  -- r_language_server = { flags = { debounce_text_changes = 150 }, },
 }
 
 -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
