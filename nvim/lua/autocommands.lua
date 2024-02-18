@@ -7,7 +7,7 @@ vim.api.nvim_create_autocmd(
 local lastCopy = vim.api.nvim_create_augroup("FocusGained", { clear = true })
 vim.api.nvim_create_autocmd(
   { "FocusGained" },
-  { pattern = "*", command = "let @\"=@*", group = lastCopy }
+  { pattern = "*", command = [[call setreg("@", getreg("+"))]], group = lastCopy }
 )
 
 

@@ -1,10 +1,10 @@
+require('mini.ai').setup()
 require('mini.align').setup()
 require('mini.animate').setup()
 require('mini.comment').setup()
 require('mini.cursorword').setup()
 require('mini.files').setup()
-require('mini.jump2d').setup({ })
-require('mini.surround').setup()
+-- require('mini.jump2d').setup({ })
 require('mini.tabline').setup()
 require('mini.trailspace').setup()
 
@@ -30,6 +30,18 @@ require('mini.bracketed').setup({
   window     = { suffix = 'w', options = {} },
   yank       = { suffix = 'y', options = {} },
 })
+require('mini.hipatterns').setup({
+  highlighters = {
+    -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+    fixme = { pattern = '%f[%w]()FIXME()%f[%W]', group = 'MiniHipatternsFixme' },
+    hack  = { pattern = '%f[%w]()HACK()%f[%W]',  group = 'MiniHipatternsHack'  },
+    todo  = { pattern = '%f[%w]()TODO()%f[%W]',  group = 'MiniHipatternsTodo'  },
+    note  = { pattern = '%f[%w]()NOTE()%f[%W]',  group = 'MiniHipatternsNote'  },
+
+    -- Highlight hex color strings (`#rrggbb`) using that color
+    hex_color = require('mini.hipatterns').gen_highlighter.hex_color(),
+  },
+})
 require('mini.indentscope').setup({
   options = {
     border = 'both',
@@ -37,14 +49,14 @@ require('mini.indentscope').setup({
   }
 })
 
-require('mini.jump').setup({
-  mappings = {
-    repeat_jump = ',',
-  },
-  delay = {
-    idle_stop = 1000,
-  }
-})
+-- require('mini.jump').setup({
+--   mappings = {
+--     repeat_jump = ',',
+--   },
+--   delay = {
+--     idle_stop = 1000,
+--   }
+-- })
 
 require('mini.pairs').setup({
   mappings = {
@@ -178,6 +190,29 @@ require('autolist').setup({
   }
 })
 
--- vim.cmd([[colorscheme tokyonight]])
+require('mini.surround').setup({
+  mappings = {
+    add = '<leader>msa', -- Add surrounding in Normal and Visual modes
+    delete = '<leader>msd', -- Delete surrounding
+    find = '<leader>msf', -- Find surrounding (to the right)
+    find_left = '<leader>msF', -- Find surrounding (to the left)
+    highlight = '<leader>msh', -- Highlight surrounding
+    replace = '<leader>msr', -- Replace surrounding
+    update_n_lines = '<leader>msn', -- Update `n_lines`
+
+    suffix_last = 'l', -- Suffix to search with "prev" method
+    suffix_next = 'n', -- Suffix to search with "next" method
+  },
+})
+
+vim.cmd([[
+let R_assign = 2
+let R_rconsole_width = winwidth(0) / 2
+autocmd VimResized * let R_rconsole_width = winwidth(0) / 2
+]])
 local setup = require('mini.hues').setup
 setup({ background = '#29193d', foreground = '#ba85fa', accent = 'blue'})
+-- next line is just to surpress a warning, if I keep using aurora as my colorscheme
+require('notify').setup({ background_colour = '#111111' })
+vim.cmd([[let g:aurora_transparent = 0]])
+vim.cmd([[colorscheme aurora]])

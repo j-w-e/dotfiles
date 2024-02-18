@@ -6,6 +6,7 @@ require('telescope').setup {
     mappings = {
       i = {
         ["<esc>"] = require('telescope.actions').close,
+        ["<c-q>"] = require('telescope.actions').smart_send_to_qflist,
       },
     },
   }
@@ -159,6 +160,10 @@ local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup {}
 
+require('cmp_nvim_r').setup({
+  filetypes = {'r', 'rmd', 'quarto'}
+})
+
 ---@diagnostic disable-next-line: missing-fields
 cmp.setup {
   window = {
@@ -186,8 +191,8 @@ cmp.setup {
       i = function(fallback)
         if cmp.visible() and cmp.get_active_entry() then
           cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = false })
-        elseif cmp.visible() then
-          cmp.close()
+        -- elseif cmp.visible() then
+          -- cmp.close()
         else
           fallback()
         end
@@ -196,10 +201,12 @@ cmp.setup {
       c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = false }),
     }),
     ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.mapping.complete_common_string()
-      elseif luasnip.expand_or_locally_jumpable() then
+      if luasnip.expand_or_locally_jumpable() then
         luasnip.expand_or_jump()
+      -- if cmp.visible() then
+      --   cmp.mapping.complete_common_string()
+      -- elseif luasnip.expand_or_locally_jumpable() then
+      --   luasnip.expand_or_jump()
       else
         fallback()
       end
@@ -226,6 +233,7 @@ cmp.setup {
     },
     { name = 'nvim_lua' },
     { name = 'path' },
+    { name = 'cmp_nvim_r' },
     { name = 'buffer',  keyword_length = 4 },
   },
   formatting = {

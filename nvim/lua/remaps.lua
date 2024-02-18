@@ -18,6 +18,12 @@ nmap('<leader>tm', "<cmd>Noice telescope<cr>", "message history")
 nmap('<leader>vs', MiniStarter.open, "show start screen")
 nmap('<leader>vl', "<cmd>Lazy<cr>", "show Lazy")
 nmap('<leader>vm', "<cmd>Mason<cr>", "show Mason")
+nmap('<leader><space>', "zt", "zt")
+vim.keymap.set('n', '\'', '`')
+vim.keymap.set('n', '`', '\'')
+nmap('<leader>.', "<cmd>ZenMode<cr>", "ZenMode")
+nmap('x', '"_x', "delete to black hole")
+map('v', 'x', '"_x', "delete to black hole")
 
 -- Files
 nmap("<leader>fe", "<cmd>lua MiniFiles.open()<cr>", "file tree")
@@ -57,12 +63,17 @@ nmap("<c-j>", "<C-w>j", "focus below window")
 nmap("<c-k>", "<C-w>k", "focus above window")
 nmap("<c-l>", "<C-w>l", "focus right window")
 
+-- Git
+nmap("]n", "<cmd>Gitsigns next_hunk<cr>", "Next git hunk")
+nmap("[n", "<cmd>Gitsigns prev_hunk<cr>", "Prev git hunk")
+
 -- map({"n", "v"}, "n", "<cmd>lua vim.cmd('normal! n'); MiniAnimate.execute_after('scroll', 'normal! zvzz')<cr>", "next match" )
 
 -- Code
 nmap("<leader>cm", "<cmd>make<cr>", "make")
 map({ "n", "v" }, "<leader>i", require('nvim-toggler').toggle, "invert")
 nmap("<leader>ct", "<cmd>lua MiniTrailspace.trim()<cr>", "trim whitespace")
+nmap("<leader>cd", "<cmd>lcd %:p:h<cr>", "lcd to file")
 -- diagnostic keymaps
 -- nmap('<leader>e', vim.diagnostic.open_float, "Open floating diagnostic message")
 -- nmap('<leader>q', vim.diagnostic.setloclist, "Open diagnostics list")
@@ -77,3 +88,9 @@ vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleForward)")
 vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleBackward)")
 vim.keymap.set({"n","x"}, "y", "<Plug>(YankyYank)")
 nmap('<leader>ty', '<cmd>lua require("telescope").extensions.yank_history.yank_history()<cr>', "search current word")
+
+-- Smart dd
+vim.keymap.set("n", "dd", function ()
+  if vim.fn.getline(".") == "" then return '"_dd' end 
+  return "dd"
+end, {expr = true})
