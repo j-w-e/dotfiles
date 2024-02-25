@@ -1,6 +1,6 @@
 require('mini.ai').setup()
 require('mini.align').setup()
-require('mini.animate').setup()
+-- require('mini.animate').setup()
 require('mini.comment').setup()
 require('mini.cursorword').setup()
 require('mini.files').setup()
@@ -210,9 +210,3 @@ let R_assign = 2
 let R_rconsole_width = winwidth(0) / 2
 autocmd VimResized * let R_rconsole_width = winwidth(0) / 2
 ]])
-local setup = require('mini.hues').setup
-setup({ background = '#29193d', foreground = '#ba85fa', accent = 'blue'})
--- next line is just to surpress a warning, if I keep using aurora as my colorscheme
-require('notify').setup({ background_colour = '#111111' })
-vim.cmd([[let g:aurora_transparent = 0]])
-vim.cmd([[colorscheme aurora]])

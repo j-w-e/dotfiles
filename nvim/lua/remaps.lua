@@ -24,6 +24,7 @@ vim.keymap.set('n', '`', '\'')
 nmap('<leader>.', "<cmd>ZenMode<cr>", "ZenMode")
 nmap('x', '"_x', "delete to black hole")
 map('v', 'x', '"_x', "delete to black hole")
+nmap('<leader>c.', '@:', "repeat last cmd")
 
 -- Files
 nmap("<leader>fe", "<cmd>lua MiniFiles.open()<cr>", "file tree")
@@ -51,6 +52,7 @@ nmap('<leader>sw', builtin.grep_string, "search current word")
 nmap('<leader>sd', builtin.diagnostics, "search diagnostics")
 nmap("<leader>sn", "<cmd>noh<cr>", "no highlight")
 nmap('<leader>tt', "<cmd>Telescope<cr>", "open Telescope")
+nmap("<leader>vp", "<cmd>Telescope lazy_plugins<cr>", "lazy_plugins")
 
 -- Windows / buffers
 nmap("<leader>bn", "<cmd>bn<cr>", "next buffer")

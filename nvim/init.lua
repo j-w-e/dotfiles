@@ -32,3 +32,12 @@ require("autocommands")
 require("core_setup")
 require("ui_setup")
 require("remaps")
+
+if vim.g.neovide then
+  require("neovide")
+else
+  -- next line is just to surpress a warning, if I keep using aurora as my colorscheme
+  require('notify').setup({ background_colour = '#111111' })
+  vim.cmd([[let g:aurora_transparent = 0]])
+  vim.cmd([[colorscheme aurora]])
+end
