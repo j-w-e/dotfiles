@@ -58,6 +58,7 @@ nmap("<leader>vp", "<cmd>Telescope lazy_plugins<cr>", "lazy_plugins")
 nmap("<leader>bn", "<cmd>bn<cr>", "next buffer")
 nmap("<leader>bp", "<cmd>bp<cr>", "prev buffer")
 nmap("<leader>bd", "<cmd>bd<cr>", "delete buffer")
+nmap("<leader>bq", "<cmd>bd!<cr>", "force delete buffer")
 nmap("<leader>ws", "<cmd>sp<cr>", "horz split")
 nmap("<leader>wv", "<cmd>vs<cr>", "vert split")
 nmap("<c-h>", "<C-w>h", "focus left window")
@@ -93,6 +94,6 @@ nmap('<leader>ty', '<cmd>lua require("telescope").extensions.yank_history.yank_h
 
 -- Smart dd
 vim.keymap.set("n", "dd", function ()
-  if vim.fn.getline(".") == "" then return '"_dd' end 
+  if vim.fn.getline(".") == "" then return '"_dd' end
   return "dd"
 end, {expr = true})

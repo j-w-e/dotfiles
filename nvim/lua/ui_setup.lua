@@ -7,6 +7,7 @@ require('mini.files').setup()
 -- require('mini.jump2d').setup({ })
 require('mini.tabline').setup()
 require('mini.trailspace').setup()
+require('mini.visits').setup()
 
 require('mini.basics').setup({
   mappings = {
@@ -139,7 +140,7 @@ local ministart = require("mini.starter")
 ministart.setup({
   evaluate_single = true,
   items = {
-    ministart.sections.sessions(5, false),
+    ministart.sections.sessions(6, false),
     ministart.sections.recent_files(10, false),
     ministart.sections.builtin_actions(),
   },
@@ -150,60 +151,185 @@ ministart.setup({
   },
 })
 
-  local list_patterns = {
-    neorg_1 = "%-",
-    neorg_2 = "%-%-",
-    neorg_3 = "%-%-%-",
-    neorg_4 = "%-%-%-%-",
-    neorg_5 = "%-%-%-%-%-",
-    unordered = "[-+*]", -- - + *
-    digit = "%d+[.)]", -- 1. 2. 3.
-    ascii = "%a[.)]", -- a) b) c)
-    roman = "%u*[.)]", -- I. II. III.
-    latex_item = "\\item",
-  }
-require('autolist').setup({
-  lists = { -- configures list behaviours
-    -- Each key in lists represents a filetype.
-    -- The value is a table of all the list patterns that the filetype implements.
-    -- See how to define your custom list below in the readme.
-    -- You must put the file name for the filetype, not the file extension
-    -- To get the "file name", it is just =:set filetype?= or =:se ft?=.
-    markdown = {
-      list_patterns.unordered,
-      list_patterns.digit,
-      list_patterns.ascii, -- for example this specifies activate the ascii list
-      list_patterns.roman, -- type for markdown files.
-    },
-    telekasten = {
-      list_patterns.unordered,
-      list_patterns.digit,
-      list_patterns.ascii,
-      list_patterns.roman,
-    },
-    text = {
-      list_patterns.unordered,
-      list_patterns.digit,
-      list_patterns.ascii,
-      list_patterns.roman,
-    },
-  }
-})
-
 require('mini.surround').setup({
   mappings = {
-    add = '<leader>msa', -- Add surrounding in Normal and Visual modes
-    delete = '<leader>msd', -- Delete surrounding
-    find = '<leader>msf', -- Find surrounding (to the right)
-    find_left = '<leader>msF', -- Find surrounding (to the left)
-    highlight = '<leader>msh', -- Highlight surrounding
-    replace = '<leader>msr', -- Replace surrounding
-    update_n_lines = '<leader>msn', -- Update `n_lines`
+    add = 'gsa', -- Add surrounding in Normal and Visual modes
+    delete = 'gsd', -- Delete surrounding
+    find = 'gsf', -- Find surrounding (to the right)
+    find_left = 'gsF', -- Find surrounding (to the left)
+    highlight = 'gsh', -- Highlight surrounding
+    replace = 'gsr', -- Replace surrounding
+    update_n_lines = 'gsn', -- Update `n_lines`
 
     suffix_last = 'l', -- Suffix to search with "prev" method
     suffix_next = 'n', -- Suffix to search with "next" method
   },
 })
+
+require('headlines').setup({
+  markdown = {
+    query = vim.treesitter.query.parse(
+      "markdown",
+      [[
+                (atx_heading [
+                    (atx_h1_marker)
+                    (atx_h2_marker)
+                    (atx_h3_marker)
+                    (atx_h4_marker)
+                    (atx_h5_marker)
+                    (atx_h6_marker)
+                ] @headline)
+
+                (thematic_break) @dash
+
+                (fenced_code_block) @codeblock
+
+                (block_quote_marker) @quote
+                (block_quote (paragraph (inline (block_continuation) @quote)))
+                (block_quote (paragraph (block_continuation) @quote))
+                (block_quote (block_continuation) @quote)
+            ]]
+    ),
+    headline_highlights = { "Headline" },
+    -- bullet_highlights = {
+    --   "@text.title.1.marker.markdown",
+    --   "@text.title.2.marker.markdown",
+    --   "@text.title.3.marker.markdown",
+    --   "@text.title.4.marker.markdown",
+    --   "@text.title.5.marker.markdown",
+    --   "@text.title.6.marker.markdown",
+    -- },
+    bullets = {  },
+    -- codeblock_highlight = "CodeBlock",
+    -- dash_highlight = "Dash",
+    -- dash_string = "-",
+    -- quote_highlight = "Quote",
+    -- quote_string = "┃",
+    -- fat_headlines = true,
+    -- fat_headline_upper_string = "▃",
+    -- fat_headline_lower_string = "🬂",
+  },
+  rmd = {
+    query = vim.treesitter.query.parse(
+      "markdown",
+      [[
+                (atx_heading [
+                    (atx_h1_marker)
+                    (atx_h2_marker)
+                    (atx_h3_marker)
+                    (atx_h4_marker)
+                    (atx_h5_marker)
+                    (atx_h6_marker)
+                ] @headline)
+
+                (thematic_break) @dash
+
+                (fenced_code_block) @codeblock
+
+                (block_quote_marker) @quote
+                (block_quote (paragraph (inline (block_continuation) @quote)))
+                (block_quote (paragraph (block_continuation) @quote))
+                (block_quote (block_continuation) @quote)
+            ]]
+    ),
+    treesitter_language = "markdown",
+    headline_highlights = { "String" },
+    bullet_highlights = {
+      "@text.title.1.marker.markdown",
+      "@text.title.2.marker.markdown",
+      "@text.title.3.marker.markdown",
+      "@text.title.4.marker.markdown",
+      "@text.title.5.marker.markdown",
+      "@text.title.6.marker.markdown",
+    },
+    bullets = {  },
+    -- codeblock_highlight = "CodeBlock",
+    -- dash_highlight = "Dash",
+    -- dash_string = "-",
+    -- quote_highlight = "Quote",
+    -- quote_string = "┃",
+    fat_headlines = false,
+    fat_headline_upper_string = "▃",
+    fat_headline_lower_string = "▔", -- Upper one eighth block
+    -- fat_headline_lower_string = "▀", -- Upper one half block
+  },
+  telekasten = {
+    query = vim.treesitter.query.parse(
+      "markdown",
+      [[
+                (atx_heading [
+                    (atx_h1_marker)
+                    (atx_h2_marker)
+                    (atx_h3_marker)
+                    (atx_h4_marker)
+                    (atx_h5_marker)
+                    (atx_h6_marker)
+                ] @headline)
+
+                (thematic_break) @dash
+
+                (fenced_code_block) @codeblock
+
+                (block_quote_marker) @quote
+                (block_quote (paragraph (inline (block_continuation) @quote)))
+                (block_quote (paragraph (block_continuation) @quote))
+                (block_quote (block_continuation) @quote)
+            ]]
+    ),
+    treesitter_language = "markdown",
+    headline_highlights = { "String" },
+    bullet_highlights = {
+      "@text.title.1.marker.markdown",
+      "@text.title.2.marker.markdown",
+      "@text.title.3.marker.markdown",
+      "@text.title.4.marker.markdown",
+      "@text.title.5.marker.markdown",
+      "@text.title.6.marker.markdown",
+    },
+    bullets = {  },
+    -- codeblock_highlight = "CodeBlock",
+    -- dash_highlight = "Dash",
+    -- dash_string = "-",
+    -- quote_highlight = "Quote",
+    -- quote_string = "┃",
+    fat_headlines = false,
+    fat_headline_upper_string = "▃",
+    fat_headline_lower_string = "▔", -- Upper one eighth block
+    -- fat_headline_lower_string = "▀", -- Upper one half block
+  }})
+
+local function keys(str)
+  return function()
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(str, true, false, true), "m", true)
+  end
+end
+
+-- local hydra = require("hydra")
+-- hydra({
+--     name = "R REPL",
+--     hint = [[
+--       _j_/_k_: move down/up  _r_: run cell
+--       _l_: run line  _R_: run above
+--       ^^     _<esc>_/_q_: exit ]],
+--     config = {
+--         color = "teal",
+--         invoke_on_body = true,
+--         hint = {
+--             border = "rounded", -- you can change the border if you want
+--         },
+--     },
+--     mode = { "n" },
+--     body = "<localleader>j", -- this is the key that triggers the hydra
+--     heads = {
+--         -- { "j", keys("]b") },
+--         -- { "k", keys("[b") },
+--         -- { "r", ":QuartoSend<CR>" },
+--         -- { "l", ":QuartoSendLine<CR>" },
+--         -- { "R", ":RSendLine<CR>" },
+--         -- { "<esc>", nil, { exit = true } },
+--         -- { "q", nil, { exit = true } },
+--     },
+-- })
 
 vim.cmd([[
 let R_assign = 2
