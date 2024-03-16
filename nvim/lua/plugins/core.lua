@@ -1,58 +1,223 @@
 return {
   -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
   {
-    -- LSP Configuration & Plugins
-    'neovim/nvim-lspconfig',
+    'nvim-telescope/telescope.nvim',
     dependencies = {
-      { 'williamboman/mason.nvim', config = true },
-      'williamboman/mason-lspconfig.nvim',
-      { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
+      'nvim-lua/plenary.nvim',
+      'polirritmico/telescope-lazy-plugins.nvim',
     },
+    config = function()
+      require('telescope').setup {
+        defaults = {
+          layout_strategy = 'flex',
+          layout_config = { prompt_position = 'top' },
+          sorting_strategy = 'ascending',
+          mappings = {
+            i = {
+              ['<esc>'] = require('telescope.actions').close,
+              ['<c-q>'] = require('telescope.actions').smart_send_to_qflist,
+              ['jk'] = { '<esc>', type = 'command' },
+              ['kj'] = { '<esc>', type = 'command' },
+            },
+          },
+        },
+        extensions = {
+          ['ui-select'] = {
+            require('telescope.themes').get_dropdown(),
+          },
+          lazy_plugins = {
+            -- this does not seem to work???
+            name_only = false, -- match only the `repo_name`, false to match the full `account/repo_name`
+          },
+        },
+      }
+      require('telescope').load_extension 'ui-select'
+      -- require("telescope").load_extension("dap")
+    end,
   },
-  { "folke/neodev.nvim", opts = {} },
+
+  { 'nvim-telescope/telescope-ui-select.nvim' },
+  -- { 'nvim-telescope/telescope-dap.nvim' },
+
   {
     'hrsh7th/nvim-cmp',
     dependencies = {
-      'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip',
-      'hrsh7th/cmp-nvim-lua',
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-omni',
-      'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline',
-      'rafamadriz/friendly-snippets',
+      { 'hrsh7th/cmp-nvim-lsp' },
+      { 'hrsh7th/cmp-nvim-lsp-signature-help' },
+      { 'hrsh7th/cmp-buffer' },
+      { 'hrsh7th/cmp-path' },
+      { 'hrsh7th/cmp-emoji' },
+      { 'saadparwaiz1/cmp_luasnip' },
+      { 'f3fora/cmp-spell' },
+      { 'ray-x/cmp-treesitter' },
+      { 'jmbuhr/cmp-pandoc-references' },
+      { 'L3MON4D3/LuaSnip' },
+      { 'rafamadriz/friendly-snippets' },
+      { 'onsails/lspkind-nvim' },
+      { 'hrsh7th/cmp-cmdline' },
+      { 'hrsh7th/cmp-nvim-lua' },
+      -- { 'hrsh7th/cmp-omni' },
     },
-  },
+    config = function()
+      local cmp = require 'cmp'
+      local luasnip = require 'luasnip'
+      local lspkind = require 'lspkind'
 
-  { 'folke/which-key.nvim', opts = { } },
-  { 'lewis6991/gitsigns.nvim', opts = { } },
-  { 'nvim-tree/nvim-web-devicons', opts = { } },
+      local has_words_before = function()
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match '%s' == nil
+      end
+
+      cmp.setup {
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
+        completion = { completeopt = 'menu,menuone,noinsert' },
+        mapping = {
+          ['<down>'] = cmp.mapping.select_next_item(),
+          ['<up>'] = cmp.mapping.select_prev_item(),
+          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-u>'] = cmp.mapping.scroll_docs(4),
+
+          ['<C-n>'] = cmp.mapping(function(fallback)
+            if luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
+              fallback()
+            end
+          end, { 'i', 's' }),
+          ['<C-p>'] = cmp.mapping(function(fallback)
+            if luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+          ['<C-e>'] = cmp.mapping.abort(),
+          ['<CR>'] = cmp.mapping.confirm {
+            select = true,
+          },
+
+          ['<Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif has_words_before() then
+              cmp.complete()
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+          ['<S-Tab>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            else
+              fallback()
+            end
+          end, { 'i', 's' }),
+
+          ['<C-l>'] = cmp.mapping(function()
+            if luasnip.expand_or_locally_jumpable() then
+              luasnip.expand_or_jump()
+            end
+          end, { 'i', 's' }),
+          ['<C-h>'] = cmp.mapping(function()
+            if luasnip.locally_jumpable(-1) then
+              luasnip.jump(-1)
+            end
+          end, { 'i', 's' }),
+        },
+        autocomplete = false,
+
+        ---@diagnostic disable-next-line: missing-fields
+        formatting = {
+          format = lspkind.cmp_format {
+            mode = 'symbol',
+            menu = {
+              otter = '[🦦]',
+              nvim_lsp = '[lsp]',
+              luasnip = '[snip]',
+              buffer = '[buf]',
+              path = '[path]',
+              spell = '[spell]',
+              pandoc_references = '[ref]',
+              tags = '[tag]',
+              treesitter = '[ts]',
+              emoji = '[emoji]',
+            },
+          },
+        },
+        sources = {
+          { name = 'otter' }, -- for code chunks in quarto
+          { name = 'path' },
+          { name = 'nvim_lsp' },
+          { name = 'nvim_lsp_signature_help' },
+          { name = 'luasnip', keyword_length = 3, max_item_count = 3 },
+          { name = 'pandoc_references' },
+          { name = 'buffer', keyword_length = 4, max_item_count = 3 },
+          { name = 'spell' },
+          { name = 'treesitter', keyword_length = 5, max_item_count = 3 },
+          { name = 'emoji' },
+        },
+        -- view = {
+        --   entries = 'native',
+        -- },
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
+        },
+      }
+
+      -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+      ---@diagnostic disable-next-line: missing-fields
+      cmp.setup.cmdline({ '/', '?' }, {
+        mapping = cmp.mapping.preset.cmdline {
+          ['<Down>'] = { c = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Insert } },
+          ['<Up>'] = { c = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert } },
+          ['<tab>'] = { c = cmp.mapping.complete_common_string() },
+        },
+        sources = {
+          { name = 'buffer' },
+        },
+      })
+
+      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+      ---@diagnostic disable-next-line: missing-fields
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline {
+          ['<Down>'] = { c = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Insert } },
+          ['<Up>'] = { c = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert } },
+          ['<tab>'] = { c = cmp.mapping.complete_common_string() },
+        },
+        sources = cmp.config.sources {
+          { name = 'path' },
+          { name = 'cmdline' },
+        },
+      })
+
+      -- for friendly snippets
+      require('luasnip.loaders.from_vscode').lazy_load()
+      -- for custom snippets
+      require('luasnip.loaders.from_vscode').lazy_load { paths = { vim.fn.stdpath 'config' .. '/snips' } }
+      -- link quarto and rmarkdown to markdown snippets
+      luasnip.filetype_extend('quarto', { 'markdown' })
+      luasnip.filetype_extend('rmarkdown', { 'markdown' })
+    end,
+  },
+  { 'folke/which-key.nvim', opts = {} },
+  { 'lewis6991/gitsigns.nvim', opts = {} },
+  { 'nvim-tree/nvim-web-devicons', opts = {} },
 
   {
     'lukas-reineke/indent-blankline.nvim',
-    main = "ibl",
+    main = 'ibl',
     opts = {
       -- char = '┊',
       -- show_trailing_blankline_indent = false,
     },
   },
 
-  {
-    'nvim-telescope/telescope.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      "polirritmico/telescope-lazy-plugins.nvim",
-    },
-    opts = {
-      extensions = {
-        lazy_plugins = {
-          -- this does not seem to work???
-          name_only = false, -- match only the `repo_name`, false to match the full `account/repo_name`
-        }
-      }
-    }
-  },
+  { 'numToStr/FTerm.nvim', opts = {} },
 
   {
     'nvim-treesitter/nvim-treesitter',
@@ -61,87 +226,70 @@ return {
       'nvim-treesitter/playground',
     },
     build = ':TSUpdate',
-  },
-  -- { 'stevearc/conform.nvim',
-  --   opts = {
-  --     formatters_by_ft = {
-  --       r = { "styler", }
-  --     },
-  --   },
-  -- },
-
-  {
-    "mfussenegger/nvim-dap",
-    dependencies = { "rcarriga/nvim-dap-ui" },
     config = function()
-      local dap = require("dap")
-      local dapui = require("dapui")
-      dapui.setup()
-      vim.keymap.set('n', '<leader>dt', dap.toggle_breakpoint, { desc = "toggle breakpoint" })
-      vim.keymap.set('n', '<leader>dc', dap.continue, { desc = "dap continue" })
-      dap.listeners.before.attach.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.launch.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated.dapui_config = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited.dapui_config = function()
-        dapui.close()
-      end
-      -- dap.adapters.lldb = {
-      --   type = 'executable',
-      --   command = '/usr/bin/lldb',
-      --   name = 'lldb'
-      -- }
-      -- dap.adapters.lldb = {
-      --   type = 'executable',
-      --   command = '/opt/homebrew/opt/llvm/bin/lldb', -- adjust as needed, must be absolute path
-      --   name = 'lldb'
-      -- }
-      dap.adapters.codelldb = {
-        type = 'server',
-        port = "${port}",
-        executable = {
-          -- CHANGE THIS to your path!
-          command = '/Users/hughearp/.local/share/nvim/mason/bin/codelldb',
-          args = {"--port", "${port}"},
-        }
-      }
-      -- dap.configurations.c = {
-      --   {
-      --     name = 'Launch',
-      --     type = 'lldb',
-      --     request = 'launch',
-      --     program = function()
-      --       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-      --     end,
-      --     cwd = '${workspaceFolder}',
-      --     stopOnEntry = false,
-      --     args = {},
-      --   },
-      -- }
-      dap.configurations.c = {
-        {
-          name = "Launch file",
-          type = "codelldb",
-          request = "launch",
-          program = function()
-            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-          end,
-          cwd = '${workspaceFolder}',
-          stopOnEntry = false,
+      ---@diagnostic disable-next-line: missing-fields
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = { 'c', 'lua', 'markdown', 'markdown_inline', 'python', 'r', 'vimdoc', 'vim', 'yaml' },
+        auto_install = true,
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = { 'markdown' },
+        },
+        indent = { enable = true },
+        -- incremental_selection = {
+        --   enable = true,
+        --   keymaps = {
+        --     init_selection = '<c-space>',
+        --     node_incremental = '<c-space>',
+        --     scope_incremental = '<c-s>',
+        --     node_decremental = '<M-space>',
+        --   },
+        -- },
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+            keymaps = {
+              -- You can use the capture groups defined in textobjects.scm
+              ['aa'] = '@parameter.outer',
+              ['ia'] = '@parameter.inner',
+              ['af'] = '@function.outer',
+              ['if'] = '@function.inner',
+              ['ac'] = '@class.outer',
+              ['ic'] = '@class.inner',
+            },
+          },
+          move = {
+            enable = true,
+            set_jumps = true, -- whether to set jumps in the jumplist
+            goto_next_start = {
+              [']m'] = '@function.outer',
+              [']]'] = '@class.outer',
+            },
+            goto_next_end = {
+              [']M'] = '@function.outer',
+              [']['] = '@class.outer',
+            },
+            goto_previous_start = {
+              ['[m'] = '@function.outer',
+              ['[['] = '@class.outer',
+            },
+            goto_previous_end = {
+              ['[M'] = '@function.outer',
+              ['[]'] = '@class.outer',
+            },
+          },
+          swap = {
+            enable = true,
+            swap_next = {
+              ['<leader>a'] = '@parameter.inner',
+            },
+            swap_previous = {
+              ['<leader>A'] = '@parameter.inner',
+            },
+          },
         },
       }
-    end
+    end,
   },
-  -- {
-  --   "polirritmico/telescope-lazy-plugins.nvim",
-  --   dependencies = { "nvim-telescope.nvim" },
-  --   opts = {
-  --     lazy_config = vim.fn.stdpath("config") .. "lua/plugins",
-  --   }
-  -- },
 }

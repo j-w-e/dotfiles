@@ -1,0 +1,119 @@
+return {
+  -- {
+  --   'nvim-neotest/neotest',
+  --   dependencies = { 'nvim-neotest/neotest-python' },
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require('neotest').setup {
+  --       adapters = {
+  --         require 'neotest-python',
+  --       },
+  --     }
+  --   end,
+  --   keys = {
+  --     { '<leader>dtt', ":lua require'neotest'.run.run({strategy = 'dap'})<cr>", desc = '[t]est' },
+  --     { '<leader>dts', ":lua require'neotest'.run.stop()<cr>", desc = '[s]top test' },
+  --     { '<leader>dta', ":lua require'neotest'.run.attach()<cr>", desc = '[a]ttach test' },
+  --     { '<leader>dtf', ":lua require'neotest'.run.run(vim.fn.expand('%'))<cr>", desc = 'test [f]ile' },
+  --     { '<leader>dts', ":lua require'neotest'.summary.toggle()<cr>", desc = 'test [s]ummary' },
+  --   },
+  -- }
+  -- -- debug adapter protocol
+  -- {
+  --   'mfussenegger/nvim-dap',
+  --   dependencies = {
+  --     {
+  --       'rcarriga/nvim-dap-ui',
+  --       config = function()
+  --         vim.fn.sign_define('DapBreakpoint', { text = '🦦', texthl = '', linehl = '', numhl = '' })
+  --         require('dapui').setup()
+  --       end,
+  --     },
+  --     {
+  --       'mfussenegger/nvim-dap-python',
+  --       config = function()
+  --         require('dap-python').setup()
+  --         require('dap.ext.vscode').load_launchjs 'launch.json'
+  --       end,
+  --     },
+  --   },
+  --   keys = {
+  --     { '<leader>db', ":lua require'dap'.toggle_breakpoint()<cr>", desc = 'debug breakpoint' },
+  --     { '<leader>dc', ": lua require'dap'.continue()<cr>", desc = 'debug' },
+  --     { '<leader>do', ": lua require'dap'.step_over()<cr>", desc = 'debug over' },
+  --     { '<leader>dO', ": lua require'dap'.step_out()<cr>", desc = 'debug out' },
+  --     { '<leader>di', ": lua require'dap'.step_into()<cr>", desc = 'debug into' },
+  --     { '<leader>dr', ": lua require'dap'.repl_open()<cr>", desc = 'debug repl' },
+  --     { '<leader>du', ": lua require'dapui'.toggle()<cr>", desc = 'debug ui' },
+  --   },
+  -- },
+  --
+  -- FIXME merge the below config, which comes from my original setup, and might work, with the above, which comes from nvim-quarto kickstarter
+  -- {
+  --   "mfussenegger/nvim-dap",
+  --   dependencies = { "rcarriga/nvim-dap-ui" },
+  --   config = function()
+  --     local dap = require("dap")
+  --     local dapui = require("dapui")
+  --     dapui.setup()
+  --     vim.keymap.set('n', '<leader>dt', dap.toggle_breakpoint, { desc = "toggle breakpoint" })
+  --     vim.keymap.set('n', '<leader>dc', dap.continue, { desc = "dap continue" })
+  --     dap.listeners.before.attach.dapui_config = function()
+  --       dapui.open()
+  --     end
+  --     dap.listeners.before.launch.dapui_config = function()
+  --       dapui.open()
+  --     end
+  --     dap.listeners.before.event_terminated.dapui_config = function()
+  --       dapui.close()
+  --     end
+  --     dap.listeners.before.event_exited.dapui_config = function()
+  --       dapui.close()
+  --     end
+  --     -- dap.adapters.lldb = {
+  --     --   type = 'executable',
+  --     --   command = '/usr/bin/lldb',
+  --     --   name = 'lldb'
+  --     -- }
+  --     -- dap.adapters.lldb = {
+  --     --   type = 'executable',
+  --     --   command = '/opt/homebrew/opt/llvm/bin/lldb', -- adjust as needed, must be absolute path
+  --     --   name = 'lldb'
+  --     -- }
+  --     dap.adapters.codelldb = {
+  --       type = 'server',
+  --       port = "${port}",
+  --       executable = {
+  --         -- CHANGE THIS to your path!
+  --         command = '/Users/hughearp/.local/share/nvim/mason/bin/codelldb',
+  --         args = { "--port", "${port}" },
+  --       }
+  --     }
+  --     -- dap.configurations.c = {
+  --     --   {
+  --     --     name = 'Launch',
+  --     --     type = 'lldb',
+  --     --     request = 'launch',
+  --     --     program = function()
+  --     --       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+  --     --     end,
+  --     --     cwd = '${workspaceFolder}',
+  --     --     stopOnEntry = false,
+  --     --     args = {},
+  --     --   },
+  --     -- }
+  --     dap.configurations.c = {
+  --       {
+  --         name = "Launch file",
+  --         type = "codelldb",
+  --         request = "launch",
+  --         program = function()
+  --           return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+  --         end,
+  --         cwd = '${workspaceFolder}',
+  --         stopOnEntry = false,
+  --       },
+  --     }
+  --   end
+  -- },
+}

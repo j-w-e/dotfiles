@@ -1,22 +1,39 @@
 return {
-  { 'echasnovski/mini.nvim',       version = false },
+  { 'numToStr/FTerm.nvim', opts = {} },
   {
-    "folke/flash.nvim",
-    event = "VeryLazy",
+    'chrishrb/gx.nvim',
+    keys = { { 'gx', '<cmd>Browse<cr>', mode = { 'n', 'x' } } },
+    cmd = { 'Browse' },
+    init = function()
+      vim.g.netrw_nogx = 1 -- disable netrw gx
+    end,
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    submodules = false, -- not needed, submodules are required only for tests
+    opts = {
+      handler_options = {
+        -- you can select between google, bing, duckduckgo, and ecosia
+        search_engine = 'duckduckgo',
+      },
+    },
+  },
+
+  {
+    'folke/flash.nvim',
+    event = 'VeryLazy',
     ---@type Flash.Config
     opts = {
       -- labels = "abcdefghijklmnopqrstuvwxyz",
-      labels = "ersthnaiowfpluaycgdm",
+      labels = 'ersthnaiowfpluaycgdm',
       modes = {
         char = {
           char_actions = function()
             return {
-              [";"] = "prev", -- set to `right` to always go right
-              [","] = "next", -- set to `left` to always go left
+              [';'] = 'prev', -- set to `right` to always go right
+              [','] = 'next', -- set to `left` to always go left
             }
           end,
-        }
-      }
+        },
+      },
     },
     -- stylua: ignore
     keys = {
@@ -27,15 +44,17 @@ return {
       { "<c-s>", mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
     },
   },
+
   {
-    "bullets-vim/bullets.vim",
+    'bullets-vim/bullets.vim',
     ft = {
-      "markdown",
-      "telekasten",
-      "text",
-      "scratch",
-    }
+      'markdown',
+      'telekasten',
+      'text',
+      'scratch',
+    },
   },
+
   {
     'gbprod/yanky.nvim',
     opts = {
@@ -45,50 +64,87 @@ return {
       system_clipboard = {
         sync_with_ring = true,
       },
-    }
+    },
   },
+
   {
     'nguyenvukhang/nvim-toggler',
-    opts = { inverses = { ['TRUE'] = 'FALSE', }, },
+    opts = { inverses = { ['TRUE'] = 'FALSE' } },
   },
+
   {
-    "folke/noice.nvim",
-    event = "VeryLazy",
+    'folke/noice.nvim',
+    -- event = "VeryLazy",
     opts = {
       presets = {
         long_message_to_split = true,
         lsp_doc_border = true,
         command_palette = true,
-      }
+      },
     },
     dependencies = {
-      "MunifTanjim/nui.nvim",
-      "rcarriga/nvim-notify",
-    }
+      'MunifTanjim/nui.nvim',
+      'rcarriga/nvim-notify',
+    },
   },
+
   {
     'samjwill/nvim-unception',
     config = function()
       vim.g.unception_open_buffer_in_new_tab = true
-    end
+    end,
   },
-  { 'numToStr/FTerm.nvim',         opts = {} },
+
   { 'tzachar/highlight-undo.nvim', opts = {} },
 
   { 'romainl/vim-cool' },
+
   {
-    "folke/zen-mode.nvim",
+    'folke/zen-mode.nvim',
     opts = {
       window = {
         width = 150,
-      }
-    }
+      },
+    },
   },
+
   {
-    "lukas-reineke/headlines.nvim",
-    dependencies = "nvim-treesitter/nvim-treesitter",
+    'nvimtools/hydra.nvim',
+    -- config = function ()
+    -- local function keys(str)
+    --   return function()
+    --     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(str, true, false, true), "m", true)
+    --   end
+    -- end
+    --
+    -- local hydra = require("hydra")
+    -- hydra({
+    --     name = "R REPL",
+    --     hint = [[
+    --       _j_/_k_: move down/up  _r_: run cell
+    --       _l_: run line  _R_: run above
+    --       ^^     _<esc>_/_q_: exit ]],
+    --     config = {
+    --         color = "teal",
+    --         invoke_on_body = true,
+    --         hint = {
+    --             border = "rounded", -- you can change the border if you want
+    --         },
+    --     },
+    --     mode = { "n" },
+    --     body = "<localleader>j", -- this is the key that triggers the hydra
+    --     heads = {
+    --         -- { "j", keys("]b") },
+    --         -- { "k", keys("[b") },
+    --         -- { "r", ":QuartoSend<CR>" },
+    --         -- { "l", ":QuartoSendLine<CR>" },
+    --         -- { "R", ":RSendLine<CR>" },
+    --         -- { "<esc>", nil, { exit = true } },
+    --         -- { "q", nil, { exit = true } },
+    --     },
+    -- })
+    -- end
   },
-  { "nvimtools/hydra.nvim" },
 
   -- colorscheme
   { 'ray-x/aurora' },

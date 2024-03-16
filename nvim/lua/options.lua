@@ -10,9 +10,24 @@ o.shiftwidth  = 4
 o.tabstop     = 4
 o.scrolloff   = 12
 o.number      = true
-o.updatetime  = 250
-o.timeoutlen  = 300
-o.completeopt = 'menuone,noselect,longest'
+o.updatetime  = 250 -- for autocommands and hovers
+o.timeoutlen  = 300 -- until which-key pops up
+o.completeopt = 'menuone,noselect,noinsert,longest'
 o.rnu         = true
+o.termguicolors = true
 
-vim.diagnostic.config({ severity_sort = true })
+-- smarter search
+o.ignorecase = true
+o.smartcase = true
+
+-- indent
+o.smartindent = true
+o.breakindent = true
+
+-- diagnostics
+vim.diagnostic.config {
+  severity_sort = true,
+  virtual_text = true,
+  underline = true,
+  signs = true,
+}
