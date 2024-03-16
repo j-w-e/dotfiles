@@ -23,3 +23,8 @@ nmap("<leader>ns", "<cmd>lua require('telekasten').search_notes()<CR>", "search 
 nmap("<leader>nt", "<cmd>lua require('telekasten').toggle_todo()<CR>", "toggle to do")
 nmap("<leader>nw", "<cmd>lua require('telekasten').goto_thisweek()<CR>", "go to today")
 nmap("<leader>ny", "<cmd>lua require('telekasten').yank_notelink()<CR>", "yank link to note")
+
+
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldlevelstart = 2
