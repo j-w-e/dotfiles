@@ -18,32 +18,35 @@ end
 -- Basic navigation / usage
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true, noremap = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true, noremap = true })
-map("i", "<a-backspace>", "<c-w>", "delete word")
-map("c", "<a-backspace>", "<c-w>", "delete word")
-map("v", ">", ">gv", "indent")
-map("v", "<", "<gv", "de-indent")
-nmap('<leader>tm', "<cmd>Noice telescope<cr>", "message history")
-nmap('<leader>vs', MiniStarter.open, "show start screen")
-nmap('<leader>vl', "<cmd>Lazy<cr>", "show Lazy")
-nmap('<leader>vm', "<cmd>Mason<cr>", "show Mason")
-nmap('<leader><space>', "zt", "zt")
-vim.keymap.set('n', '\'', '`')
-vim.keymap.set('n', '`', '\'')
-nmap('<leader>.', "<cmd>ZenMode<cr>", "ZenMode")
-nmap('x', '"_x', "delete to black hole")
-map('v', 'x', '"_x', "delete to black hole")
-nmap('<leader>c.', '@:', "repeat last cmd")
+map('i', '<a-backspace>', '<c-w>', 'delete word')
+map('c', '<a-backspace>', '<c-w>', 'delete word')
+map('v', '>', '>gv', 'indent')
+map('v', '<', '<gv', 'de-indent')
+nmap('<leader>tm', '<cmd>Noice telescope<cr>', 'message history')
+nmap('<leader>vs', MiniStarter.open, 'show start screen')
+nmap('<leader>vl', '<cmd>Lazy<cr>', 'show Lazy')
+nmap('<leader>vm', '<cmd>Mason<cr>', 'show Mason')
+nmap('<leader><space>', 'zt', 'zt')
+wk.register({
+  name = 'marks',
+  ['`'] = "'",
+  ["'"] = '`',
+}, { nowait = true })
+nmap('<leader>.', '<cmd>ZenMode<cr>', 'ZenMode')
+nmap('x', '"_x', 'delete to black hole')
+map('v', 'x', '"_x', 'delete to black hole')
+nmap('<leader>c.', '@:', 'repeat last cmd')
 
 -- Files
-nmap("<leader>fe", "<cmd>lua MiniFiles.open()<cr>", "file tree")
-nmap("<leader>fw", "<cmd>w<cr>", "save")
-nmap("<leader>q", "<cmd>q<cr>", "quit")
+nmap('<leader>fe', '<cmd>lua MiniFiles.open()<cr>', 'file tree')
+nmap('<leader>fw', '<cmd>w<cr>', 'save')
+nmap('<leader>q', '<cmd>q<cr>', 'quit')
 
 -- Terminal
 -- (I don't know if I need both of these mapppings in each context, but I think there might be
 -- a problem with remapping esc in the terminal?)
-nmap("<c-,>", require('FTerm').open, "open float term")
-nmap("<leader>,", require('FTerm').open, "open float term")
+nmap('<c-,>', require('FTerm').open, 'open float term')
+nmap('<leader>,', require('FTerm').open, 'open float term')
 map('t', '<esc>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
 map('t', '<c-,>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
 
@@ -63,16 +66,16 @@ nmap('<leader>tt', "<cmd>Telescope<cr>", "open Telescope")
 nmap("<leader>vp", "<cmd>Telescope lazy_plugins<cr>", "lazy_plugins")
 
 -- Windows / buffers
-nmap("<leader>bn", "<cmd>bn<cr>", "next buffer")
-nmap("<leader>bp", "<cmd>bp<cr>", "prev buffer")
-nmap("<leader>bd", "<cmd>bd<cr>", "delete buffer")
+nmap('<leader>bn', '<cmd>bn<cr>', 'next buffer')
+nmap('<leader>bp', '<cmd>bp<cr>', 'prev buffer')
+nmap('<leader>bd', '<cmd>bd<cr>', 'delete buffer')
 nmap("<leader>bq", "<cmd>bd!<cr>", "force delete buffer")
-nmap("<leader>ws", "<cmd>sp<cr>", "horz split")
-nmap("<leader>wv", "<cmd>vs<cr>", "vert split")
-nmap("<c-h>", "<C-w>h", "focus left window")
-nmap("<c-j>", "<C-w>j", "focus below window")
-nmap("<c-k>", "<C-w>k", "focus above window")
-nmap("<c-l>", "<C-w>l", "focus right window")
+nmap('<leader>ws', '<cmd>sp<cr>', 'horz split')
+nmap('<leader>wv', '<cmd>vs<cr>', 'vert split')
+nmap('<c-h>', '<C-w>h', 'focus left window')
+nmap('<c-j>', '<C-w>j', 'focus below window')
+nmap('<c-k>', '<C-w>k', 'focus above window')
+nmap('<c-l>', '<C-w>l', 'focus right window')
 -- Resize window using <shift> arrow keys
 nmap('<S-Up>', '<cmd>resize +2<CR>')
 nmap('<S-Down>', '<cmd>resize -2<CR>')
@@ -80,8 +83,8 @@ nmap('<S-Left>', '<cmd>vertical resize -2<CR>')
 nmap('<S-Right>', '<cmd>vertical resize +2<CR>')
 
 -- Git
-nmap("]n", "<cmd>Gitsigns next_hunk<cr>", "Next git hunk")
-nmap("[n", "<cmd>Gitsigns prev_hunk<cr>", "Prev git hunk")
+-- nmap(']n', '<cmd>Gitsigns next_hunk<cr>', 'Next git hunk')
+-- nmap('[n', '<cmd>Gitsigns prev_hunk<cr>', 'Prev git hunk')
 
 -- map({"n", "v"}, "n", "<cmd>lua vim.cmd('normal! n'); MiniAnimate.execute_after('scroll', 'normal! zvzz')<cr>", "next match" )
 
@@ -121,6 +124,8 @@ end, {expr = true})
 
 
 
+nmap('g,', 'g;', 'prev change')
+nmap('g;', 'g,', 'next change')
 
 --- Send code to terminal with vim-slime
 --- If an R terminal has been opend, this is in r_mode
@@ -331,22 +336,22 @@ wk.register({
       c = { ':GitBlameCopyCommitURL<cr>', '[c]opy' },
     },
   },
-  h = {
-    name = '[h]elp / [h]ide / debug',
-    c = {
-      name = '[c]onceal',
-      h = { ':set conceallevel=1<cr>', '[h]ide/conceal' },
-      s = { ':set conceallevel=0<cr>', '[s]how/unconceal' },
-    },
-    t = {
-      name = '[t]reesitter',
-      t = { vim.treesitter.inspect_tree, 'show [t]ree' },
-    },
-  },
-  i = {
-    name = '[i]nsert',
-    i = { ':PasteImage<cr>', '[i]mage from clipboard' },
-  },
+  -- h = {
+  --   name = '[h]elp / [h]ide / debug',
+  --   c = {
+  --     name = '[c]onceal',
+  --     h = { ':set conceallevel=1<cr>', '[h]ide/conceal' },
+  --     s = { ':set conceallevel=0<cr>', '[s]how/unconceal' },
+  --   },
+  --   t = {
+  --     name = '[t]reesitter',
+  --     t = { vim.treesitter.inspect_tree, 'show [t]ree' },
+  --   },
+  -- },
+  -- i = {
+  --   name = '[i]nsert',
+  --   i = { ':PasteImage<cr>', '[i]mage from clipboard' },
+  -- },
   l = {
     name = '[l]anguage/lsp',
     r = { '<cmd>Telescope lsp_references<cr>', '[r]eferences' },
@@ -394,7 +399,6 @@ wk.register({
   },
   v = {
     name = '[v]im',
-    t = { toggle_light_dark_theme, '[t]oggle light/dark theme' },
     c = { ':Telescope colorscheme<cr>', '[c]olortheme' },
     l = { ':Lazy<cr>', '[l]azy package manager' },
     m = { ':Mason<cr>', '[m]ason software installer' },
