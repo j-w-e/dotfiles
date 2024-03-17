@@ -1,4 +1,5 @@
 -- TODO:
+-- 1. Add Hydras?
 -- 2. think about whether I want to run zz after using n or N to go to the next match (and then adjust the animation)
 --      See the commented remap in remap.lua for an example
 -- 3. Decide how I want <cr> and <tab> to interact with the completion menu
