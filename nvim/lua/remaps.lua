@@ -40,7 +40,8 @@ nmap('<leader>c.', '@:', 'repeat last cmd')
 -- Files
 nmap('<leader>fe', '<cmd>lua MiniFiles.open()<cr>', 'file tree')
 nmap('<leader>fw', '<cmd>w<cr>', 'save')
-nmap('<leader>q', '<cmd>q<cr>', 'quit')
+nmap('<leader>x', '<cmd>q<cr>', 'quit')
+nmap('<leader>X', '<cmd>qa!<cr>', 'really quit')
 
 -- Terminal
 -- (I don't know if I need both of these mapppings in each context, but I think there might be
@@ -51,25 +52,25 @@ map('t', '<esc>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
 map('t', '<c-,>', '<C-\\><C-n><CMD>lua require("FTerm").toggle()<CR>')
 
 -- Searching
-local builtin = require('telescope.builtin')
-nmap('<leader>ff', builtin.find_files, "find files")
-nmap('<leader>fr', builtin.oldfiles, "find recent files")
-nmap('<leader>fg', builtin.git_files, "find git files")
-nmap('<leader>sg', builtin.live_grep, "grep string")
-nmap('<leader>tb', builtin.buffers, "find buffers")
-nmap('<leader>sh', builtin.help_tags, "search help")
-nmap('<leader>/', builtin.current_buffer_fuzzy_find, "find in current buffer")
-nmap('<leader>sw', builtin.grep_string, "search current word")
-nmap('<leader>sd', builtin.diagnostics, "search diagnostics")
-nmap("<leader>sn", "<cmd>noh<cr>", "no highlight")
-nmap('<leader>tt', "<cmd>Telescope<cr>", "open Telescope")
-nmap("<leader>vp", "<cmd>Telescope lazy_plugins<cr>", "lazy_plugins")
+local builtin = require 'telescope.builtin'
+nmap('<leader>ff', builtin.find_files, 'find files')
+nmap('<leader>fr', builtin.oldfiles, 'find recent files')
+nmap('<leader>fg', builtin.git_files, 'find git files')
+nmap('<leader>sg', builtin.live_grep, 'grep string')
+nmap('<leader>tb', builtin.buffers, 'find buffers')
+nmap('<leader>sh', builtin.help_tags, 'search help')
+nmap('<leader>/', builtin.current_buffer_fuzzy_find, 'find in current buffer')
+nmap('<leader>sw', builtin.grep_string, 'search current word')
+nmap('<leader>sd', builtin.diagnostics, 'search diagnostics')
+nmap('<leader>sn', '<cmd>noh<cr>', 'no highlight')
+nmap('<leader>tt', '<cmd>Telescope<cr>', 'open Telescope')
+nmap('<leader>vp', '<cmd>Telescope lazy_plugins<cr>', 'lazy_plugins')
 
 -- Windows / buffers
 nmap('<leader>bn', '<cmd>bn<cr>', 'next buffer')
 nmap('<leader>bp', '<cmd>bp<cr>', 'prev buffer')
 nmap('<leader>bd', '<cmd>bd<cr>', 'delete buffer')
-nmap("<leader>bq", "<cmd>bd!<cr>", "force delete buffer")
+nmap('<leader>bx', '<cmd>bd!<cr>', 'force delete buffer')
 nmap('<leader>ws', '<cmd>sp<cr>', 'horz split')
 nmap('<leader>wv', '<cmd>vs<cr>', 'vert split')
 nmap('<c-h>', '<C-w>h', 'focus left window')
@@ -89,16 +90,16 @@ nmap('<S-Right>', '<cmd>vertical resize +2<CR>')
 -- map({"n", "v"}, "n", "<cmd>lua vim.cmd('normal! n'); MiniAnimate.execute_after('scroll', 'normal! zvzz')<cr>", "next match" )
 
 -- Code
-nmap("<leader>cm", "<cmd>make<cr>", "make")
-map({ "n", "v" }, "<leader>i", require('nvim-toggler').toggle, "invert")
-nmap("<leader>ct", "<cmd>lua MiniTrailspace.trim()<cr>", "trim whitespace")
-nmap("<leader>cd", "<cmd>lcd %:p:h<cr>", "lcd to file")
+nmap('<leader>cm', '<cmd>make<cr>', 'make')
+map({ 'n', 'v' }, '<leader>i', require('nvim-toggler').toggle, 'invert')
+nmap('<leader>ct', '<cmd>lua MiniTrailspace.trim()<cr>', 'trim whitespace')
+nmap('<leader>cd', '<cmd>lcd %:p:h<cr>', 'lcd to file')
 -- diagnostic keymaps
 -- nmap('<leader>e', vim.diagnostic.open_float, "Open floating diagnostic message")
 -- nmap('<leader>q', vim.diagnostic.setloclist, "Open diagnostics list")
 
 -- Notes
-nmap("<leader>n", require('telekasten').panel, "show notes panel")
+nmap('<leader>n', require('telekasten').panel, 'show notes panel')
 
 -- Add undo break-points
 imap(',', ',<c-g>u')
@@ -106,23 +107,20 @@ imap('.', '.<c-g>u')
 imap(';', ';<c-g>u')
 
 -- yank ring
-vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
-vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
-vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleForward)")
-vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleBackward)")
-vim.keymap.set({"n","x"}, "y", "<Plug>(YankyYank)")
-nmap('<leader>ty', '<cmd>lua require("telescope").extensions.yank_history.yank_history()<cr>', "search current word")
+vim.keymap.set({ 'n', 'x' }, 'p', '<Plug>(YankyPutAfter)')
+vim.keymap.set({ 'n', 'x' }, 'P', '<Plug>(YankyPutBefore)')
+vim.keymap.set('n', '<c-f>', '<Plug>(YankyCycleForward)')
+vim.keymap.set('n', '<c-b>', '<Plug>(YankyCycleBackward)')
+vim.keymap.set({ 'n', 'x' }, 'y', '<Plug>(YankyYank)')
+nmap('<leader>ty', '<cmd>lua require("telescope").extensions.yank_history.yank_history()<cr>', 'search current word')
 
 -- Smart dd
-vim.keymap.set("n", "dd", function ()
-  if vim.fn.getline(".") == "" then return '"_dd' end
-  return "dd"
-end, {expr = true})
-
-
-
-
-
+vim.keymap.set('n', 'dd', function()
+  if vim.fn.getline '.' == '' then
+    return '"_dd'
+  end
+  return 'dd'
+end, { expr = true })
 
 nmap('g,', 'g;', 'prev change')
 nmap('g;', 'g,', 'next change')
@@ -133,52 +131,52 @@ nmap('g;', 'g,', 'next change')
 --- from a python chunk.
 --- TODO: incorpoarate this into quarto-nvim plugin
 --- such that QuartoRun functions get the same capabilities
-local function send_cell()
-  if vim.b['quarto_is_r_mode'] == nil then
-    vim.fn['slime#send_cell']()
-    return
-  end
-  if vim.b['quarto_is_r_mode'] == true then
-    vim.g.slime_python_ipython = 0
-    local is_python = require('otter.tools.functions').is_otter_language_context 'python'
-    if is_python and not vim.b['reticulate_running'] then
-      vim.fn['slime#send']('reticulate::repl_python()' .. '\r')
-      vim.b['reticulate_running'] = true
-    end
-    if not is_python and vim.b['reticulate_running'] then
-      vim.fn['slime#send']('exit' .. '\r')
-      vim.b['reticulate_running'] = false
-    end
-    vim.fn['slime#send_cell']()
-  end
-end
+-- local function send_cell()
+-- if vim.b['quarto_is_r_mode'] == nil then
+--   vim.fn['slime#send_cell']()
+--   return
+-- end
+-- if vim.b['quarto_is_r_mode'] == true then
+--   vim.g.slime_python_ipython = 0
+--   local is_python = require('otter.tools.functions').is_otter_language_context 'python'
+--   if is_python and not vim.b['reticulate_running'] then
+--     vim.fn['slime#send']('reticulate::repl_python()' .. '\r')
+--     vim.b['reticulate_running'] = true
+--   end
+--   if not is_python and vim.b['reticulate_running'] then
+--     vim.fn['slime#send']('exit' .. '\r')
+--     vim.b['reticulate_running'] = false
+--   end
+--   vim.fn['slime#send_cell']()
+-- end
+-- end
 
 --- Send code to terminal with vim-slime
 --- If an R terminal has been opend, this is in r_mode
 --- and will handle python code via reticulate when sent
 --- from a python chunk.
-local slime_send_region_cmd = ':<C-u>call slime#send_op(visualmode(), 1)<CR>'
-slime_send_region_cmd = vim.api.nvim_replace_termcodes(slime_send_region_cmd, true, false, true)
-local function send_region()
-  -- if filetyps is not quarto, just send_region
-  if vim.bo.filetype ~= 'quarto' or vim.b['quarto_is_r_mode'] == nil then
-    vim.cmd('normal' .. slime_send_region_cmd)
-    return
-  end
-  if vim.b['quarto_is_r_mode'] == true then
-    vim.g.slime_python_ipython = 0
-    local is_python = require('otter.tools.functions').is_otter_language_context 'python'
-    if is_python and not vim.b['reticulate_running'] then
-      vim.fn['slime#send']('reticulate::repl_python()' .. '\r')
-      vim.b['reticulate_running'] = true
-    end
-    if not is_python and vim.b['reticulate_running'] then
-      vim.fn['slime#send']('exit' .. '\r')
-      vim.b['reticulate_running'] = false
-    end
-    vim.cmd('normal' .. slime_send_region_cmd)
-  end
-end
+-- local slime_send_region_cmd = ':<C-u>call slime#send_op(visualmode(), 1)<CR>'
+-- slime_send_region_cmd = vim.api.nvim_replace_termcodes(slime_send_region_cmd, true, false, true)
+-- local function send_region()
+--   -- if filetyps is not quarto, just send_region
+--   if vim.bo.filetype ~= 'quarto' or vim.b['quarto_is_r_mode'] == nil then
+--     vim.cmd('normal' .. slime_send_region_cmd)
+--     return
+--   end
+--   if vim.b['quarto_is_r_mode'] == true then
+--     vim.g.slime_python_ipython = 0
+--     local is_python = require('otter.tools.functions').is_otter_language_context 'python'
+--     if is_python and not vim.b['reticulate_running'] then
+--       vim.fn['slime#send']('reticulate::repl_python()' .. '\r')
+--       vim.b['reticulate_running'] = true
+--     end
+--     if not is_python and vim.b['reticulate_running'] then
+--       vim.fn['slime#send']('exit' .. '\r')
+--       vim.b['reticulate_running'] = false
+--     end
+--     vim.cmd('normal' .. slime_send_region_cmd)
+--   end
+-- end
 
 -- send code with ctrl+Enter
 -- just like in e.g. RStudio
@@ -194,17 +192,12 @@ end
 -- might not use what you think should be your default web browser
 -- because it is a plain html file, not a link
 -- see https://askubuntu.com/a/864698 for places to look for
-local function show_r_table()
-  local node = vim.treesitter.get_node { ignore_injections = false }
-  local text = vim.treesitter.get_node_text(node, 0)
-  local cmd = [[call slime#send("DT::datatable(]] .. text .. [[)" . "\r")]]
-  vim.cmd(cmd)
-end
-
-
-
-
-
+-- local function show_r_table()
+--   local node = vim.treesitter.get_node { ignore_injections = false }
+--   local text = vim.treesitter.get_node_text(node, 0)
+--   local cmd = [[call slime#send("DT::datatable(]] .. text .. [[)" . "\r")]]
+--   vim.cmd(cmd)
+-- end
 
 local is_code_chunk = function()
   local current, _ = require('otter.keeper').get_current_language_context()
@@ -251,9 +244,9 @@ wk.register({
 
 -- visual mode
 wk.register({
-  ['<cr>'] = { send_region, 'run code region' },
-  ['<M-j>'] = { ":m'>+<cr>`<my`>mzgv`yo`z", 'move line down' },
-  ['<M-k>'] = { ":m'<-2<cr>`>my`<mzgv`yo`z", 'move line up' },
+  -- ['<cr>'] = { send_region, 'run code region' },
+  -- ['<M-j>'] = { ":m'>+<cr>`<my`>mzgv`yo`z", 'move line down' },
+  -- ['<M-k>'] = { ":m'<-2<cr>`>my`<mzgv`yo`z", 'move line up' },
   ['.'] = { ':norm .<cr>', 'repat last normal mode command' },
   ['q'] = { ':norm @q<cr>', 'repat q macro' },
 }, { mode = 'v' })
@@ -274,14 +267,14 @@ wk.register({
   ['<c-x><c-x>'] = { '<c-x><c-o>', 'omnifunc completion' },
 }, { mode = 'i' })
 
-nmap('<leader><cr>', send_cell)
+-- nmap('<leader><cr>', send_cell)
 
 -- normal mode with <leader>
 wk.register({
-  ['<cr>'] = { send_cell, 'run code cell' },
+  -- ['<cr>'] = { send_cell, 'run code cell' },
   c = {
     name = '[c]ode / [c]ell / [c]hunk',
-    c = { ':SlimeConfig<cr>', 'slime [c]onfig' },
+    -- c = { ':SlimeConfig<cr>', 'slime [c]onfig' },
     n = { ':split term://$SHELL<cr>', '[n]ew terminal with shell' },
     r = {
       function()
@@ -291,8 +284,6 @@ wk.register({
       'new [R] terminal',
     },
     p = { ':split term://python<cr>', 'new [p]ython terminal' },
-    i = { ':split term://ipython<cr>', 'new [i]python terminal' },
-    j = { ':split term://julia<cr>', 'new [j]ulia terminal' },
     o = {
       name = '[o]open code chunk',
     },
@@ -373,10 +364,6 @@ wk.register({
     c = { 'O# %%<cr>', 'magic [c]omment code chunk # %%' },
     r = { insert_r_chunk, '[r] code chunk' },
     p = { insert_py_chunk, '[p]ython code chunk' },
-    j = { insert_julia_chunk, '[j]ulia code chunk' },
-    b = { insert_bash_chunk, '[b]ash code chunk' },
-    o = { insert_ojs_chunk, '[o]bservable js code chunk' },
-    l = { insert_lua_chunk, '[l]lua code chunk' },
   },
   q = {
     name = '[q]uarto',
@@ -393,10 +380,10 @@ wk.register({
     e = { ":lua require'otter'.export()<cr>", '[e]xport' },
     E = { ":lua require'otter'.export(true)<cr>", '[E]xport with overwrite' },
   },
-  r = {
-    name = '[r] R specific tools',
-    t = { show_r_table, 'show [t]able' },
-  },
+  -- r = {
+  --   name = '[r] R specific tools',
+  --   t = { show_r_table, 'show [t]able' },
+  -- },
   v = {
     name = '[v]im',
     c = { ':Telescope colorscheme<cr>', '[c]olortheme' },
@@ -405,8 +392,8 @@ wk.register({
     s = { ':e $MYVIMRC | :cd %:p:h | split . | wincmd k<cr>', '[s]ettings, edit vimrc' },
     h = { ':execute "h " . expand("<cword>")<cr>', 'vim [h]elp for current word' },
   },
-  x = {
-    name = 'e[x]ecute',
-    x = { ':w<cr>:source %<cr>', '[x] source %' },
-  },
+  -- x = {
+  --   name = 'e[x]ecute',
+  --   x = { ':w<cr>:source %<cr>', '[x] source %' },
+  -- },
 }, { mode = 'n', prefix = '<leader>' })

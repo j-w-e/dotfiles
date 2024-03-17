@@ -74,16 +74,28 @@ return {
             luasnip.lsp_expand(args.body)
           end,
         },
-        completion = { completeopt = 'menu,menuone,noinsert' },
+        completion = { completeopt = 'menu,menuone,noinsert,noselect' },
         mapping = {
           ['<down>'] = cmp.mapping.select_next_item(),
           ['<up>'] = cmp.mapping.select_prev_item(),
           ['<C-d>'] = cmp.mapping.scroll_docs(-4),
           ['<C-u>'] = cmp.mapping.scroll_docs(4),
 
+          ['<CR>'] = cmp.mapping {
+            i = function(fallback)
+              if cmp.visible() and cmp.get_active_entry() then
+                cmp.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false }
+              else
+                fallback()
+              end
+            end,
+            s = cmp.mapping.confirm { select = false },
+            c = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false },
+          },
           ['<C-n>'] = cmp.mapping(function(fallback)
             if luasnip.expand_or_jumpable() then
               luasnip.expand_or_jump()
+            else
               fallback()
             end
           end, { 'i', 's' }),
@@ -95,37 +107,26 @@ return {
             end
           end, { 'i', 's' }),
           ['<C-e>'] = cmp.mapping.abort(),
-          ['<CR>'] = cmp.mapping.confirm {
+          ['<c-y>'] = cmp.mapping.confirm {
             select = true,
           },
 
           ['<Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif has_words_before() then
-              cmp.complete()
+            if has_words_before() then
+              cmp.complete_common_string()
             else
               fallback()
             end
           end, { 'i', 's' }),
-          ['<S-Tab>'] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-
-          ['<C-l>'] = cmp.mapping(function()
-            if luasnip.expand_or_locally_jumpable() then
-              luasnip.expand_or_jump()
-            end
-          end, { 'i', 's' }),
-          ['<C-h>'] = cmp.mapping(function()
-            if luasnip.locally_jumpable(-1) then
-              luasnip.jump(-1)
-            end
-          end, { 'i', 's' }),
+          -- ['<Tab>'] = cmp.mapping(function(fallback)
+          --   if cmp.visible() then
+          --     cmp.select_next_item()
+          --   elseif has_words_before() then
+          --     cmp.complete()
+          --   else
+          --     fallback()
+          --   end
+          -- end, { 'i', 's' }),
         },
         autocomplete = false,
 
@@ -158,6 +159,7 @@ return {
           { name = 'spell' },
           { name = 'treesitter', keyword_length = 5, max_item_count = 3 },
           { name = 'emoji' },
+          { name = 'cmp_r' },
         },
         -- view = {
         --   entries = 'native',
@@ -202,10 +204,71 @@ return {
       -- link quarto and rmarkdown to markdown snippets
       luasnip.filetype_extend('quarto', { 'markdown' })
       luasnip.filetype_extend('rmarkdown', { 'markdown' })
+      require('cmp_r').setup {}
     end,
   },
   { 'folke/which-key.nvim', opts = {} },
-  { 'lewis6991/gitsigns.nvim', opts = {} },
+  {
+    'lewis6991/gitsigns.nvim',
+    opts = {
+      on_attach = function(bufnr)
+        local gs = package.loaded.gitsigns
+
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']h', function()
+          if vim.wo.diff then
+            return ']h'
+          end
+          vim.schedule(function()
+            gs.next_hunk()
+          end)
+          return '<Ignore>'
+        end, { expr = true })
+
+        map('n', '[h', function()
+          if vim.wo.diff then
+            return '[h'
+          end
+          vim.schedule(function()
+            gs.prev_hunk()
+          end)
+          return '<Ignore>'
+        end, { expr = true })
+
+        -- Actions
+        map('n', '<leader>hs', gs.stage_hunk, { desc = 'stage hunk' })
+        map('n', '<leader>hr', gs.reset_hunk, { desc = 'reset hunk' })
+        map('v', '<leader>hs', function()
+          gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, { desc = 'stage hunk' })
+        map('v', '<leader>hr', function()
+          gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, { desc = 'reset hunk' })
+        map('n', '<leader>hS', gs.stage_buffer, { desc = 'stage buffer' })
+        map('n', '<leader>hu', gs.undo_stage_hunk, { desc = 'undo stage hunk' })
+        map('n', '<leader>hR', gs.reset_buffer, { desc = 'reset buffer' })
+        map('n', '<leader>hp', gs.preview_hunk, { desc = 'preview hunk' })
+        map('n', '<leader>hb', function()
+          gs.blame_line { full = true }
+        end, { desc = 'blame line' })
+        -- map('n', '<leader>tb', gs.toggle_current_line_blame)
+        map('n', '<leader>hd', gs.diffthis, { desc = 'diff this' })
+        map('n', '<leader>hD', function()
+          gs.diffthis '~'
+        end, { desc = 'diff this ~' })
+        -- map('n', '<leader>td', gs.toggle_deleted)
+
+        -- Text object
+        map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+      end,
+    },
+  },
   { 'nvim-tree/nvim-web-devicons', opts = {} },
 
   {
