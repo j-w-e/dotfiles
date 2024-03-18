@@ -204,6 +204,7 @@ return {
       -- link quarto and rmarkdown to markdown snippets
       luasnip.filetype_extend('quarto', { 'markdown' })
       luasnip.filetype_extend('rmarkdown', { 'markdown' })
+      luasnip.filetype_extend('telekasten', { 'markdown' })
       require('cmp_r').setup {}
     end,
   },
