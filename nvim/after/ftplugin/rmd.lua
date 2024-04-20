@@ -1,11 +1,3 @@
--- require('cmp').setup({
---   sources = require('cmp').config.sources({
---     { name = 'luasnip', },
---     { name = 'cmp_nvim_r' },
---     { name = 'path', },
---     { name = 'buffer', },
---     })
--- })
-
-vim.keymap.set('i', '%%', ' %>% ', { buffer = 0 })
+vim.cmd("runtime! ftplugin/r.lua")
 vim.opt_local.wrap = true
+vim.opt_local.spell = true

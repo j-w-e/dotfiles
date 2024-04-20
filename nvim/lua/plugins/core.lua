@@ -5,6 +5,7 @@ return {
     dependencies = {
       'nvim-lua/plenary.nvim',
       'polirritmico/telescope-lazy-plugins.nvim',
+      'nvim-telescope/telescope-live-grep-args.nvim',
     },
     config = function()
       require('telescope').setup {
@@ -12,6 +13,7 @@ return {
           layout_strategy = 'flex',
           layout_config = { prompt_position = 'top' },
           sorting_strategy = 'ascending',
+          path_display = { 'smart' },
           mappings = {
             i = {
               ['<esc>'] = require('telescope.actions').close,
@@ -26,12 +28,12 @@ return {
             require('telescope.themes').get_dropdown(),
           },
           lazy_plugins = {
-            -- this does not seem to work???
             name_only = false, -- match only the `repo_name`, false to match the full `account/repo_name`
           },
         },
       }
       require('telescope').load_extension 'ui-select'
+      require('telescope').load_extension 'live_grep_args'
       -- require("telescope").load_extension("dap")
     end,
   },
@@ -75,59 +77,113 @@ return {
           end,
         },
         completion = { completeopt = 'menu,menuone,noinsert,noselect' },
-        mapping = {
-          ['<down>'] = cmp.mapping.select_next_item(),
-          ['<up>'] = cmp.mapping.select_prev_item(),
-          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-u>'] = cmp.mapping.scroll_docs(4),
-
-          ['<CR>'] = cmp.mapping {
+        mapping = cmp.mapping.preset.insert {
+          -- up, down, c-y, c-e, c-n, c-p already set by the preset
+          ['<tab>'] = {
             i = function(fallback)
-              if cmp.visible() and cmp.get_active_entry() then
-                cmp.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false }
+              if luasnip.locally_jumpable(1) then
+                luasnip.jump(1)
+              elseif has_words_before() then
+                cmp.complete_common_string()
               else
                 fallback()
               end
             end,
-            s = cmp.mapping.confirm { select = false },
-            c = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false },
+            s = function(fallback)
+              if luasnip.locally_jumpable(1) then
+                luasnip.jump(1)
+              else
+                fallback()
+              end
+            end,
           },
-          ['<C-n>'] = cmp.mapping(function(fallback)
-            if luasnip.expand_or_jumpable() then
-              luasnip.expand_or_jump()
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-          ['<C-p>'] = cmp.mapping(function(fallback)
-            if luasnip.jumpable(-1) then
-              luasnip.jump(-1)
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-          ['<C-e>'] = cmp.mapping.abort(),
-          ['<c-y>'] = cmp.mapping.confirm {
-            select = true,
+          ['<s-tab>'] = {
+            i = function(fallback)
+              if luasnip.locally_jumpable(-1) then
+                luasnip.jump(-1)
+              elseif has_words_before() then
+                cmp.complete_common_string()
+              else
+                fallback()
+              end
+            end,
+            s = function(fallback)
+              if luasnip.locally_jumpable(-1) then
+                luasnip.jump(-1)
+              else
+                fallback()
+              end
+            end,
           },
-
-          ['<Tab>'] = cmp.mapping(function(fallback)
-            if has_words_before() then
-              cmp.complete_common_string()
-            else
-              fallback()
-            end
-          end, { 'i', 's' }),
-          -- ['<Tab>'] = cmp.mapping(function(fallback)
-          --   if cmp.visible() then
-          --     cmp.select_next_item()
-          --   elseif has_words_before() then
-          --     cmp.complete()
-          --   else
-          --     fallback()
-          --   end
-          -- end, { 'i', 's' }),
+          ['<CR>'] = {
+            i = function(fallback)
+              if cmp.visible() and cmp.get_active_entry() then
+                cmp.confirm { select = false }
+              else
+                fallback()
+              end
+            end,
+          },
+          -- ['<c-space>'] = {
+          --   i = cmp.mapping.complete(),
+          -- },
         },
+        --   {
+        --   ['<down>'] = cmp.mapping.select_next_item(),
+        --   ['<up>'] = cmp.mapping.select_prev_item(),
+        --   ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+        --   ['<C-u>'] = cmp.mapping.scroll_docs(4),
+        --   ['<c-space>'] = cmp.mapping.complete(),
+        --
+        --   ['<CR>'] = cmp.mapping {
+        --     i = function(fallback)
+        --       if cmp.visible() and cmp.get_active_entry() then
+        --         cmp.confirm { select = false }
+        --       else
+        --         fallback()
+        --       end
+        --     end,
+        --     s = cmp.mapping.confirm { select = false },
+        --     c = cmp.mapping.confirm { behavior = cmp.ConfirmBehavior.Replace, select = false },
+        --   },
+        --   ['<C-n>'] = cmp.mapping(function(fallback)
+        --     if luasnip.expand_or_jumpable() then
+        --       luasnip.expand_or_jump()
+        --     else
+        --       fallback()
+        --     end
+        --   end, { 'i', 's' }),
+        --   ['<C-p>'] = cmp.mapping(function(fallback)
+        --     if luasnip.jumpable(-1) then
+        --       luasnip.jump(-1)
+        --     else
+        --       fallback()
+        --     end
+        --   end, { 'i', 's' }),
+        --   ['<C-e>'] = cmp.mapping.abort(),
+        --   ['<c-y>'] = cmp.mapping.confirm {
+        --     select = true,
+        --   },
+        --
+        --   ['<Tab>'] = cmp.mapping(function(fallback)
+        --     if has_words_before() then
+        --       cmp.complete_common_string()
+        --     elseif luasnip.expand_or_locally_jumpable() then
+        --       luasnip.expand_or_jump()
+        --     else
+        --       fallback()
+        --     end
+        --   end, { 'i', 's' }),
+        --   -- ['<Tab>'] = cmp.mapping(function(fallback)
+        --   --   if cmp.visible() then
+        --   --     cmp.select_next_item()
+        --   --   elseif has_words_before() then
+        --   --     cmp.complete()
+        --   --   else
+        --   --     fallback()
+        --   --   end
+        --   -- end, { 'i', 's' }),
+        -- },
         autocomplete = false,
 
         ---@diagnostic disable-next-line: missing-fields
@@ -145,21 +201,22 @@ return {
               tags = '[tag]',
               treesitter = '[ts]',
               emoji = '[emoji]',
+              cmp_r = '[r]',
             },
           },
         },
         sources = {
           { name = 'otter' }, -- for code chunks in quarto
+          { name = 'luasnip', keyword_length = 3, max_item_count = 3 },
           { name = 'path' },
           { name = 'nvim_lsp' },
           { name = 'nvim_lsp_signature_help' },
-          { name = 'luasnip', keyword_length = 3, max_item_count = 3 },
-          { name = 'pandoc_references' },
-          { name = 'buffer', keyword_length = 4, max_item_count = 3 },
-          { name = 'spell' },
           { name = 'treesitter', keyword_length = 5, max_item_count = 3 },
-          { name = 'emoji' },
           { name = 'cmp_r' },
+          { name = 'buffer', keyword_length = 4, max_item_count = 3 },
+          { name = 'pandoc_references' },
+          { name = 'spell' },
+          { name = 'emoji' },
         },
         -- view = {
         --   entries = 'native',
@@ -198,7 +255,7 @@ return {
       })
 
       -- for friendly snippets
-      require('luasnip.loaders.from_vscode').lazy_load()
+      require('luasnip.loaders.from_vscode').lazy_load {}
       -- for custom snippets
       require('luasnip.loaders.from_vscode').lazy_load { paths = { vim.fn.stdpath 'config' .. '/snips' } }
       -- link quarto and rmarkdown to markdown snippets
@@ -208,7 +265,9 @@ return {
       require('cmp_r').setup {}
     end,
   },
+
   { 'folke/which-key.nvim', opts = {} },
+
   {
     'lewis6991/gitsigns.nvim',
     opts = {

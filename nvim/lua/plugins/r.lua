@@ -1,23 +1,23 @@
 return {
   {
-    'quarto-dev/quarto-nvim',
-    ft = { 'quarto' },
+    "quarto-dev/quarto-nvim",
+    ft = { "quarto" },
     dev = false,
     opts = {
       lspFeatures = {
-        languages = { 'r', 'python', 'julia', 'bash', 'lua', 'html', 'dot', 'javascript', 'typescript', 'ojs' },
+        languages = { "r", "python", "julia", "bash", "lua", "html", "dot", "javascript", "typescript", "ojs" },
       },
       codeRunner = {
         enabled = false,
-        default_method = 'slime',
+        default_method = "slime",
       },
     },
     dependencies = {
       {
-        'jmbuhr/otter.nvim',
+        "jmbuhr/otter.nvim",
         dev = false,
         dependencies = {
-          { 'neovim/nvim-lspconfig' },
+          { "neovim/nvim-lspconfig" },
         },
         opts = {
           -- lsp = {
@@ -35,44 +35,53 @@ return {
   },
 
   {
-    'R-nvim/R.nvim',
+    "R-nvim/R.nvim",
     config = function()
       -- Create a table with the options to be passed to setup()
       local opts = {
-        R_args = { '--quiet', '--no-save' },
+        R_args = { "--quiet", "--no-save" },
         hook = {
-          after_config = function()
+          on_filetype = function()
             -- This function will be called at the FileType event
             -- of files supported by R.nvim. This is an
             -- opportunity to create mappings local to buffers.
-            if vim.o.syntax ~= 'rbrowser' then
-              vim.api.nvim_buf_set_keymap(0, 'n', '<Enter>', '<Plug>RDSendLine', {})
-              vim.api.nvim_buf_set_keymap(0, 'v', '<Enter>', '<Plug>RSendSelection', {})
-            end
+            vim.api.nvim_buf_set_keymap(0, "n", "<Enter>", "<Plug>RDSendLine", {})
+            vim.api.nvim_buf_set_keymap(0, "v", "<Enter>", "<Plug>RSendSelection", {})
+            vim.api.nvim_buf_set_keymap(0, "n", "<localleader>rr", "<cmd>RMapsDesc<cr>", {})
+            vim.api.nvim_buf_set_keymap(0, "n", "<localleader>rx", "<Plug>RClose", {})
+            vim.api.nvim_buf_set_keymap(0, "i", "%%", " %>%", {})
+            vim.api.nvim_buf_set_keymap(0, "i", "<c-,>", " |>", {})
+            vim.api.nvim_buf_set_keymap(0, "n", "<localleader><Enter>", "<Plug>RSendLine", {})
+            vim.api.nvim_buf_set_keymap(0, "n", "<localleader>b", "<Plug>RPreviousRChunk", {})
+            vim.api.nvim_buf_set_keymap(0, "n", "<localleader>n", "<Plug>RNextRChunk", {})
           end,
         },
         min_editor_width = 72,
         rconsole_width = 78,
         disable_cmds = {
-          'RClearConsole',
-          'RCustomStart',
-          'RSPlot',
-          'RSaveClose',
+          "RClearConsole",
+          "RCustomStart",
+          "RSPlot",
+          "RSaveClose",
+          "RDSendMBlock",
+          "RSendMBlock",
         },
+        assign_map = "<c-->",
+        pdfviewer = "open",
       }
       -- Check if the environment variable "R_AUTO_START" exists.
       -- If using fish shell, you could put in your config.fish:
       -- alias r "R_AUTO_START=true nvim"
-      if vim.env.R_AUTO_START == 'true' then
-        opts.auto_start = 1
-        opts.objbr_auto_start = true
-      end
-      require('r').setup(opts)
+      -- if vim.env.R_AUTO_START == "true" then
+      opts.auto_start = "on startup"
+      -- opts.objbr_auto_start = true
+      -- end
+      require("r").setup(opts)
     end,
     lazy = false,
   },
 
-  { 'R-nvim/cmp-r' },
+  { "R-nvim/cmp-r" },
 
   -- { -- show images in nvim!
   --   '3rd/image.nvim',

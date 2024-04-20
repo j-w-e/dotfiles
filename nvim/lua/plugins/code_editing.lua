@@ -124,7 +124,7 @@ return {
           ---@diagnostic disable-next-line: inject-field
           client.server_capabilities.document_formatting = true
 
-          map('gS', telescope.lsp_document_symbols, '[g]o so [S]ymbols')
+          -- map("gS", telescope.lsp_document_symbols, "[g]o so [S]ymbols")
           map('gD', telescope.lsp_type_definitions, '[g]o to type [D]efinition')
           map('gd', telescope.lsp_definitions, '[g]o to [d]efinition')
           map('K', '<cmd>lua vim.lsp.buf.hover()<CR>', '[K] hover documentation')
@@ -362,15 +362,34 @@ return {
     'stevearc/conform.nvim',
     enabled = true,
     config = function()
+      local slow_format_filetypes = { 'r' }
       require('conform').setup {
         notify_on_error = false,
-        format_on_save = {
-          timeout_ms = 500,
-          lsp_fallback = true,
-        },
+        format_on_save = function(bufnr)
+          if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+            return
+          end
+          if slow_format_filetypes[vim.bo[bufnr].filetype] then
+            return
+          end
+          local function on_format(err)
+            if err and err:match 'timeout$' then
+              slow_format_filetypes[vim.bo[bufnr].filetype] = true
+            end
+          end
+
+          return { timeout_ms = 200, lsp_fallback = true }, on_format
+        end,
+        format_after_save = function(bufnr)
+          if not slow_format_filetypes[vim.bo[bufnr].filetype] then
+            return
+          end
+          return { lsp_fallback = true }
+        end,
         formatters_by_ft = {
           lua = { 'mystylua' },
           python = { 'isort', 'black' },
+          ['_'] = { 'trim_whitespace' },
         },
         formatters = {
           mystylua = {

@@ -4,14 +4,22 @@ vim.opt_local.wrap = true
 vim.opt_local.conceallevel = 2
 
 -- Using Bullets.vim
-vim.cmd [[nmap <leader>rn <Plug>(bullets-renumber)]]
-vim.cmd [[vmap <leader>rn <Plug>(bullets-renumber)]]
+vim.keymap.set({ 'n', 'v' }, '<leader>rn', '<Plug>(bullets-renumber)', { buffer = 0 })
+vim.keymap.set('i', '<cr>', '<Plug>(bullets-newline)', { buffer = 0 })
+vim.keymap.set('n', 'o', '<Plug>(bullets-newline)', { buffer = 0 })
+vim.keymap.set('i', '<C-t>', '<Plug>(bullets-demote)', { buffer = 0 })
+vim.keymap.set('n', '>>', '<Plug>(bullets-demote)', { buffer = 0 })
+vim.keymap.set('v', '>', '<Plug>(bullets-demote)', { buffer = 0 })
+vim.keymap.set('i', '<C-d>', '<Plug>(bullets-promote)', { buffer = 0 })
+vim.keymap.set('n', '<<', '<Plug>(bullets-promote)', { buffer = 0 })
+vim.keymap.set('v', '<', '<Plug>(bullets-promote)', { buffer = 0 })
 
 vim.cmd [[
-au BufEnter * syn region markdownLink matchgroup=markdownLinkDelimiter start="(" end=")\ze\_s" keepend contained conceal contains=markdownUrl concealends
+au BufEnter * syn region markdownLink matchgroup=markdownLinkDelimiter start="(" end=")\ze\_W" keepend contained conceal contains=markdownUrl concealends
 au BufEnter * hi link tkLink markdownLinkText
 ]]
 
+---@diagnostic disable-next-line: inject-field
 vim.b.minisurround_config = {
   custom_surroundings = {
     s = {
@@ -31,4 +39,5 @@ vim.b.minisurround_config = {
 
 vim.opt_local.foldmethod = 'expr'
 vim.opt_local.foldexpr = 'nvim_treesitter#foldexpr()'
-vim.opt_local.foldlevelstart = 2
+vim.opt_local.foldlevelstart = 99
+vim.opt_local.foldlevel = 99

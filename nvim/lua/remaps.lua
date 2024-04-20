@@ -27,6 +27,7 @@ nmap('<leader>vs', MiniStarter.open, 'show start screen')
 nmap('<leader>vl', '<cmd>Lazy<cr>', 'show Lazy')
 nmap('<leader>vm', '<cmd>Mason<cr>', 'show Mason')
 nmap('<leader><space>', 'zt', 'zt')
+nmap('<leader>j', 'zz', 'zz')
 wk.register({
   name = 'marks',
   ['`'] = "'",
@@ -65,6 +66,7 @@ nmap('<leader>sd', builtin.diagnostics, 'search diagnostics')
 nmap('<leader>sn', '<cmd>noh<cr>', 'no highlight')
 nmap('<leader>tt', '<cmd>Telescope<cr>', 'open Telescope')
 nmap('<leader>vp', '<cmd>Telescope lazy_plugins<cr>', 'lazy_plugins')
+nmap('<leader>tr', '<cmd>Telescope resume<cr>', 'Telescope resume')
 
 -- Windows / buffers
 nmap('<leader>bn', '<cmd>bn<cr>', 'next buffer')
@@ -106,13 +108,15 @@ imap(',', ',<c-g>u')
 imap('.', '.<c-g>u')
 imap(';', ';<c-g>u')
 
--- yank ring
-vim.keymap.set({ 'n', 'x' }, 'p', '<Plug>(YankyPutAfter)')
-vim.keymap.set({ 'n', 'x' }, 'P', '<Plug>(YankyPutBefore)')
-vim.keymap.set('n', '<c-f>', '<Plug>(YankyCycleForward)')
-vim.keymap.set('n', '<c-b>', '<Plug>(YankyCycleBackward)')
-vim.keymap.set({ 'n', 'x' }, 'y', '<Plug>(YankyYank)')
-nmap('<leader>ty', '<cmd>lua require("telescope").extensions.yank_history.yank_history()<cr>', 'search current word')
+-- yank
+nmap('<leader>y', '<cmd>YankBank<cr>', 'yankbank')
+-- -- yank ring
+-- vim.keymap.set({ 'n', 'x' }, 'p', '<Plug>(YankyPutAfter)')
+-- vim.keymap.set({ 'n', 'x' }, 'P', '<Plug>(YankyPutBefore)')
+-- vim.keymap.set('n', '<c-f>', '<Plug>(YankyCycleForward)')
+-- vim.keymap.set('n', '<c-b>', '<Plug>(YankyCycleBackward)')
+-- vim.keymap.set({ 'n', 'x' }, 'y', '<Plug>(YankyYank)')
+-- nmap('<leader>ty', '<cmd>lua require("telescope").extensions.yank_history.yank_history()<cr>', 'search current word')
 
 -- Smart dd
 vim.keymap.set('n', 'dd', function()
@@ -260,10 +264,10 @@ wk.register({
 -- insert mode
 wk.register({
   ['<m-->'] = { ' <- ', 'assign' },
-  ['<m-m>'] = { ' |>', 'pipe' },
+  ['<m-m>'] = { ' |> ', 'pipe' },
   ['<m-i>'] = { insert_r_chunk, 'r code chunk' },
-  ['<cm-i>'] = { insert_py_chunk, 'python code chunk' },
-  ['<m-I>'] = { insert_py_chunk, 'python code chunk' },
+  -- ['<cm-i>'] = { insert_py_chunk, 'python code chunk' },
+  -- ['<m-I>'] = { insert_py_chunk, 'python code chunk' },
   ['<c-x><c-x>'] = { '<c-x><c-o>', 'omnifunc completion' },
 }, { mode = 'i' })
 
@@ -296,7 +300,7 @@ wk.register({
     f = { '<cmd>Telescope find_files<cr>', '[f]iles' },
     h = { '<cmd>Telescope help_tags<cr>', '[h]elp' },
     k = { '<cmd>Telescope keymaps<cr>', '[k]eymaps' },
-    r = { '<cmd>Telescope lsp_references<cr>', '[r]eferences' },
+    r = { require('telescope.builtin').oldfiles, '[r]ecent files' },
     g = { '<cmd>Telescope live_grep<cr>', '[g]rep' },
     b = { '<cmd>Telescope current_buffer_fuzzy_find<cr>', '[b]uffer fuzzy find' },
     m = { '<cmd>Telescope marks<cr>', '[m]arks' },
@@ -350,11 +354,6 @@ wk.register({
     D = { vim.lsp.buf.type_definition, 'type [D]efinition' },
     a = { vim.lsp.buf.code_action, 'codr [a]ction' },
     e = { vim.diagnostic.open_float, 'diagnostics (show hover [e]rror)' },
-    d = {
-      name = '[d]iagnostics',
-      d = { vim.diagnostic.disable, '[d]isable' },
-      e = { vim.diagnostic.enable, '[e]nable' },
-    },
     g = { ':Neogen<cr>', 'neo[g]en docstring' },
     s = { ':ls!<cr>', '[l]ist all buffers' },
   },
@@ -365,31 +364,38 @@ wk.register({
     r = { insert_r_chunk, '[r] code chunk' },
     p = { insert_py_chunk, '[p]ython code chunk' },
   },
-  q = {
-    name = '[q]uarto',
-    a = { ':QuartoActivate<cr>', '[a]ctivate' },
-    p = { ":lua require'quarto'.quartoPreview()<cr>", '[p]review' },
-    q = { ":lua require'quarto'.quartoClosePreview()<cr>", '[q]uiet preview' },
-    h = { ':QuartoHelp ', '[h]elp' },
-    r = {
-      name = '[r]un',
-      r = { ':QuartoSendAbove<cr>', 'to cu[r]sor' },
-      a = { ':QuartoSendAll<cr>', 'run [a]ll' },
-      b = { ':QuartoSendBelow<cr>', 'run [b]elow' },
-    },
-    e = { ":lua require'otter'.export()<cr>", '[e]xport' },
-    E = { ":lua require'otter'.export(true)<cr>", '[E]xport with overwrite' },
-  },
+  -- q = {
+  --   name = '[q]uarto',
+  --   a = { ':QuartoActivate<cr>', '[a]ctivate' },
+  --   p = { ":lua require'quarto'.quartoPreview()<cr>", '[p]review' },
+  --   q = { ":lua require'quarto'.quartoClosePreview()<cr>", '[q]uit preview' },
+  --   h = { ':QuartoHelp ', '[h]elp' },
+  --   -- r = {
+  --   --   name = '[r]un',
+  --   --   r = { ':QuartoSendAbove<cr>', 'to cu[r]sor' },
+  --   --   a = { ':QuartoSendAll<cr>', 'run [a]ll' },
+  --   --   b = { ':QuartoSendBelow<cr>', 'run [b]elow' },
+  --   -- },
+  --   e = { ":lua require'otter'.export()<cr>", '[e]xport' },
+  --   E = { ":lua require'otter'.export(true)<cr>", '[E]xport with overwrite' },
+  -- },
   -- r = {
   --   name = '[r] R specific tools',
   --   t = { show_r_table, 'show [t]able' },
   -- },
+  t = {
+    o = {
+      name = 'toggle',
+      f = { '<cmd>lua vim.b.disable_autoformat = not vim.b.disable_autoformat<cr>', 'disable autoformat' },
+    },
+  },
   v = {
     name = '[v]im',
     c = { ':Telescope colorscheme<cr>', '[c]olortheme' },
     l = { ':Lazy<cr>', '[l]azy package manager' },
     m = { ':Mason<cr>', '[m]ason software installer' },
-    s = { ':e $MYVIMRC | :cd %:p:h | split . | wincmd k<cr>', '[s]ettings, edit vimrc' },
+    s = { '<cmd>e $MYVIMRC<cr><cmd>lcd %:p:h<cr>', '[s]ettings, edit vimrc' },
+    -- s = { ':e $MYVIMRC | :cd %:p:h | split . | wincmd k<cr>', '[s]ettings, edit vimrc' },
     h = { ':execute "h " . expand("<cword>")<cr>', 'vim [h]elp for current word' },
   },
   -- x = {

@@ -1,5 +1,5 @@
 local setup = require('mini.hues').setup
-setup({ background = '#29193d', foreground = '#ba85fa', accent = 'orange'})
+setup { background = '#29193d', foreground = '#ba85fa', accent = 'purple' }
 
 vim.g.neovide_padding_top = 5
 vim.g.neovide_padding_bottom = 5
@@ -17,7 +17,7 @@ vim.g.neovide_cursor_animate_in_insert_mode = true
 vim.g.neovide_cursor_animate_command_line = false
 vim.g.neovide_cursor_unfocused_outline_width = 0.125
 
-vim.g.neovide_cursor_vfx_mode = ""
+vim.g.neovide_cursor_vfx_mode = ''
 
 vim.g.neovide_scale_factor = 1.0
 
