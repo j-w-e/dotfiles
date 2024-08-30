@@ -28,11 +28,10 @@ nmap('<leader>vl', '<cmd>Lazy<cr>', 'show Lazy')
 nmap('<leader>vm', '<cmd>Mason<cr>', 'show Mason')
 nmap('<leader><space>', 'zt', 'zt')
 nmap('<leader>j', 'zz', 'zz')
-wk.register({
-  name = 'marks',
-  ['`'] = "'",
-  ["'"] = '`',
-}, { nowait = true })
+wk.add {
+  { "'", desc = '`', nowait = true },
+  { '`', desc = "'", nowait = true },
+}
 nmap('<leader>.', '<cmd>ZenMode<cr>', 'ZenMode')
 nmap('x', '"_x', 'delete to black hole')
 map('v', 'x', '"_x', 'delete to black hole')
@@ -236,169 +235,93 @@ local insert_py_chunk = function()
 end
 
 -- normal mode
-wk.register({
-  ['<esc>'] = { '<cmd>noh<cr>', 'remove search highlight' },
-  ['n'] = { 'nzzzv', 'center search' },
-  ['gN'] = { 'Nzzzv', 'center search' },
-  ['gf'] = { ':e <cfile><CR>', 'edit file' },
-  [']q'] = { ':silent cnext<cr>', 'quickfix next' },
-  ['[q'] = { ':silent cprev<cr>', 'quickfix prev' },
-  ['z?'] = { ':setlocal spell!<cr>', 'toggle spellcheck' },
-}, { mode = 'n', silent = true })
+wk.add({
+  { '<esc>', '<cmd>noh<cr>', desc = 'remove search highlight' },
+  { '[q', ':silent cprev<cr>', desc = 'quickfix prev' },
+  { ']q', ':silent cnext<cr>', desc = 'quickfix next' },
+  { 'gN', 'Nzzzv', desc = 'center search' },
+  { 'gf', ':e <cfile><CR>', desc = 'edit file' },
+  { 'n', 'nzzzv', desc = 'center search' },
+  { 'z?', ':setlocal spell!<cr>', desc = 'toggle spellcheck' },
+}, { mode = 'n' })
 
 -- visual mode
-wk.register({
+wk.add({
   -- ['<cr>'] = { send_region, 'run code region' },
   -- ['<M-j>'] = { ":m'>+<cr>`<my`>mzgv`yo`z", 'move line down' },
   -- ['<M-k>'] = { ":m'<-2<cr>`>my`<mzgv`yo`z", 'move line up' },
-  ['.'] = { ':norm .<cr>', 'repat last normal mode command' },
-  ['q'] = { ':norm @q<cr>', 'repat q macro' },
+  { '.', ':norm .<cr>', desc = 'repat last normal mode command', mode = 'v' },
+  { 'q', ':norm @q<cr>', desc = 'repat q macro', mode = 'v' },
 }, { mode = 'v' })
 
 -- visual with <leader>
-wk.register({
-  p = { '"_dP', 'replace without overwriting reg' },
-  d = { '"_d', 'delete without overwriting reg' },
+wk.add({
+    { "<leader>d", '"_d', desc = "delete without overwriting reg", mode = "v" },
+    { "<leader>p", '"_dP', desc = "replace without overwriting reg", mode = "v" },
 }, { mode = 'v', prefix = '<leader>' })
 
--- insert mode
-wk.register({
-  ['<m-->'] = { ' <- ', 'assign' },
-  ['<m-m>'] = { ' |> ', 'pipe' },
-  ['<m-i>'] = { insert_r_chunk, 'r code chunk' },
-  -- ['<cm-i>'] = { insert_py_chunk, 'python code chunk' },
-  -- ['<m-I>'] = { insert_py_chunk, 'python code chunk' },
-  ['<c-x><c-x>'] = { '<c-x><c-o>', 'omnifunc completion' },
-}, { mode = 'i' })
 
 -- nmap('<leader><cr>', send_cell)
 
 -- normal mode with <leader>
-wk.register({
-  -- ['<cr>'] = { send_cell, 'run code cell' },
-  c = {
-    name = '[c]ode / [c]ell / [c]hunk',
-    -- c = { ':SlimeConfig<cr>', 'slime [c]onfig' },
-    n = { ':split term://$SHELL<cr>', '[n]ew terminal with shell' },
-    r = {
+wk.add({
+  {
+    { "<leader>c", group = "[c]ode / [c]ell / [c]hunk" },
+    { "<leader>cn", ":split term://$SHELL<cr>", desc = "[n]ew terminal with shell" },
+    { "<leader>co", group = "[o]open code chunk" },
+    { "<leader>cp", ":split term://python<cr>", desc = "new [p]ython terminal" },
+    { "<leader>cr", 
       function()
         vim.b['quarto_is_r_mode'] = true
         vim.cmd 'split term://R'
-      end,
-      'new [R] terminal',
-    },
-    p = { ':split term://python<cr>', 'new [p]ython terminal' },
-    o = {
-      name = '[o]open code chunk',
-    },
-  },
-  d = {
-    name = '[d]ebug',
-  },
-  f = {
-    name = '[f]ind (telescope)',
-    f = { '<cmd>Telescope find_files<cr>', '[f]iles' },
-    h = { '<cmd>Telescope help_tags<cr>', '[h]elp' },
-    k = { '<cmd>Telescope keymaps<cr>', '[k]eymaps' },
-    r = { require('telescope.builtin').oldfiles, '[r]ecent files' },
-    g = { '<cmd>Telescope live_grep<cr>', '[g]rep' },
-    b = { '<cmd>Telescope current_buffer_fuzzy_find<cr>', '[b]uffer fuzzy find' },
-    m = { '<cmd>Telescope marks<cr>', '[m]arks' },
-    M = { '<cmd>Telescope man_pages<cr>', '[M]an pages' },
-    c = { '<cmd>Telescope git_commits<cr>', 'git [c]ommits' },
-    s = { '<cmd>Telescope lsp_document_symbols<cr>', 'document [s]ymbols' },
-    d = { '<cmd>Telescope buffers<cr>', '[d] buffers' },
-    q = { '<cmd>Telescope quickfix<cr>', '[q]uickfix' },
-    l = { '<cmd>Telescope loclist<cr>', '[l]oclist' },
-    j = { '<cmd>Telescope jumplist<cr>', '[j]umplist' },
-  },
-  g = {
-    name = '[g]it',
-    c = { ':GitConflictRefresh<cr>', '[c]onflict' },
-    s = { ':Gitsigns<cr>', 'git [s]igns' },
-    wc = { ":lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>", 'worktree create' },
-    ws = { ":lua require('telescope').extensions.git_worktree.git_worktrees()<cr>", 'worktree switch' },
-    d = {
-      name = '[d]iff',
-      o = { ':DiffviewOpen<cr>', '[o]pen' },
-      c = { ':DiffviewClose<cr>', '[c]lose' },
-    },
-    b = {
-      name = '[b]lame',
-      b = { ':GitBlameToggle<cr>', '[b]lame toggle virtual text' },
-      o = { ':GitBlameOpenCommitURL<cr>', '[o]pen' },
-      c = { ':GitBlameCopyCommitURL<cr>', '[c]opy' },
-    },
-  },
-  -- h = {
-  --   name = '[h]elp / [h]ide / debug',
-  --   c = {
-  --     name = '[c]onceal',
-  --     h = { ':set conceallevel=1<cr>', '[h]ide/conceal' },
-  --     s = { ':set conceallevel=0<cr>', '[s]how/unconceal' },
-  --   },
-  --   t = {
-  --     name = '[t]reesitter',
-  --     t = { vim.treesitter.inspect_tree, 'show [t]ree' },
-  --   },
-  -- },
-  -- i = {
-  --   name = '[i]nsert',
-  --   i = { ':PasteImage<cr>', '[i]mage from clipboard' },
-  -- },
-  l = {
-    name = '[l]anguage/lsp',
-    r = { '<cmd>Telescope lsp_references<cr>', '[r]eferences' },
-    R = { '[R]ename' },
-    D = { vim.lsp.buf.type_definition, 'type [D]efinition' },
-    a = { vim.lsp.buf.code_action, 'codr [a]ction' },
-    e = { vim.diagnostic.open_float, 'diagnostics (show hover [e]rror)' },
-    g = { ':Neogen<cr>', 'neo[g]en docstring' },
-    s = { ':ls!<cr>', '[l]ist all buffers' },
-  },
-  o = {
-    name = '[o]tter & c[o]de',
-    a = { require('otter').dev_setup, 'otter [a]ctivate' },
-    c = { 'O# %%<cr>', 'magic [c]omment code chunk # %%' },
-    r = { insert_r_chunk, '[r] code chunk' },
-    p = { insert_py_chunk, '[p]ython code chunk' },
-  },
-  -- q = {
-  --   name = '[q]uarto',
-  --   a = { ':QuartoActivate<cr>', '[a]ctivate' },
-  --   p = { ":lua require'quarto'.quartoPreview()<cr>", '[p]review' },
-  --   q = { ":lua require'quarto'.quartoClosePreview()<cr>", '[q]uit preview' },
-  --   h = { ':QuartoHelp ', '[h]elp' },
-  --   -- r = {
-  --   --   name = '[r]un',
-  --   --   r = { ':QuartoSendAbove<cr>', 'to cu[r]sor' },
-  --   --   a = { ':QuartoSendAll<cr>', 'run [a]ll' },
-  --   --   b = { ':QuartoSendBelow<cr>', 'run [b]elow' },
-  --   -- },
-  --   e = { ":lua require'otter'.export()<cr>", '[e]xport' },
-  --   E = { ":lua require'otter'.export(true)<cr>", '[E]xport with overwrite' },
-  -- },
-  -- r = {
-  --   name = '[r] R specific tools',
-  --   t = { show_r_table, 'show [t]able' },
-  -- },
-  t = {
-    o = {
-      name = 'toggle',
-      f = { '<cmd>lua vim.b.disable_autoformat = not vim.b.disable_autoformat<cr>', 'disable autoformat' },
-    },
-  },
-  v = {
-    name = '[v]im',
-    c = { ':Telescope colorscheme<cr>', '[c]olortheme' },
-    l = { ':Lazy<cr>', '[l]azy package manager' },
-    m = { ':Mason<cr>', '[m]ason software installer' },
-    s = { '<cmd>e $MYVIMRC<cr><cmd>lcd %:p:h<cr>', '[s]ettings, edit vimrc' },
-    -- s = { ':e $MYVIMRC | :cd %:p:h | split . | wincmd k<cr>', '[s]ettings, edit vimrc' },
-    h = { ':execute "h " . expand("<cword>")<cr>', 'vim [h]elp for current word' },
-  },
-  -- x = {
-  --   name = 'e[x]ecute',
-  --   x = { ':w<cr>:source %<cr>', '[x] source %' },
-  -- },
+      end, desc = "new [R] terminal" },
+    { "<leader>d", group = "[d]ebug" },
+    { "<leader>f", group = "[f]ind (telescope)" },
+    { "<leader>fM", "<cmd>Telescope man_pages<cr>", desc = "[M]an pages" },
+    { "<leader>fb", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "[b]uffer fuzzy find" },
+    { "<leader>fc", "<cmd>Telescope git_commits<cr>", desc = "git [c]ommits" },
+    { "<leader>fd", "<cmd>Telescope buffers<cr>", desc = "[d] buffers" },
+    { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "[f]iles" },
+    { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "[g]rep" },
+    { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "[h]elp" },
+    { "<leader>fj", "<cmd>Telescope jumplist<cr>", desc = "[j]umplist" },
+    { "<leader>fk", "<cmd>Telescope keymaps<cr>", desc = "[k]eymaps" },
+    { "<leader>fl", "<cmd>Telescope loclist<cr>", desc = "[l]oclist" },
+    { "<leader>fm", "<cmd>Telescope marks<cr>", desc = "[m]arks" },
+    { "<leader>fq", "<cmd>Telescope quickfix<cr>", desc = "[q]uickfix" },
+    { "<leader>fr", require('telescope.builtin').oldfiles, desc = "[r]ecent files" },
+    { "<leader>fs", "<cmd>Telescope lsp_document_symbols<cr>", desc = "document [s]ymbols" },
+    { "<leader>g", group = "[g]it" },
+    { "<leader>gb", group = "[b]lame" },
+    { "<leader>gbb", ":GitBlameToggle<cr>", desc = "[b]lame toggle virtual text" },
+    { "<leader>gbc", ":GitBlameCopyCommitURL<cr>", desc = "[c]opy" },
+    { "<leader>gbo", ":GitBlameOpenCommitURL<cr>", desc = "[o]pen" },
+    { "<leader>gc", ":GitConflictRefresh<cr>", desc = "[c]onflict" },
+    { "<leader>gd", group = "[d]iff" },
+    { "<leader>gdc", ":DiffviewClose<cr>", desc = "[c]lose" },
+    { "<leader>gdo", ":DiffviewOpen<cr>", desc = "[o]pen" },
+    { "<leader>gs", ":Gitsigns<cr>", desc = "git [s]igns" },
+    { "<leader>gwc", ":lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>", desc = "worktree create" },
+    { "<leader>gws", ":lua require('telescope').extensions.git_worktree.git_worktrees()<cr>", desc = "worktree switch" },
+    { "<leader>l", group = "[l]anguage/lsp" },
+    { "<leader>lD", vim.lsp.buf.type_definition, desc = "type [D]efinition" },
+    { "<leader>lR", desc = "[R]ename" },
+    { "<leader>la", vim.lsp.buf.code_action, desc = "codr [a]ction" },
+    { "<leader>le", vim.diagnostic.open_float, desc = "diagnostics (show hover [e]rror)" },
+    { "<leader>lg", ":Neogen<cr>", desc = "neo[g]en docstring" },
+    { "<leader>lr", "<cmd>Telescope lsp_references<cr>", desc = "[r]eferences" },
+    { "<leader>ls", ":ls!<cr>", desc = "[l]ist all buffers" },
+    { "<leader>o", group = "[o]tter & c[o]de" },
+    { "<leader>oc", "O# %%<cr>", desc = "magic [c]omment code chunk # %%" },
+    { "<leader>op", insert_py_chunk, desc = "[p]ython code chunk" },
+    { "<leader>or", insert_r_chunk, desc = "[r] code chunk" },
+    { "<leader>to", group = "toggle" },
+    { "<leader>tof", "<cmd>lua vim.b.disable_autoformat = not vim.b.disable_autoformat<cr>", desc = "disable autoformat" },
+    { "<leader>v", group = "[v]im" },
+    { "<leader>vc", ":Telescope colorscheme<cr>", desc = "[c]olortheme" },
+    { "<leader>vh", ':execute "h " . expand("<cword>")<cr>', desc = "vim [h]elp for current word" },
+    { "<leader>vl", ":Lazy<cr>", desc = "[l]azy package manager" },
+    { "<leader>vm", ":Mason<cr>", desc = "[m]ason software installer" },
+    { "<leader>vs", "<cmd>e $MYVIMRC<cr><cmd>lcd %:p:h<cr>", desc = "[s]ettings, edit vimrc" },
+  }
 }, { mode = 'n', prefix = '<leader>' })
