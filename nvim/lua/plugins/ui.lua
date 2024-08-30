@@ -110,55 +110,98 @@ return {
 
   {
     'nvimtools/hydra.nvim',
-    -- config = function ()
-    -- local function keys(str)
-    --   return function()
-    --     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(str, true, false, true), "m", true)
-    --   end
-    -- end
-    --
-    -- local hydra = require("hydra")
-    -- hydra({
-    --     name = "R REPL",
-    --     hint = [[
-    --       _j_/_k_: move down/up  _r_: run cell
-    --       _l_: run line  _R_: run above
-    --       ^^     _<esc>_/_q_: exit ]],
-    --     config = {
-    --         color = "teal",
-    --         invoke_on_body = true,
-    --         hint = {
-    --             border = "rounded", -- you can change the border if you want
-    --         },
-    --     },
-    --     mode = { "n" },
-    --     body = "<localleader>j", -- this is the key that triggers the hydra
-    --     heads = {
-    --         -- { "j", keys("]b") },
-    --         -- { "k", keys("[b") },
-    --         -- { "r", ":QuartoSend<CR>" },
-    --         -- { "l", ":QuartoSendLine<CR>" },
-    --         -- { "R", ":RSendLine<CR>" },
-    --         -- { "<esc>", nil, { exit = true } },
-    --         -- { "q", nil, { exit = true } },
-    --     },
-    -- })
-    -- end
+    config = function()
+      local hydra = require 'hydra'
+      hydra {
+        name = 'Side scroll',
+        hint = [[ Side scroll ]],
+        mode = 'n',
+        body = 'z',
+        heads = {
+          { 'h', '5zh' },
+          { 'l', '5zl', { desc = '←/→' } },
+          { 'H', 'zH' },
+          { 'L', 'zL', { desc = 'half screen ←/→' } },
+        },
+      }
+      hydra {
+        name = 'Buffers',
+        hint = [[Buffers]],
+        mode = 'n',
+        body = 't',
+        heads = {
+          {
+            'h',
+            function()
+              vim.cmd 'bprev'
+            end,
+          },
+          {
+            'l',
+            function()
+              vim.cmd 'bnext'
+            end,
+          },
+          { '<Esc>', nil, { exit = true } },
+        },
+      }
+      -- hydra {
+      --   name = 'R chunks',
+      --   hint = [[ Navigate R chunks ]],
+      --   mode = 'n',
+      --   body = 'z',
+      --   heads = {
+      --     { 'h', '5zh' },
+      --     { 'l', '5zl', { desc = '←/→' } },
+      --     { 'H', 'zH' },
+      --     { 'L', 'zL', { desc = 'half screen ←/→' } },
+      --   },
+      -- }
+    end,
   },
 
-  {
-    'ptdewey/yankbank-nvim',
-    name = 'yankbank',
-    opts = {
-      max_entries = 9,
-      num_behavior = 'jump',
-      registers = {
-        yank_register = '@',
-      },
-    },
-  },
+  -- {
+  --   'ptdewey/yankbank-nvim',
+  --   name = 'yankbank',
+  --   opts = {
+  --     max_entries = 9,
+  --     num_behavior = 'jump',
+  --     registers = {
+  --       yank_register = '@',
+  --     },
+  --   },
+  -- },
   -- colorscheme
-  { 'ray-x/aurora' },
-  { 'rktjmp/lush.nvim' },
-  { 'bluz71/vim-nightfly-colors', name = 'nightfly', lazy = false, priority = 1000 },
+  -- { 'ray-x/aurora' },
+  -- { 'e-q/okcolors.nvim' },
+  -- {
+  --   'rose-pine/neovim',
+  --   name = 'rose-pine',
+  --   opts = {
+  --     variant = 'moon',
+  --     groups = { todo = 'gold' },
+  --     highlight_groups = { Normal = { fg = 'iris' }, MiniHipatternsTodo = { fg = 'gold' } },
+  --   },
+  -- },
+  -- { 'fynnfluegge/monet.nvim' },
+  -- { "rktjmp/lush.nvim" },
+  -- { 'rebelot/kanagawa.nvim' },
+  -- { 'marko-cerovac/material.nvim' },
+  -- { 'Mofiqul/dracula.nvim' },
+  -- { "jim-at-jibba/ariake.nvim" },
+  { 'j-w-e/ariake.nvim' },
+  -- {
+  --   'eldritch-theme/eldritch.nvim',
+  --   opts = {
+  --     on_colors = function(colors)
+  --       colors.fg = colors.purple
+  --     end,
+  --     on_highlights = function(highlights, colors)
+  --       highlights.String = { fg = colors.dark_green }
+  --     end,
+  --   },
+  -- },
+  -- { 'bluz71/vim-nightfly-colors', name = 'nightfly', lazy = false, priority = 1000 },
+  { 'folke/tokyonight.nvim', lazy = false, priority = 1000, opts = { style = "storm" } },
+  -- { "NTBBloodbath/sweetie.nvim" },
 }

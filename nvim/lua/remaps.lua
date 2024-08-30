@@ -58,7 +58,7 @@ nmap('<leader>ff', builtin.find_files, 'find files')
 nmap('<leader>fr', builtin.oldfiles, 'find recent files')
 nmap('<leader>fg', builtin.git_files, 'find git files')
 nmap('<leader>sg', builtin.live_grep, 'grep string')
-nmap('<leader>tb', builtin.buffers, 'find buffers')
+nmap('<leader>t<space>', builtin.buffers, 'find buffers')
 nmap('<leader>sh', builtin.help_tags, 'search help')
 nmap('<leader>/', builtin.current_buffer_fuzzy_find, 'find in current buffer')
 nmap('<leader>sw', builtin.grep_string, 'search current word')
@@ -307,7 +307,6 @@ wk.register({
     M = { '<cmd>Telescope man_pages<cr>', '[M]an pages' },
     c = { '<cmd>Telescope git_commits<cr>', 'git [c]ommits' },
     s = { '<cmd>Telescope lsp_document_symbols<cr>', 'document [s]ymbols' },
-    ['<space>'] = { '<cmd>Telescope buffers<cr>', '[ ] buffers' },
     d = { '<cmd>Telescope buffers<cr>', '[d] buffers' },
     q = { '<cmd>Telescope quickfix<cr>', '[q]uickfix' },
     l = { '<cmd>Telescope loclist<cr>', '[l]oclist' },

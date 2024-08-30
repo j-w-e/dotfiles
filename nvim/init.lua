@@ -1,7 +1,9 @@
--- TODO: for
+-- TODO:
 -- 1. Add Hydras?
 -- 4. Make telekasten.toggle_todo work in visual mode
 -- 10. Add a command to set the wd if opening with a file?
+-- 11. Make mkdnflow work only in md, not Rmd or qmd files
+-- 12. Possibly related, make lps format work again for R / Rmd / qmd files
 -- 13. this link gives some useful info about default mappings: https://docs.google.com/spreadsheets/d/1EJMLr_MPrYiO1TKJ2MjNkR-fA5Wgxa782-f0Wtdpz0w/htmlview#
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -19,7 +21,7 @@ vim.opt.rtp:prepend(lazypath)
 
 require 'options'
 require('lazy').setup('plugins', {
-  install = { colorscheme = { 'aurora', 'habamax' } },
+  install = { colorscheme = { 'ariake', 'aurora', 'habamax' } },
 })
 require 'autocommands'
 require 'remaps'
@@ -36,5 +38,8 @@ else
   -- vim.cmd [[let g:aurora_darker = 1]]
   -- vim.cmd [[colorscheme aurora]]
   -- vim.cmd [[hi! link MiniStatusLineModeNormal MiniStatusLineModeOther]]
-  vim.cmd [[colorscheme nightfly]]
+  -- vim.cmd [[colorscheme nightfly]]
+  -- vim.cmd [[colorscheme eldritch]]
+  -- vim.cmd [[colorscheme ariake]]
+  vim.cmd [[colorscheme tokyonight]]
 end

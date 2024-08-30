@@ -344,6 +344,7 @@ return {
 
   { -- generate docstrings
     'danymat/neogen',
+    enabled = false,
     cmd = { 'Neogen' },
     dependencies = 'nvim-treesitter/nvim-treesitter',
     config = true,
