@@ -272,7 +272,12 @@ return {
     end,
   },
 
-  { 'folke/which-key.nvim', opts = {} },
+  {
+    'folke/which-key.nvim',
+    opts = {
+      preset = 'modern',
+    },
+  },
 
   {
     'lewis6991/gitsigns.nvim',

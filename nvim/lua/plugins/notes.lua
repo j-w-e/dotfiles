@@ -1,199 +1,67 @@
 return {
   {
-    'nvim-telekasten/telekasten.nvim',
-    dependencies = { 'L3MON4D3/LuaSnip' },
-    config = function()
-      -- require("custom_plugin_config")
-    end,
-  },
-  {
-    'jakewvincent/mkdnflow.nvim',
-    ft = 'markdown',
-    config = function()
-      require 'custom_plugin_config'
-    end,
+    'MeanderingProgrammer/render-markdown.nvim',
   },
 
   {
-    'lukas-reineke/headlines.nvim',
-    dependencies = 'nvim-treesitter/nvim-treesitter',
-    enabled = false,
-    opts = {},
-    -- opts = {
-    --   markdown = {
-    --     query = vim.treesitter.query.parse(
-    --       "markdown",
-    --       [[
-    --             (atx_heading [
-    --               (atx_h1_marker)
-    --               (atx_h2_marker)
-    --               (atx_h3_marker)
-    --               (atx_h4_marker)
-    --               (atx_h5_marker)
-    --               (atx_h6_marker)
-    --             ] @headline)
-    --
-    --             (thematic_break) @dash
-    --
-    --             (fenced_code_block) @codeblock
-    --
-    --             (block_quote_marker) @quote
-    --             (block_quote (paragraph (inline (block_continuation) @quote)))
-    --             (block_quote (paragraph (block_continuation) @quote))
-    --             (block_quote (block_continuation) @quote)
-    --             ]]
-    --     ),
-    --     headline_highlights = { "Headline" },
-    --     -- bullet_highlights = {
-    --     --   "@text.title.1.marker.markdown",
-    --     --   "@text.title.2.marker.markdown",
-    --     --   "@text.title.3.marker.markdown",
-    --     --   "@text.title.4.marker.markdown",
-    --     --   "@text.title.5.marker.markdown",
-    --     --   "@text.title.6.marker.markdown",
-    --     -- },
-    --     bullets = {},
-    --     -- codeblock_highlight = "CodeBlock",
-    --     -- dash_highlight = "Dash",
-    --     -- dash_string = "-",
-    --     -- quote_highlight = "Quote",
-    --     -- quote_string = "┃",
-    --     -- fat_headlines = true,
-    --     -- fat_headline_upper_string = "▃",
-    --     -- fat_headline_lower_string = "🬂",
-    --   },
-    --   rmd = {
-    --     query = vim.treesitter.query.parse(
-    --       "markdown",
-    --       [[
-    --             (atx_heading [
-    --               (atx_h1_marker)
-    --               (atx_h2_marker)
-    --               (atx_h3_marker)
-    --               (atx_h4_marker)
-    --               (atx_h5_marker)
-    --               (atx_h6_marker)
-    --             ] @headline)
-    --
-    --             (thematic_break) @dash
-    --
-    --             (fenced_code_block) @codeblock
-    --
-    --             (block_quote_marker) @quote
-    --             (block_quote (paragraph (inline (block_continuation) @quote)))
-    --             (block_quote (paragraph (block_continuation) @quote))
-    --             (block_quote (block_continuation) @quote)
-    --             ]]
-    --     ),
-    --     treesitter_language = "markdown",
-    --     headline_highlights = { "String" },
-    --     bullet_highlights = {
-    --       "@text.title.1.marker.markdown",
-    --       "@text.title.2.marker.markdown",
-    --       "@text.title.3.marker.markdown",
-    --       "@text.title.4.marker.markdown",
-    --       "@text.title.5.marker.markdown",
-    --       "@text.title.6.marker.markdown",
-    --     },
-    --     bullets = {},
-    --     -- codeblock_highlight = "CodeBlock",
-    --     -- dash_highlight = "Dash",
-    --     -- dash_string = "-",
-    --     -- quote_highlight = "Quote",
-    --     -- quote_string = "┃",
-    --     fat_headlines = false,
-    --     fat_headline_upper_string = "▃",
-    --     fat_headline_lower_string = "▔", -- Upper one eighth block
-    --     -- fat_headline_lower_string = "▀", -- Upper one half block
-    --   },
-    --   quarto = {
-    --     query = vim.treesitter.query.parse(
-    --       "markdown",
-    --       [[
-    --             (atx_heading [
-    --               (atx_h1_marker)
-    --               (atx_h2_marker)
-    --               (atx_h3_marker)
-    --               (atx_h4_marker)
-    --               (atx_h5_marker)
-    --               (atx_h6_marker)
-    --             ] @headline)
-    --
-    --             (thematic_break) @dash
-    --
-    --             (fenced_code_block) @codeblock
-    --
-    --             (block_quote_marker) @quote
-    --             (block_quote (paragraph (inline (block_continuation) @quote)))
-    --             (block_quote (paragraph (block_continuation) @quote))
-    --             (block_quote (block_continuation) @quote)
-    --             ]]
-    --     ),
-    --     treesitter_language = "markdown",
-    --     headline_highlights = { "String" },
-    --     bullet_highlights = {
-    --       "@text.title.1.marker.markdown",
-    --       "@text.title.2.marker.markdown",
-    --       "@text.title.3.marker.markdown",
-    --       "@text.title.4.marker.markdown",
-    --       "@text.title.5.marker.markdown",
-    --       "@text.title.6.marker.markdown",
-    --     },
-    --     bullets = {},
-    --     codeblock_highlight = "CodeBlock",
-    --     -- dash_highlight = "Dash",
-    --     -- dash_string = "-",
-    --     -- quote_highlight = "Quote",
-    --     -- quote_string = "┃",
-    --     fat_headlines = false,
-    --     fat_headline_upper_string = "▃",
-    --     fat_headline_lower_string = "▔", -- Upper one eighth block
-    --     -- fat_headline_lower_string = "▀", -- Upper one half block
-    --   },
-    --   telekasten = {
-    --     query = vim.treesitter.query.parse(
-    --       "markdown",
-    --       [[
-    --             (atx_heading [
-    --               (atx_h1_marker)
-    --               (atx_h2_marker)
-    --               (atx_h3_marker)
-    --               (atx_h4_marker)
-    --               (atx_h5_marker)
-    --               (atx_h6_marker)
-    --             ] @headline)
-    --
-    --             (thematic_break) @dash
-    --
-    --             (fenced_code_block) @codeblock
-    --
-    --             (block_quote_marker) @quote
-    --             (block_quote (paragraph (inline (block_continuation) @quote)))
-    --             (block_quote (paragraph (block_continuation) @quote))
-    --             (block_quote (block_continuation) @quote)
-    --             ]]
-    --     ),
-    --     treesitter_language = "markdown",
-    --     headline_highlights = { "String" },
-    --     bullet_highlights = {
-    --       "@text.title.1.marker.markdown",
-    --       "@text.title.2.marker.markdown",
-    --       "@text.title.3.marker.markdown",
-    --       "@text.title.4.marker.markdown",
-    --       "@text.title.5.marker.markdown",
-    --       "@text.title.6.marker.markdown",
-    --     },
-    --     bullets = {},
-    --     -- codeblock_highlight = "CodeBlock",
-    --     -- dash_highlight = "Dash",
-    --     -- dash_string = "-",
-    --     -- quote_highlight = "Quote",
-    --     -- quote_string = "┃",
-    --     fat_headlines = false,
-    --     fat_headline_upper_string = "▃",
-    --     fat_headline_lower_string = "▔", -- Upper one eighth block
-    --     -- fat_headline_lower_string = "▀", -- Upper one half block
-    --   },
-    -- },
+    'epwalsh/obsidian.nvim',
+    opts = {
+      ui = { enable = false },
+      workspaces = {
+        {
+          name = 'work',
+          path = vim.fn.expand '~/Documents/Work/OneDrive - Norwegian Refugee Council/notes',
+        },
+        {
+          name = 'personal',
+          path = vim.fn.expand '~/Documents/personal/notes',
+        },
+      },
+      new_notes_location = 'notes_subdir',
+      notes_subdir = 'meetings',
+
+      note_id_func = function(title)
+        -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+        -- In this case a note with the title 'My new note' will be given an ID that looks
+        -- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
+        local suffix = ''
+        if title ~= nil then
+          -- If title is given, transform it into valid file name.
+          suffix = title:gsub(' ', '-'):gsub('[^A-Za-z0-9-]', ''):lower()
+        else
+          -- If title is nil, just add 4 random uppercase letters to the suffix.
+          for _ = 1, 4 do
+            suffix = suffix .. string.char(math.random(65, 90))
+          end
+        end
+        return tostring(os.date '%y%m%d') .. '-' .. suffix
+      end,
+
+      note_frontmatter_func = function(note)
+        -- Add the title of the note as an alias.
+        if note.title then
+          note:add_alias(note.title)
+        end
+
+        local out = { id = note.id, aliases = note.aliases, tags = note.tags, area = '' }
+
+        -- `note.metadata` contains any manually added fields in the frontmatter.
+        -- So here we just make sure those fields are kept in the frontmatter.
+        if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
+          for k, v in pairs(note.metadata) do
+            out[k] = v
+          end
+        end
+
+        return out
+      end,
+
+      templates = {
+        folder = 'templates',
+        date_format = '%Y-%m-%d-%a',
+        time_format = '%H:%M',
+      },
+      disable_frontmatter = false,
+    },
   },
 }

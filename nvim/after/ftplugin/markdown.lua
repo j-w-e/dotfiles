@@ -14,12 +14,11 @@ vim.keymap.set("i", "<C-d>", "<Plug>(bullets-promote)", { buffer = 0 })
 vim.keymap.set("n", "<<", "<Plug>(bullets-promote)", { buffer = 0 })
 vim.keymap.set("v", "<", "<Plug>(bullets-promote)", { buffer = 0 })
 
-local nmap = function(keys, func, desc)
-  vim.keymap.set("n", keys, func, { silent = true, desc = desc, buffer = 0 })
-end
-
-nmap("<leader>nf", "<cmd>lua require('telescope.builtin').find_files({cwd = 'current'})<cr>", "find files in current")
-nmap("<leader>nt", "<cmd>lua require('telekasten').find_notes()<cr>", "use telekasten picker")
+-- local nmap = function(keys, func, desc)
+--   vim.keymap.set("n", keys, func, { silent = true, desc = desc, buffer = 0 })
+-- end
+-- nmap("<leader>nf", "<cmd>lua require('telescope.builtin').find_files({cwd = 'current'})<cr>", "find files in current")
+-- nmap("<leader>nt", "<cmd>lua require('telekasten').find_notes()<cr>", "use telekasten picker")
 
 vim.cmd([[
 au BufEnter * syn region markdownLink matchgroup=markdownLinkDelimiter start="(" end=")\ze\_W" keepend contained conceal contains=markdownUrl concealends
@@ -48,3 +47,15 @@ vim.opt_local.foldmethod = "expr"
 vim.opt_local.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt_local.foldlevelstart = 99
 vim.opt_local.foldlevel = 99
+
+local ls = require("luasnip")
+ls.add_snippets("markdown", {
+  ls.snippet("see", {
+    ls.text_node("see email from "),
+    ls.insert_node(1, "Lian"),
+    ls.text_node(", subject '"),
+    ls.insert_node(2),
+    ls.text_node("'"),
+    ls.insert_node(0),
+  }),
+})
