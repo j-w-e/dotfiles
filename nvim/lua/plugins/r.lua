@@ -5,11 +5,11 @@ return {
   --   dev = false,
   --   opts = {
   --     lspFeatures = {
-  --       languages = { 'r', 'python', 'julia', 'bash', 'lua', 'html', 'dot', 'javascript', 'typescript', 'ojs' },
+  --       languages = { 'r' },
   --     },
   --     codeRunner = {
   --       enabled = false,
-  --       default_method = 'slime',
+  --       default_method = nil,
   --     },
   --   },
   --   dependencies = {
@@ -72,9 +72,9 @@ return {
       }
       -- Check if the environment variable "R_AUTO_START" exists.
       -- this is in my .zshrc: alias r="R_AUTO_START=true nvim"
-      if vim.env.R_AUTO_START == "true" then
+      if vim.env.R_AUTO_START == 'true' then
         opts.auto_start = 'on startup'
-      -- opts.objbr_auto_start = true
+        -- opts.objbr_auto_start = true
       end
       require('r').setup(opts)
     end,
