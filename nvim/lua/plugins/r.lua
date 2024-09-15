@@ -1,38 +1,38 @@
 return {
-  {
-    'quarto-dev/quarto-nvim',
-    ft = { 'quarto' },
-    dev = false,
-    opts = {
-      lspFeatures = {
-        languages = { 'r', 'python', 'julia', 'bash', 'lua', 'html', 'dot', 'javascript', 'typescript', 'ojs' },
-      },
-      codeRunner = {
-        enabled = false,
-        default_method = 'slime',
-      },
-    },
-    dependencies = {
-      {
-        'jmbuhr/otter.nvim',
-        dev = false,
-        dependencies = {
-          { 'neovim/nvim-lspconfig' },
-        },
-        opts = {
-          -- lsp = {
-          --   hover = {
-          --     border = require('misc.style').border,
-          --   },
-          -- },
-          buffers = {
-            set_filetype = true,
-          },
-          handle_leading_whitespace = true,
-        },
-      },
-    },
-  },
+  -- {
+  --   'quarto-dev/quarto-nvim',
+  --   ft = { 'quarto' },
+  --   dev = false,
+  --   opts = {
+  --     lspFeatures = {
+  --       languages = { 'r', 'python', 'julia', 'bash', 'lua', 'html', 'dot', 'javascript', 'typescript', 'ojs' },
+  --     },
+  --     codeRunner = {
+  --       enabled = false,
+  --       default_method = 'slime',
+  --     },
+  --   },
+  --   dependencies = {
+  --     {
+  --       'jmbuhr/otter.nvim',
+  --       dev = false,
+  --       dependencies = {
+  --         { 'neovim/nvim-lspconfig' },
+  --       },
+  --       opts = {
+  --         -- lsp = {
+  --         --   hover = {
+  --         --     border = require('misc.style').border,
+  --         --   },
+  --         -- },
+  --         buffers = {
+  --           set_filetype = true,
+  --         },
+  --         handle_leading_whitespace = true,
+  --       },
+  --     },
+  --   },
+  -- },
 
   {
     'R-nvim/R.nvim',
@@ -50,7 +50,7 @@ return {
             vim.api.nvim_buf_set_keymap(0, 'n', '<localleader>rr', '<cmd>RMapsDesc<cr>', {})
             vim.api.nvim_buf_set_keymap(0, 'n', '<localleader>rx', '<Plug>RClose', {})
             vim.api.nvim_buf_set_keymap(0, 'i', '%%', ' %>%', {})
-            vim.api.nvim_buf_set_keymap(0, 'i', '<c-,>', ' |>', {})
+            -- vim.api.nvim_buf_set_keymap(0, 'i', '<c-,>', ' |>', {})
             vim.api.nvim_buf_set_keymap(0, 'n', '<localleader><Enter>', '<Plug>RSendLine', {})
             vim.api.nvim_buf_set_keymap(0, 'n', '<localleader>b', '<Plug>RPreviousRChunk', {})
             vim.api.nvim_buf_set_keymap(0, 'n', '<localleader>n', '<Plug>RNextRChunk', {})
@@ -66,16 +66,16 @@ return {
           'RDSendMBlock',
           'RSendMBlock',
         },
-        assignment_keymap = '<localleader>-',
+        assignment_keymap = '<c-->',
+        pipe_keymap = '<c-,>',
         pdfviewer = 'open',
       }
       -- Check if the environment variable "R_AUTO_START" exists.
-      -- If using fish shell, you could put in your config.fish:
-      -- alias r "R_AUTO_START=true nvim"
-      -- if vim.env.R_AUTO_START == "true" then
-      opts.auto_start = 'on startup'
+      -- this is in my .zshrc: alias r="R_AUTO_START=true nvim"
+      if vim.env.R_AUTO_START == "true" then
+        opts.auto_start = 'on startup'
       -- opts.objbr_auto_start = true
-      -- end
+      end
       require('r').setup(opts)
     end,
     lazy = false,
