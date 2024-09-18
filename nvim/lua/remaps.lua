@@ -210,7 +210,7 @@ wk.add({
     { '<leader>l', group = '[l]anguage/lsp' },
     { '<leader>lD', vim.lsp.buf.type_definition, desc = 'type [D]efinition' },
     { '<leader>lR', desc = '[R]ename' },
-    { '<leader>la', vim.lsp.buf.code_action, desc = 'codr [a]ction' },
+    { '<leader>la', vim.lsp.buf.code_action, desc = 'code [a]ction' },
     { '<leader>le', vim.diagnostic.open_float, desc = 'diagnostics (show hover [e]rror)' },
     { '<leader>lg', ':Neogen<cr>', desc = 'neo[g]en docstring' },
     { '<leader>lr', '<cmd>Telescope lsp_references<cr>', desc = '[r]eferences' },
