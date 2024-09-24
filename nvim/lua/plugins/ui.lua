@@ -240,6 +240,7 @@ return {
         style = "storm",
         on_highlights = function(highlights, colors)
           highlights.FlashLabel = { bg = colors.blue0, fg = colors.magenta }
+          highlights.CursorLine = { bg = colors.fg_gutter }
         end,
       })
     end,
