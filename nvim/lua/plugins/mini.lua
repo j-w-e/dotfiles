@@ -5,6 +5,7 @@ return {
     config = function()
       require("mini.ai").setup()
       require("mini.align").setup()
+      require("mini.bufremove").setup()
       require("mini.cursorword").setup({ delay = 500 })
       require("mini.files").setup()
       require("mini.icons").setup()
