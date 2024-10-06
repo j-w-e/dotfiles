@@ -2,9 +2,9 @@ return {
   {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {
+      file_types = { "markdown", "quarto", "rmd" },
       code = {
         style = "full",
-        left_pad = 4,
       },
     },
   },
