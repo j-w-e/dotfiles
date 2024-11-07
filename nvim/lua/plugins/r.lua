@@ -67,7 +67,8 @@ return {
           'RSendMBlock',
         },
         assignment_keymap = '<c-->',
-        pipe_keymap = '<c-,>',
+        pipe_keymap = '<space><space>',
+        -- pipe_keymap = '<c-,>',
         pdfviewer = 'open',
       }
       -- Check if the environment variable "R_AUTO_START" exists.

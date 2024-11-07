@@ -37,11 +37,11 @@ yabai -m config split_ratio 0.50
 #yabai -m config --space 3 layout             float
 
 ## Change how yabai looks
-yabai -m config top_padding 10
-yabai -m config bottom_padding 10
-yabai -m config left_padding 10
-yabai -m config right_padding 10
-yabai -m config window_gap 10
+yabai -m config top_padding    15
+yabai -m config bottom_padding 15
+yabai -m config left_padding   15
+yabai -m config right_padding  15
+yabai -m config window_gap     15
 
 ## An attempt to fix this: https://github.com/koekeishiya/yabai/issues/68
 # Refresh yabai if a tab in finder or terminal is created or moved to new window

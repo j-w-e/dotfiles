@@ -1,8 +1,8 @@
--- copy last yank to clipboard on focuslost, and back to last yank/delete on focusgained
-local lastYank = vim.api.nvim_create_augroup('FocusLost', { clear = true })
-vim.api.nvim_create_autocmd({ 'FocusLost' }, { pattern = '*', command = 'let @*=@0', group = lastYank })
-local lastCopy = vim.api.nvim_create_augroup('FocusGained', { clear = true })
-vim.api.nvim_create_autocmd({ 'FocusGained' }, { pattern = '*', command = [[call setreg("@", getreg("+"))]], group = lastCopy })
+-- -- copy last yank to clipboard on focuslost, and back to last yank/delete on focusgained
+-- local lastYank = vim.api.nvim_create_augroup('FocusLost', { clear = true })
+-- vim.api.nvim_create_autocmd({ 'FocusLost' }, { pattern = '*', command = 'let @*=@0', group = lastYank })
+-- local lastCopy = vim.api.nvim_create_augroup('FocusGained', { clear = true })
+-- vim.api.nvim_create_autocmd({ 'FocusGained' }, { pattern = '*', command = [[call setreg("@", getreg("+"))]], group = lastCopy })
 
 vim.api.nvim_create_autocmd('FileType', {
   pattern = {

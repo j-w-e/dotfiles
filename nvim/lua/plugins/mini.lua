@@ -60,6 +60,38 @@ return {
         },
       })
 
+      require("mini.operators").setup({
+        -- Evaluate text and replace with output
+        evaluate = { prefix = "" },
+
+        -- Exchange text regions
+        exchange = {
+          prefix = "gk",
+
+          -- Whether to reindent new text to match previous indent
+          reindent_linewise = true,
+        },
+
+        -- Multiply (duplicate) text
+        multiply = {
+          prefix = "gm",
+
+          -- Function which can modify text before multiplying
+          func = nil,
+        },
+
+        -- Replace text with register
+        replace = {
+          prefix = "gr",
+
+          -- Whether to reindent new text to match previous indent
+          reindent_linewise = true,
+        },
+
+        -- Sort text
+        sort = { prefix = "" },
+      })
+
       require("mini.pairs").setup({
         mappings = {
           -- ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^%S][^%S]", register = { cr = false } },

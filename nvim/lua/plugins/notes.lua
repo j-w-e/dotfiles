@@ -2,7 +2,7 @@ return {
   {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {
-      file_types = { "markdown", "quarto", "rmd" },
+      file_types = { "markdown", "quarto", "Rmd" },
       code = {
         style = "full",
       },
@@ -68,6 +68,13 @@ return {
         time_format = "%H:%M",
       },
       disable_frontmatter = false,
+      follow_url_func = function(url)
+        -- Open the URL in the default web browser.
+        vim.fn.jobstart({ "open", url }) -- Mac OS
+        -- vim.fn.jobstart({"xdg-open", url})  -- linux
+        -- vim.cmd(':silent exec "!start ' .. url .. '"') -- Windows
+        -- vim.ui.open(url) -- need Neovim 0.10.0+
+      end,
     },
   },
 }
