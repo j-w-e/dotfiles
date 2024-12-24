@@ -1,0 +1,7 @@
+{
+  "See":        { "prefix": "see", "body": "see email from ${1:Lian}, subject '$2'$0" },
+  "here": { "prefix": "he", "body": "[here]($1)$0" },
+  "thisdoc": { "prefix": "td", "body": "[this document]($1)" },
+  "lib": { "prefix": "lib", "body": "library(${1:package})$0" },
+  "req": { "prefix": "req", "body": "library(${1:package})" }
+}

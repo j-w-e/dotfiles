@@ -47,27 +47,3 @@ vim.opt_local.foldmethod = 'expr'
 vim.opt_local.foldexpr = 'nvim_treesitter#foldexpr()'
 vim.opt_local.foldlevelstart = 99
 vim.opt_local.foldlevel = 99
-
-local ls = require 'luasnip'
-ls.add_snippets('markdown', {
-  ls.snippet('see', {
-    ls.text_node 'see email from ',
-    ls.insert_node(1, 'Lian'),
-    ls.text_node ", subject '",
-    ls.insert_node(2),
-    ls.text_node "'",
-    ls.insert_node(0),
-  }),
-  ls.snippet('here', {
-    ls.text_node '[here](',
-    ls.insert_node(1),
-    ls.text_node ')',
-    ls.insert_node(0),
-  }),
-  ls.snippet('thisdoc', {
-    ls.text_node '[this document](',
-    ls.insert_node(1),
-    ls.text_node ')',
-    ls.insert_node(0),
-  }),
-})

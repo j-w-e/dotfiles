@@ -55,12 +55,12 @@ return {
       { 'hrsh7th/cmp-buffer' },
       { 'hrsh7th/cmp-path' },
       { 'hrsh7th/cmp-emoji' },
-      { 'saadparwaiz1/cmp_luasnip' },
+      -- { 'saadparwaiz1/cmp_luasnip' },
       { 'f3fora/cmp-spell' },
       { 'ray-x/cmp-treesitter' },
       { 'jmbuhr/cmp-pandoc-references' },
-      { 'L3MON4D3/LuaSnip' },
-      { 'rafamadriz/friendly-snippets' },
+      -- { 'L3MON4D3/LuaSnip' },
+      -- { 'rafamadriz/friendly-snippets' },
       { 'onsails/lspkind-nvim' },
       { 'hrsh7th/cmp-cmdline' },
       { 'hrsh7th/cmp-nvim-lua' },
@@ -68,7 +68,7 @@ return {
     },
     config = function()
       local cmp = require 'cmp'
-      local luasnip = require 'luasnip'
+      -- local luasnip = require 'luasnip'
       local lspkind = require 'lspkind'
 
       local has_words_before = function()
@@ -77,48 +77,36 @@ return {
       end
 
       cmp.setup {
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
+        -- snippet = {
+        --   expand = function(args)
+        --     luasnip.lsp_expand(args.body)
+        --   end,
+        -- },
         completion = { completeopt = 'menu,menuone,noinsert,noselect' },
         mapping = cmp.mapping.preset.insert {
           -- up, down, c-y, c-e, c-n, c-p already set by the preset
           ['<tab>'] = {
             i = function(fallback)
-              if luasnip.locally_jumpable(1) then
-                luasnip.jump(1)
-              elseif has_words_before() then
+              if has_words_before() then
                 cmp.complete_common_string()
               else
                 fallback()
               end
             end,
             s = function(fallback)
-              if luasnip.locally_jumpable(1) then
-                luasnip.jump(1)
-              else
-                fallback()
-              end
+              fallback()
             end,
           },
           ['<s-tab>'] = {
             i = function(fallback)
-              if luasnip.locally_jumpable(-1) then
-                luasnip.jump(-1)
-              elseif has_words_before() then
+              if has_words_before() then
                 cmp.complete_common_string()
               else
                 fallback()
               end
             end,
             s = function(fallback)
-              if luasnip.locally_jumpable(-1) then
-                luasnip.jump(-1)
-              else
-                fallback()
-              end
+              fallback()
             end,
           },
           ['<CR>'] = {
@@ -199,7 +187,7 @@ return {
             menu = {
               otter = '[🦦]',
               nvim_lsp = '[lsp]',
-              luasnip = '[snip]',
+              -- luasnip = '[snip]',
               buffer = '[buf]',
               path = '[path]',
               spell = '[spell]',
@@ -213,7 +201,7 @@ return {
         },
         sources = {
           { name = 'otter' }, -- for code chunks in quarto
-          { name = 'luasnip', keyword_length = 3, max_item_count = 3 },
+          -- { name = 'luasnip', keyword_length = 3, max_item_count = 3 },
           { name = 'path' },
           { name = 'cmp_r' },
           { name = 'nvim_lsp' },
@@ -261,13 +249,13 @@ return {
       })
 
       -- for friendly snippets
-      require('luasnip.loaders.from_vscode').lazy_load {}
+      -- require('luasnip.loaders.from_vscode').lazy_load {}
       -- for custom snippets
-      require('luasnip.loaders.from_vscode').lazy_load { paths = { vim.fn.stdpath 'config' .. '/snips' } }
+      -- require('luasnip.loaders.from_vscode').lazy_load { paths = { vim.fn.stdpath 'config' .. '/snips' } }
       -- link quarto and rmarkdown to markdown snippets
-      luasnip.filetype_extend('quarto', { 'markdown' })
-      luasnip.filetype_extend('rmarkdown', { 'markdown' })
-      luasnip.filetype_extend('telekasten', { 'markdown' })
+      -- luasnip.filetype_extend('quarto', { 'markdown' })
+      -- luasnip.filetype_extend('rmarkdown', { 'markdown' })
+      -- luasnip.filetype_extend('telekasten', { 'markdown' })
       require('cmp_r').setup {}
     end,
   },
