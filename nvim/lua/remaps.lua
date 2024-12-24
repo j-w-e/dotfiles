@@ -27,6 +27,7 @@ nmap('<leader>vs', MiniStarter.open, 'show start screen')
 nmap('<leader>vl', '<cmd>Lazy<cr>', 'show Lazy')
 nmap('<leader>vm', '<cmd>Mason<cr>', 'show Mason')
 nmap('<leader><space>', 'zz', 'zz')
+nmap('<leader>m', '<cmd>NoiceDismiss<cr>', 'Clear messages')
 map({ 'n', 'o' }, '`', "'")
 map({ 'n', 'o' }, "'", '`')
 wk.add {
@@ -47,7 +48,7 @@ nmap('<leader>fe', function()
   end)
 end, 'file tree')
 -- nmap('<leader>fe', '<cmd>lua MiniFiles.open()<cr>', 'file tree')
-nmap('<leader>fw', '<cmd>w<cr>', 'save')
+nmap('<leader>fw', '<cmd>w<cr><cmd>NoiceDismiss<cr>', 'save')
 nmap('<leader>x', '<cmd>q<cr>', 'quit')
 nmap('<leader>X', '<cmd>qa!<cr>', 'really quit')
 
@@ -65,6 +66,7 @@ nmap('<leader>ff', builtin.find_files, 'find files')
 nmap('<leader>fr', builtin.oldfiles, 'find recent files')
 nmap('<leader>fg', builtin.git_files, 'find git files')
 nmap('<leader>sg', builtin.live_grep, 'grep string')
+nmap('<leader>st', '<cmd>Telescope live_grep<cr>TODO', 'find TODOs')
 -- nmap("<leader>t<space>", builtin.buffers({ sort_lastused = true }), "find buffers")
 nmap('<leader>t<space>', "<cmd>lua require('telescope.builtin').buffers({ sort_lastused = true })<cr>", 'find buffers')
 nmap('<leader>sh', builtin.help_tags, 'search help')
@@ -88,6 +90,9 @@ nmap('<S-Up>', '<cmd>resize +2<CR>')
 nmap('<S-Down>', '<cmd>resize -2<CR>')
 nmap('<S-Left>', '<cmd>vertical resize -2<CR>')
 nmap('<S-Right>', '<cmd>vertical resize +2<CR>')
+
+nmap('<leader>A', '<Cmd>normal gkiagkila<CR>', 'Move arg left')
+nmap('<leader>a', '<Cmd>normal gkiagkina<CR>', 'Move arg right')
 
 -- Git
 -- nmap(']n', '<cmd>Gitsigns next_hunk<cr>', 'Next git hunk')
@@ -221,6 +226,7 @@ wk.add({
     { '<leader>or', '<cmd>ObsidianRename<cr>', desc = 'Rename note' },
     { '<leader>ot', '<cmd>ObsidianTags<cr>', desc = 'Search tags' },
     { '<leader>ob', '<cmd>ObsidianBacklinks<cr>', desc = 'Backlinks' },
+    { '<leader>of', '<cmd>ObsidianQuickSwitch<cr>', desc = 'Open note' },
     { '<leader>to', group = 'toggle' },
     {
       '<leader>tof',

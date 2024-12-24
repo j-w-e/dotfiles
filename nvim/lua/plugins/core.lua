@@ -215,10 +215,10 @@ return {
           { name = 'otter' }, -- for code chunks in quarto
           { name = 'luasnip', keyword_length = 3, max_item_count = 3 },
           { name = 'path' },
+          { name = 'cmp_r' },
           { name = 'nvim_lsp' },
           { name = 'nvim_lsp_signature_help' },
           { name = 'treesitter', keyword_length = 5, max_item_count = 3 },
-          { name = 'cmp_r' },
           { name = 'buffer', keyword_length = 4, max_item_count = 3 },
           { name = 'pandoc_references' },
           { name = 'spell' },
