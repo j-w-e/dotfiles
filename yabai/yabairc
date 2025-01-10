@@ -11,6 +11,7 @@ yabai -m rule --add app="^System Information$" layer=above manage=off
 yabai -m rule --add app="^Activity Monitor$" layer=above manage=off
 yabai -m rule --add app="Outlook" title="Reminder" layer=above manage=off
 yabai -m rule --add app="OneDrive" layer=above manage=off
+yabai -m rule --add app="OneDrive" title="^Version History" layer=above manage=off
 #yabai -m rule --add app="^Spotify$" manage=off
 
 
@@ -56,6 +57,9 @@ yabai -m signal --add event=window_moved app="^Terminal$|^Finder$" \
 
 yabai -m signal --add event=window_resized app="^Terminal$|^Finder$" \
     action="yabai -m space --focus next && sleep 0.01 && yabai -m space --focus recent"
+
+yabai -m signal --add app='^Ghostty$' event=window_created action='yabai -m space --layout bsp'
+yabai -m signal --add app='^Ghostty$' event=window_destroyed action='yabai -m space --layout bsp'
 
 echo "yabai configuration loaded.."
 

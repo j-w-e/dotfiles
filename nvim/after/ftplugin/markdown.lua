@@ -3,6 +3,8 @@ vim.opt_local.sw = 4
 vim.opt_local.wrap = true
 vim.opt_local.conceallevel = 2
 
+vim.b.miniindentscope_config = { options = { border = 'top' } }
+
 -- Using Bullets.vim
 -- vim.keymap.set({ 'n', 'v' }, '<leader>rn', '<Plug>(bullets-renumber)', { buffer = 0 })
 vim.keymap.set('i', '<cr>', '<Plug>(bullets-newline)', { buffer = 0 })

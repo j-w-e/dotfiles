@@ -1,0 +1,10 @@
+theme = tokyonight-storm
+font-family = JetbrainsMono Nerd Font Mono
+# font-family = Courier New
+
+# macos-titlebar-style = tabs
+# window-inherit-font-size = true
+font-size = 15
+
+# quick-terminal-position = center
+# keybind = ctrl+cmd+shift+b=toggle_quick_terminal
