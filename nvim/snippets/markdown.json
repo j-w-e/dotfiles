@@ -1,6 +1,10 @@
 {
-  "See":        { "prefix": "see", "body": "see email from ${1:Lian}, subject '$2'$0" },
-  "here": { "prefix": "he", "body": "[here]($1)$0" },
-  "thisdoc": { "prefix": "td", "body": "[this document]($1)" },
-  "date": { "prefix": "date", "body": "${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}"}
+  "See":           { "prefix": "See", "body": "see email from ${1:Lian}, subject '$2'$0" },
+  "see":           { "prefix": "see", "body": "see email from ${1:Lian}, subject '$2'$0" },
+  "See_from_clip": { "prefix": "Sep", "body": "see email from ${1:Lian}, subject '$TM_SELECTED_TEXT'$0" },
+  "see_from_clip": { "prefix": "sep", "body": "see email from ${1:Lian}, subject '$TM_SELECTED_TEXT'$0" },
+  "here":          { "prefix": "he", "body": "[here]($TM_SELECTED_TEXT)$0" },
+  "link":          { "prefix": "link", "body": "[${1:text}](${2:url})" },
+  "thisdoc":       { "prefix": "td", "body": "[this document]($TM_SELECTED_TEXT)$0" },
+  "date":          { "prefix": "date", "body": "${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}"}
 }

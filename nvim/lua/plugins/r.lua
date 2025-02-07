@@ -54,6 +54,24 @@ return {
             vim.api.nvim_buf_set_keymap(0, 'n', '<localleader><Enter>', '<Plug>RSendLine', {})
             vim.api.nvim_buf_set_keymap(0, 'n', '<localleader>b', '<Plug>RPreviousRChunk', {})
             vim.api.nvim_buf_set_keymap(0, 'n', '<localleader>n', '<Plug>RNextRChunk', {})
+            vim.api.nvim_buf_set_keymap(0, 'n', '<localleader>h', '<Plug>RHelp', {})
+            vim.api.nvim_buf_set_keymap(0, 'n', '<LocalLeader>rh', "<cmd>lua require('r.run').action('head', 'n', ', n = 15')<cr>", {})
+
+            require 'hydra' {
+              name = 'R',
+              hint = [[ Scroll or send-to-R ]],
+              mode = 'n',
+              body = '<localleader>',
+              heads = {
+                { 'n', '<Plug>RNextRChunk', { desc = 'Next R chunk' } },
+                { 'b', '<Plug>RPreviousRChunk', { desc = 'Prev R chunk' } },
+                { 'cd', '<Plug>RDSendChunk', { exit = true, desc = 'Run chunk and go to next' } },
+                { 'cc', '<Plug>RSendChunk', { exit = true, desc = 'Run chunk' } },
+              },
+              config = {
+                buffer = true,
+              },
+            }
           end,
         },
         min_editor_width = 72,
