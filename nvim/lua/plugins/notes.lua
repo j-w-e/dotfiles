@@ -2,8 +2,7 @@ return {
   {
     'MeanderingProgrammer/render-markdown.nvim',
     opts = {
-      -- I want to enable this for quarto and rmd files, but there is a bizarre bug which prevents the backtick producing the right inline code
-      -- file_types = { "markdown", "quarto", "Rmd" },
+      file_types = { 'markdown', 'quarto', 'Rmd' },
       code = {
         style = 'full',
       },
