@@ -29,8 +29,11 @@ vim.keymap.set(
 vim.keymap.set(
   "v",
   "<leader>ox",
-  ":w !prettier --parser markdown | pandoc -t rtf -s | sed -e 's/\\sa0/\\fs22 \\sa0' -e 's/Helvetica/Aptos' | pbcopy<cr>",
-  { buffer = 0 }
+  -- ":!prettier --parser markdown | pandoc -t rtf -s | sed -e 's/Helvetica/Aptos/'<cr>",
+  ":w !prettier --parser markdown | pandoc -t rtf -s | sed -e 's/Helvetica/Aptos/' | pbcopy<cr>",
+  -- ":w !prettier --parser markdown | pandoc -t rtf -s | sed -e 's/\\sa0/\\fs22 \\sa0/' -e 's/Helvetica/Aptos/'<cr>",
+  -- ":w !prettier --parser markdown | pandoc -t rtf -s | sed -e 's/sa0/sa0 \\fs22/' -e 's/Helvetica/Aptos/'<cr>",
+  { buffer = 0, desc = "Export selection to clipboard" }
 )
 
 -- local nmap = function(keys, func, desc)
