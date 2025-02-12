@@ -226,7 +226,7 @@ return {
   -- { 'marko-cerovac/material.nvim' },
   -- { 'Mofiqul/dracula.nvim' },
   -- { "jim-at-jibba/ariake.nvim" },
-  { "j-w-e/ariake.nvim" },
+  -- { "j-w-e/ariake.nvim" },
   -- {
   --   'eldritch-theme/eldritch.nvim',
   --   opts = {
@@ -252,7 +252,7 @@ return {
           highlights.MiniTrailspace = { fg = colors.magenta }
           highlights.CursorLine = { bg = colors.fg_gutter }
           -- highlights.RenderMarkdownCode = { bg = colors.fg_gutter }  -- this is a lighter backgroud for code blocks. I got tired of it
-          highlights.RenderMarkdownCode = { bg = "#16161e" } -- this is a lighter backgroud for code blocks. I got tired of it
+          highlights.RenderMarkdownCode = { bg = "#16161e" } -- this is for a dark background to code blocks
         end,
       })
     end,
