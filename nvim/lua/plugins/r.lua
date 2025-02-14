@@ -46,6 +46,9 @@ return {
             -- This function will be called at the FileType event
             -- of files supported by R.nvim. This is an
             -- opportunity to create mappings local to buffers.
+            vim.api.nvim_buf_set_keymap(0, "i", "<c-->", "<Plug>RInsertAssign", { noremap = true })
+            vim.api.nvim_buf_set_keymap(0, "i", "<space><space>", "<Plug>RInsertPipe", { noremap = true })
+            vim.api.nvim_buf_set_keymap(0, "i", "`", "<Plug>RmdInsertChunk", { noremap = true })
             vim.api.nvim_buf_set_keymap(0, "n", "<Enter>", "<Plug>RDSendLine", {})
             vim.api.nvim_buf_set_keymap(0, "v", "<Enter>", "<Plug>RSendSelection", {})
             vim.api.nvim_buf_set_keymap(0, "n", "<localleader>rr", "<cmd>RMapsDesc<cr>", {})
@@ -85,7 +88,6 @@ return {
         min_editor_width = 72,
         rconsole_width = 78,
         rm_knit_cache = true,
-        rmd_chunk_keymap = "`",
         disable_cmds = {
           "RClearConsole",
           "RCustomStart",
@@ -94,9 +96,11 @@ return {
           "RDSendMBlock",
           "RSendMBlock",
         },
-        assignment_keymap = "<c-->",
-        pipe_keymap = "<space><space>",
+        -- Keymaps
+        -- assignment_keymap = '<c-->',
+        -- pipe_keymap = '<space><space>',
         -- pipe_keymap = '<c-,>',
+        -- rmd_chunk_keymap = '`',
         pdfviewer = "open",
       }
       -- Check if the environment variable "R_AUTO_START" exists.
