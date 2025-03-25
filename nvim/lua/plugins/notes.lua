@@ -28,6 +28,12 @@ return {
         {
           name = 'personal',
           path = vim.fn.expand '~/Documents/personal/notes',
+          overrides = {
+            templates = {
+              folder = vim.NIL,
+            },
+            notes_subdir = vim.NIL,
+          },
         },
       },
       new_notes_location = 'notes_subdir',

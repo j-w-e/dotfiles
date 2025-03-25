@@ -39,6 +39,9 @@ nmap("x", '"_x', "delete to black hole")
 map("v", "x", '"_x', "delete to black hole")
 nmap("<leader>c.", "@:", "repeat last cmd")
 
+-- I want this to ideally convert the selected text into a link, and paste from the system clipboard as the destination
+-- vim.keymap.set('v', 'gsl', MiniSurround.add 'visual', { desc = 'convert to link from clipboard', noremap = true, silent = false })
+
 -- Files
 nmap("<leader>fe", function()
   local MiniFiles = require("mini.files")
@@ -66,7 +69,19 @@ nmap("<leader>ff", builtin.find_files, "find files")
 nmap("<leader>fr", builtin.oldfiles, "find recent files")
 nmap("<leader>fg", builtin.git_files, "find git files")
 nmap("<leader>sg", builtin.live_grep, "grep string")
-nmap("<leader>st", "<cmd>Telescope live_grep<cr>TODO", "find TODOs")
+nmap("<leader>st", function()
+  builtin.live_grep({
+    default_text = "TODO",
+    prompt_title = "TODOs",
+    on_complete = {
+      function(picker)
+        picker:clear_completion_callbacks()
+        require("telescope.actions").to_fuzzy_refine(picker.prompt_bufnr) -- I want this to work, but it doesn't
+      end,
+    },
+  })
+end, "find TODOs")
+-- nmap("<leader>st", "<cmd>Telescope live_grep<cr>TODO", "find TODOs")
 -- nmap("<leader>t<space>", builtin.buffers({ sort_lastused = true }), "find buffers")
 nmap("<leader>t<space>", "<cmd>lua require('telescope.builtin').buffers({ sort_lastused = true })<cr>", "find buffers")
 nmap("<leader>sh", builtin.help_tags, "search help")
@@ -155,8 +170,7 @@ wk.add({
 
 -- visual with <leader>
 wk.add({
-  { "<leader>d", '"_d', desc = "delete without overwriting reg", mode = "v" },
-  { "<leader>p", '"_dp', desc = "replace without overwriting reg", mode = "v" },
+  { "<leader>p", '"_dP', desc = "replace without overwriting reg", mode = "v" },
 }, { mode = "v", prefix = "<leader>" })
 
 -- nmap('<leader><cr>', send_cell)
@@ -235,8 +249,8 @@ wk.add({
     { "<leader>ot", "<cmd>ObsidianTags<cr>", desc = "Search tags" },
     { "<leader>ob", "<cmd>ObsidianBacklinks<cr>", desc = "Backlinks" },
     { "<leader>of", "<cmd>ObsidianQuickSwitch<cr>", desc = "Open note" },
-    { "<leader>ow", '<cmd>lua MiniSessions.write("zzz-notes-tmp")<cr>', desc = "Save tmp session" },
-    { "<leader>oW", '<cmd>lua MiniSessions.read("zzz-notes-tmp")<cr>', desc = "Open tmp session" },
+    { "<leader>oW", '<cmd>lua MiniSessions.write("zzz-notes-tmp")<cr>', desc = "Save tmp session" },
+    { "<leader>oO", '<cmd>lua MiniSessions.read("zzz-notes-tmp")<cr>', desc = "Open tmp session" },
     { "<leader>to", group = "toggle" },
     {
       "<leader>tof",
