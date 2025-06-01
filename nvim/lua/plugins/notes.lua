@@ -2,7 +2,7 @@ return {
   {
     'MeanderingProgrammer/render-markdown.nvim',
     opts = {
-      file_types = { 'markdown', 'quarto', 'Rmd' },
+      file_types = { 'markdown', 'Rmd' },
       code = {
         render_modes = { 'i' },
         style = 'full',
@@ -17,7 +17,7 @@ return {
   },
 
   {
-    'epwalsh/obsidian.nvim',
+    'obsidian-nvim/obsidian.nvim',
     opts = {
       ui = { enable = false },
       workspaces = {
@@ -38,6 +38,7 @@ return {
       },
       new_notes_location = 'notes_subdir',
       notes_subdir = 'meetings',
+      sort_by = 'path',
 
       note_id_func = function(title)
         -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
