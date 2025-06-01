@@ -52,6 +52,9 @@ return {
 
   {
     'bullets-vim/bullets.vim',
+    config = function()
+      vim.cmd [[let g:bullets_delete_last_bullet_if_empty = 2]]
+    end,
     ft = {
       'markdown',
       'telekasten',
@@ -154,7 +157,7 @@ return {
             end,
           },
           {
-            'j',
+            'x',
             function()
               MiniBufremove.delete(0)
             end,
@@ -252,19 +255,15 @@ return {
     'folke/tokyonight.nvim',
     lazy = false,
     priority = 1000,
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup { ---stylua-ignore
-        style = 'storm',
-        on_highlights = function(highlights, colors)
-          highlights.FlashLabel = { bg = colors.blue0, fg = colors.magenta }
-          highlights.MiniTrailspace = { fg = colors.magenta }
-          highlights.CursorLine = { bg = colors.fg_gutter }
-          -- highlights.RenderMarkdownCode = { bg = colors.fg_gutter }  -- this is a lighter backgroud for code blocks. I got tired of it
-          highlights.RenderMarkdownCode = { bg = '#16161e' } -- this is for a dark background to code blocks
-        end,
-      }
-    end,
+    opts = {
+      style = 'storm',
+      on_highlights = function(highlights, colors)
+        highlights.FlashLabel = { bg = colors.blue0, fg = colors.magenta }
+        highlights.MiniTrailspace = { fg = colors.magenta }
+        highlights.CursorLine = { bg = colors.fg_gutter }
+        -- highlights.RenderMarkdownCode = { bg = colors.fg_gutter }  -- this is a lighter backgroud for code blocks. I got tired of it
+        highlights.RenderMarkdownCode = { bg = '#16161e' } -- this is for a dark background to code blocks
+      end,
+    },
   },
-  -- { "NTBBloodbath/sweetie.nvim" },
 }
