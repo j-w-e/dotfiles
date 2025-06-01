@@ -1,31 +1,31 @@
 return {
   -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
   {
-    "nvim-telescope/telescope.nvim",
+    'nvim-telescope/telescope.nvim',
     dependencies = {
-      "nvim-lua/plenary.nvim",
-      "polirritmico/telescope-lazy-plugins.nvim",
-      "nvim-telescope/telescope-live-grep-args.nvim",
+      'nvim-lua/plenary.nvim',
+      'polirritmico/telescope-lazy-plugins.nvim',
+      'nvim-telescope/telescope-live-grep-args.nvim',
     },
     config = function()
-      require("telescope").setup({
+      require('telescope').setup {
         defaults = {
-          layout_strategy = "flex",
-          layout_config = { prompt_position = "top" },
-          sorting_strategy = "ascending",
-          path_display = { "filename_first" }, -- I may want to set this to "smart" which also works well
+          layout_strategy = 'flex',
+          layout_config = { prompt_position = 'top' },
+          sorting_strategy = 'ascending',
+          path_display = { 'filename_first' }, -- I may want to set this to "smart" which also works well
           mappings = {
             i = {
-              ["<esc>"] = require("telescope.actions").close,
-              ["<c-q>"] = require("telescope.actions").smart_send_to_qflist,
-              ["jk"] = { "<esc>", type = "command" },
-              ["kj"] = { "<esc>", type = "command" },
+              ['<esc>'] = require('telescope.actions').close,
+              ['<c-q>'] = require('telescope.actions').smart_send_to_qflist,
+              ['jk'] = { '<esc>', type = 'command' },
+              ['kj'] = { '<esc>', type = 'command' },
             },
           },
         },
         extensions = {
-          ["ui-select"] = {
-            require("telescope.themes").get_dropdown(),
+          ['ui-select'] = {
+            require('telescope.themes').get_dropdown(),
           },
           lazy_plugins = {
             name_only = false, -- match only the `repo_name`, false to match the full `account/repo_name`
@@ -37,65 +37,65 @@ return {
             -- sort_mru = true,
             mappings = {
               i = {
-                ["<c-d>"] = require("telescope.actions").delete_buffer,
+                ['<c-d>'] = require('telescope.actions').delete_buffer,
               },
             },
           },
           live_grep = {
             mappings = {
-              i = { ["<c-f>"] = require("telescope.actions").to_fuzzy_refine },
+              i = { ['<c-f>'] = require('telescope.actions').to_fuzzy_refine },
             },
           },
         },
-      })
-      require("telescope").load_extension("ui-select")
-      require("telescope").load_extension("live_grep_args")
+      }
+      require('telescope').load_extension 'ui-select'
+      require('telescope').load_extension 'live_grep_args'
       -- require("telescope").load_extension("dap")
     end,
   },
 
-  { "nvim-telescope/telescope-ui-select.nvim" },
+  { 'nvim-telescope/telescope-ui-select.nvim' },
   -- { 'nvim-telescope/telescope-dap.nvim' },
 
   {
-    "hrsh7th/nvim-cmp",
+    'hrsh7th/nvim-cmp',
     dependencies = {
-      { "hrsh7th/cmp-nvim-lsp" },
-      { "hrsh7th/cmp-nvim-lsp-signature-help" },
-      { "hrsh7th/cmp-buffer" },
-      { "hrsh7th/cmp-path" },
-      { "hrsh7th/cmp-emoji" },
+      { 'hrsh7th/cmp-nvim-lsp' },
+      { 'hrsh7th/cmp-nvim-lsp-signature-help' },
+      { 'hrsh7th/cmp-buffer' },
+      { 'hrsh7th/cmp-path' },
+      { 'hrsh7th/cmp-emoji' },
       -- { 'saadparwaiz1/cmp_luasnip' },
-      { "f3fora/cmp-spell" },
-      { "ray-x/cmp-treesitter" },
-      { "jmbuhr/cmp-pandoc-references" },
+      { 'f3fora/cmp-spell' },
+      -- { 'ray-x/cmp-treesitter' },
+      { 'jmbuhr/cmp-pandoc-references' },
       -- { 'L3MON4D3/LuaSnip' },
       -- { 'rafamadriz/friendly-snippets' },
-      { "onsails/lspkind-nvim" },
-      { "hrsh7th/cmp-cmdline" },
-      { "hrsh7th/cmp-nvim-lua" },
+      { 'onsails/lspkind-nvim' },
+      { 'hrsh7th/cmp-cmdline' },
+      { 'hrsh7th/cmp-nvim-lua' },
       -- { 'hrsh7th/cmp-omni' },
     },
     config = function()
-      local cmp = require("cmp")
+      local cmp = require 'cmp'
       -- local luasnip = require 'luasnip'
-      local lspkind = require("lspkind")
+      local lspkind = require 'lspkind'
 
       local has_words_before = function()
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match '%s' == nil
       end
 
-      cmp.setup({
+      cmp.setup {
         -- snippet = {
         --   expand = function(args)
         --     luasnip.lsp_expand(args.body)
         --   end,
         -- },
-        completion = { completeopt = "menu,menuone,noinsert,noselect" },
-        mapping = cmp.mapping.preset.insert({
+        completion = { completeopt = 'menu,menuone,noinsert,noselect' },
+        mapping = cmp.mapping.preset.insert {
           -- up, down, c-y, c-e, c-n, c-p already set by the preset
-          ["<tab>"] = {
+          ['<tab>'] = {
             i = function(fallback)
               if has_words_before() then
                 cmp.complete_common_string()
@@ -107,7 +107,7 @@ return {
               fallback()
             end,
           },
-          ["<s-tab>"] = {
+          ['<s-tab>'] = {
             i = function(fallback)
               if has_words_before() then
                 cmp.complete_common_string()
@@ -119,10 +119,10 @@ return {
               fallback()
             end,
           },
-          ["<CR>"] = {
+          ['<CR>'] = {
             i = function(fallback)
               if cmp.visible() and cmp.get_active_entry() then
-                cmp.confirm({ select = false })
+                cmp.confirm { select = false }
               else
                 fallback()
               end
@@ -131,7 +131,7 @@ return {
           -- ['<c-space>'] = {
           --   i = cmp.mapping.complete(),
           -- },
-        }),
+        },
         --   {
         --   ['<down>'] = cmp.mapping.select_next_item(),
         --   ['<up>'] = cmp.mapping.select_prev_item(),
@@ -192,35 +192,35 @@ return {
 
         ---@diagnostic disable-next-line: missing-fields
         formatting = {
-          format = lspkind.cmp_format({
-            mode = "symbol",
+          format = lspkind.cmp_format {
+            mode = 'symbol',
             menu = {
-              otter = "[🦦]",
-              nvim_lsp = "[lsp]",
+              otter = '[🦦]',
+              nvim_lsp = '[lsp]',
               -- luasnip = '[snip]',
-              buffer = "[buf]",
-              path = "[path]",
-              spell = "[spell]",
-              pandoc_references = "[ref]",
-              tags = "[tag]",
-              treesitter = "[ts]",
-              emoji = "[emoji]",
-              cmp_r = "[r]",
+              buffer = '[buf]',
+              path = '[path]',
+              spell = '[spell]',
+              pandoc_references = '[ref]',
+              tags = '[tag]',
+              treesitter = '[ts]',
+              emoji = '[emoji]',
+              cmp_r = '[r]',
             },
-          }),
+          },
         },
         sources = {
-          { name = "otter" }, -- for code chunks in quarto
+          { name = 'otter' }, -- for code chunks in quarto
           -- { name = 'luasnip', keyword_length = 3, max_item_count = 3 },
-          { name = "path" },
-          { name = "cmp_r" },
-          { name = "nvim_lsp" },
-          { name = "nvim_lsp_signature_help" },
-          { name = "treesitter", keyword_length = 5, max_item_count = 3 },
-          { name = "buffer", keyword_length = 4, max_item_count = 3 },
-          { name = "pandoc_references" },
-          { name = "spell" },
-          { name = "emoji" },
+          { name = 'path' },
+          { name = 'cmp_r' },
+          { name = 'nvim_lsp' },
+          { name = 'nvim_lsp_signature_help' },
+          -- { name = "treesitter", keyword_length = 5, max_item_count = 3 },
+          { name = 'buffer', keyword_length = 4, max_item_count = 3 },
+          { name = 'pandoc_references' },
+          { name = 'spell' },
+          { name = 'emoji' },
         },
         -- view = {
         --   entries = 'native',
@@ -229,33 +229,33 @@ return {
           completion = cmp.config.window.bordered(),
           documentation = cmp.config.window.bordered(),
         },
-      })
+      }
 
       -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
       ---@diagnostic disable-next-line: missing-fields
-      cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline({
-          ["<Down>"] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
-          ["<Up>"] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
-          ["<tab>"] = { c = cmp.mapping.complete_common_string() },
-        }),
+      cmp.setup.cmdline({ '/', '?' }, {
+        mapping = cmp.mapping.preset.cmdline {
+          ['<Down>'] = { c = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Insert } },
+          ['<Up>'] = { c = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert } },
+          ['<tab>'] = { c = cmp.mapping.complete_common_string() },
+        },
         sources = {
-          { name = "buffer" },
+          { name = 'buffer' },
         },
       })
 
       -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
       ---@diagnostic disable-next-line: missing-fields
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline({
-          ["<Down>"] = { c = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }) },
-          ["<Up>"] = { c = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }) },
-          ["<tab>"] = { c = cmp.mapping.complete_common_string() },
-        }),
-        sources = cmp.config.sources({
-          { name = "path" },
-          { name = "cmdline" },
-        }),
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline {
+          ['<Down>'] = { c = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Insert } },
+          ['<Up>'] = { c = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert } },
+          ['<tab>'] = { c = cmp.mapping.complete_common_string() },
+        },
+        sources = cmp.config.sources {
+          { name = 'path' },
+          { name = 'cmdline' },
+        },
       })
 
       -- for friendly snippets
@@ -266,19 +266,19 @@ return {
       -- luasnip.filetype_extend('quarto', { 'markdown' })
       -- luasnip.filetype_extend('rmarkdown', { 'markdown' })
       -- luasnip.filetype_extend('telekasten', { 'markdown' })
-      require("cmp_r").setup({})
+      require('cmp_r').setup {}
     end,
   },
 
   {
-    "folke/which-key.nvim",
+    'folke/which-key.nvim',
     opts = {
-      preset = "modern",
+      preset = 'modern',
     },
   },
 
   {
-    "lewis6991/gitsigns.nvim",
+    'lewis6991/gitsigns.nvim',
     opts = {
       on_attach = function(bufnr)
         local gs = package.loaded.gitsigns
@@ -290,82 +290,82 @@ return {
         end
 
         -- Navigation
-        map("n", "]h", function()
+        map('n', ']h', function()
           if vim.wo.diff then
-            return "]h"
+            return ']h'
           end
           vim.schedule(function()
             gs.next_hunk()
           end)
-          return "<Ignore>"
+          return '<Ignore>'
         end, { expr = true })
 
-        map("n", "[h", function()
+        map('n', '[h', function()
           if vim.wo.diff then
-            return "[h"
+            return '[h'
           end
           vim.schedule(function()
             gs.prev_hunk()
           end)
-          return "<Ignore>"
+          return '<Ignore>'
         end, { expr = true })
 
         -- Actions
-        map("n", "<leader>hs", gs.stage_hunk, { desc = "stage hunk" })
-        map("n", "<leader>hr", gs.reset_hunk, { desc = "reset hunk" })
-        map("v", "<leader>hs", function()
-          gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-        end, { desc = "stage hunk" })
-        map("v", "<leader>hr", function()
-          gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-        end, { desc = "reset hunk" })
-        map("n", "<leader>hS", gs.stage_buffer, { desc = "stage buffer" })
-        map("n", "<leader>hu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
-        map("n", "<leader>hR", gs.reset_buffer, { desc = "reset buffer" })
-        map("n", "<leader>hp", gs.preview_hunk, { desc = "preview hunk" })
-        map("n", "<leader>hb", function()
-          gs.blame_line({ full = true })
-        end, { desc = "blame line" })
+        map('n', '<leader>hs', gs.stage_hunk, { desc = 'stage hunk' })
+        map('n', '<leader>hr', gs.reset_hunk, { desc = 'reset hunk' })
+        map('v', '<leader>hs', function()
+          gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, { desc = 'stage hunk' })
+        map('v', '<leader>hr', function()
+          gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+        end, { desc = 'reset hunk' })
+        map('n', '<leader>hS', gs.stage_buffer, { desc = 'stage buffer' })
+        map('n', '<leader>hu', gs.undo_stage_hunk, { desc = 'undo stage hunk' })
+        map('n', '<leader>hR', gs.reset_buffer, { desc = 'reset buffer' })
+        map('n', '<leader>hp', gs.preview_hunk, { desc = 'preview hunk' })
+        map('n', '<leader>hb', function()
+          gs.blame_line { full = true }
+        end, { desc = 'blame line' })
         -- map('n', '<leader>tb', gs.toggle_current_line_blame)
-        map("n", "<leader>hd", gs.diffthis, { desc = "diff this" })
-        map("n", "<leader>hD", function()
-          gs.diffthis("~")
-        end, { desc = "diff this ~" })
+        map('n', '<leader>hd', gs.diffthis, { desc = 'diff this' })
+        map('n', '<leader>hD', function()
+          gs.diffthis '~'
+        end, { desc = 'diff this ~' })
         -- map('n', '<leader>td', gs.toggle_deleted)
 
         -- Text object
-        map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
+        map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
       end,
     },
   },
   -- { 'nvim-tree/nvim-web-devicons', opts = {} },
 
   {
-    "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
+    'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
     opts = {
       -- char = '┊',
       -- show_trailing_blankline_indent = false,
     },
   },
 
-  { "numToStr/FTerm.nvim", opts = {} },
+  { 'numToStr/FTerm.nvim', opts = {} },
 
   {
-    "nvim-treesitter/nvim-treesitter",
+    'nvim-treesitter/nvim-treesitter',
     dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects",
-      "nvim-treesitter/playground",
+      'nvim-treesitter/nvim-treesitter-textobjects',
+      'nvim-treesitter/playground',
     },
-    build = ":TSUpdate",
+    build = ':TSUpdate',
     config = function()
       ---@diagnostic disable-next-line: missing-fields
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "c", "lua", "markdown", "markdown_inline", "python", "r", "vimdoc", "vim", "yaml" },
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = { 'c', 'lua', 'markdown', 'markdown_inline', 'python', 'r', 'vimdoc', 'vim', 'yaml' },
         auto_install = true,
         highlight = {
           enable = true,
-          additional_vim_regex_highlighting = { "markdown" },
+          additional_vim_regex_highlighting = { 'markdown' },
         },
         indent = { enable = true },
         -- incremental_selection = {
@@ -383,32 +383,32 @@ return {
             lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
             keymaps = {
               -- You can use the capture groups defined in textobjects.scm
-              ["aa"] = "@parameter.outer",
-              ["ia"] = "@parameter.inner",
-              ["af"] = "@function.outer",
-              ["if"] = "@function.inner",
-              ["ac"] = "@class.outer",
-              ["ic"] = "@class.inner",
+              ['aa'] = '@parameter.outer',
+              ['ia'] = '@parameter.inner',
+              ['af'] = '@function.outer',
+              ['if'] = '@function.inner',
+              ['ac'] = '@class.outer',
+              ['ic'] = '@class.inner',
             },
           },
           move = {
             enable = true,
             set_jumps = true, -- whether to set jumps in the jumplist
             goto_next_start = {
-              ["]m"] = "@function.outer",
-              ["]]"] = "@class.outer",
+              [']m'] = '@function.outer',
+              [']]'] = '@class.outer',
             },
             goto_next_end = {
-              ["]M"] = "@function.outer",
-              ["]["] = "@class.outer",
+              [']M'] = '@function.outer',
+              [']['] = '@class.outer',
             },
             goto_previous_start = {
-              ["[m"] = "@function.outer",
-              ["[["] = "@class.outer",
+              ['[m'] = '@function.outer',
+              ['[['] = '@class.outer',
             },
             goto_previous_end = {
-              ["[M"] = "@function.outer",
-              ["[]"] = "@class.outer",
+              ['[M'] = '@function.outer',
+              ['[]'] = '@class.outer',
             },
           },
           swap = {
@@ -421,7 +421,7 @@ return {
             -- },
           },
         },
-      })
+      }
     end,
   },
 }
