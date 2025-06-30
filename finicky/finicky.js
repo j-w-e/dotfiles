@@ -24,6 +24,7 @@ export default {
             /gorsdev.nrc.no/,
             /gors.nrc.no/,
             /apps.powerapps.com/,
+            /app.sharegate.com/,
     	],
     	browser: "Firefox"
   	},
