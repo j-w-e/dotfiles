@@ -3,6 +3,10 @@ vim.opt_local.sw = 4
 vim.opt_local.wrap = true
 vim.opt_local.conceallevel = 2
 
+-- -- The following is supposed to unmap gO from being "show outline of current buffer"
+-- -- But just generates an error
+-- vim.cmd [[ unmap <buffer> gO ]]
+
 vim.b.miniindentscope_config = { options = { border = 'top' } }
 
 -- Using Bullets.vim
