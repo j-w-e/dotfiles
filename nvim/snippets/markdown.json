@@ -1,8 +1,8 @@
 {
-  "See":           { "prefix": "See", "body": "see email from ${1:Lian}, subject '$2'$0" },
-  "see":           { "prefix": "see", "body": "see email from ${1:Lian}, subject '$2'$0" },
-  "See_from_clip": { "prefix": "Sep", "body": "see email from ${1:Lian}, subject '$TM_SELECTED_TEXT'$0" },
-  "see_from_clip": { "prefix": "sep", "body": "see email from ${1:Lian}, subject '$TM_SELECTED_TEXT'$0" },
+  "See":           { "prefix": "See", "body": "See email from ${1:Lian}, subject '$2', ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}$0" },
+  "see":           { "prefix": "see", "body": "see email from ${1:Lian}, subject '$2', ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}$0" },
+  "See_from_clip": { "prefix": "Sep", "body": "See email from ${1:Lian}, subject '$TM_SELECTED_TEXT', ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}$0" },
+  "see_from_clip": { "prefix": "sep", "body": "see email from ${1:Lian}, subject '$TM_SELECTED_TEXT', ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE}$0" },
   "here":          { "prefix": "he", "body": "[here]($TM_SELECTED_TEXT)$0" },
   "link":          { "prefix": "link", "body": "[${1:text}](${2:url})" },
   "thisdoc":       { "prefix": "td", "body": "[this document]($TM_SELECTED_TEXT)$0" },
