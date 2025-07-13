@@ -22,6 +22,9 @@ enable-normalization-opposite-orientation-for-nested-containers = true
     ctrl-alt-i = 'focus --boundaries-action wrap-around-the-workspace up'
     ctrl-alt-o = 'focus --boundaries-action wrap-around-the-workspace right'
 
+    ctrl-alt-m = 'workspace prev'
+    ctrl-alt-minus = 'workspace next'
+
     ctrl-alt-shift-n = 'move left'
     ctrl-alt-shift-a = 'move down'
     ctrl-alt-shift-i = 'move up'
