@@ -1,0 +1,154 @@
+after-startup-command = [
+    # JankyBorders has a built-in detection of already running process,
+    # so it won't be run twice on AeroSpace restart
+    'exec-and-forget borders active_color=0xFFBA86F6 inactive_color=0xff494d64 width=10.0'
+]
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+[mode.main.binding]
+    # See: https://nikitabobko.github.io/AeroSpace/goodies#open-a-new-window-with-applescript
+    # alt-enter = '''exec-and-forget osascript -e '
+    # tell application "Terminal"
+    #     do script
+    #     activate
+    # end tell'
+    # '''
+
+    # i3 wraps focus by default
+    ctrl-alt-n = 'focus --boundaries-action wrap-around-the-workspace left'
+    ctrl-alt-a = 'focus --boundaries-action wrap-around-the-workspace down'
+    ctrl-alt-i = 'focus --boundaries-action wrap-around-the-workspace up'
+    ctrl-alt-o = 'focus --boundaries-action wrap-around-the-workspace right'
+
+    ctrl-alt-shift-n = 'move left'
+    ctrl-alt-shift-a = 'move down'
+    ctrl-alt-shift-i = 'move up'
+    ctrl-alt-shift-o = 'move right'
+
+    ctrl-alt-h = 'join-with left'
+    ctrl-alt-j = 'join-with down'
+    ctrl-alt-k = 'join-with up'
+    ctrl-alt-l = 'join-with right'
+
+    ctrl-alt-f = 'fullscreen'
+
+    # ctrl-alt-v = 'layout v_accordion' # 'layout stacking' in i3
+    ctrl-alt-v = 'layout horizontal vertical'
+    ctrl-alt-t = 'layout tiles accordion'
+    # ctrl-alt-t = 'layout tiles horizontal vertical'
+
+    ctrl-alt-space = 'layout floating tiling'
+
+    ctrl-alt-comma = 'exec-and-forget aerospace focus-back-and-forth || aerospace workspace-back-and-forth'
+
+    ctrl-alt-1 = 'workspace 1'
+    ctrl-alt-2 = 'workspace 2'
+    ctrl-alt-3 = 'workspace 3'
+    ctrl-alt-4 = 'workspace 4'
+    ctrl-alt-5 = 'workspace 5'
+    ctrl-alt-6 = 'workspace 6'
+    ctrl-alt-7 = 'workspace 7'
+    ctrl-alt-8 = 'workspace 8'
+    ctrl-alt-9 = 'workspace 9'
+    ctrl-alt-0 = 'workspace 10'
+
+    ctrl-alt-cmd-1 = 'move-node-to-workspace 1 --focus-follows-window'
+    ctrl-alt-cmd-2 = 'move-node-to-workspace 2 --focus-follows-window'
+    ctrl-alt-cmd-3 = 'move-node-to-workspace 3 --focus-follows-window'
+    ctrl-alt-cmd-4 = 'move-node-to-workspace 4 --focus-follows-window'
+    ctrl-alt-cmd-5 = 'move-node-to-workspace 5 --focus-follows-window'
+    ctrl-alt-cmd-6 = 'move-node-to-workspace 6 --focus-follows-window'
+    ctrl-alt-cmd-7 = 'move-node-to-workspace 7 --focus-follows-window'
+    ctrl-alt-cmd-8 = 'move-node-to-workspace 8 --focus-follows-window'
+    ctrl-alt-cmd-9 = 'move-node-to-workspace 9 --focus-follows-window'
+    ctrl-alt-cmd-0 = 'move-node-to-workspace 10 --focus-follows-window'
+
+    ctrl-alt-shift-1 = 'move-node-to-workspace 1'
+    ctrl-alt-shift-2 = 'move-node-to-workspace 2'
+    ctrl-alt-shift-3 = 'move-node-to-workspace 3'
+    ctrl-alt-shift-4 = 'move-node-to-workspace 4'
+    ctrl-alt-shift-5 = 'move-node-to-workspace 5'
+    ctrl-alt-shift-6 = 'move-node-to-workspace 6'
+    ctrl-alt-shift-7 = 'move-node-to-workspace 7'
+    ctrl-alt-shift-8 = 'move-node-to-workspace 8'
+    ctrl-alt-shift-9 = 'move-node-to-workspace 9'
+    ctrl-alt-shift-0 = 'move-node-to-workspace 10'
+
+    # ctrl-alt-shift-c = 'reload-config'
+
+    # App openers
+    ctrl-alt-u = 'exec-and-forget open -a /Applications/Microsoft\ Outlook.app'
+    ctrl-alt-y = 'exec-and-forget open -a /Applications/Microsoft\ Teams.app'
+
+    ctrl-alt-r = 'mode resize'
+    ctrl-alt-s = 'mode service'
+
+[[on-window-detected]]
+if.app-id="com.mitchellh.ghostty"
+run= [
+  "layout tiling",
+]
+
+# Move apps to specific workspaces
+[[on-window-detected]]
+if.app-id = 'com.microsoft.teams2'
+run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.Outlook'
+run = 'move-node-to-workspace 2'
+
+[[on-window-detected]]
+if.app-id = 'org.mozilla.firefox'
+run = 'move-node-to-workspace 1'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'move-node-to-workspace 4'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.Safari'
+run = 'move-node-to-workspace 3'
+
+[[on-window-detected]]
+if.window-title-regex-substring = "Nvim-R plot"
+run = [
+    "layout floating"
+]
+
+
+# 'service' binding mode declaration.
+# See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
+[mode.service.binding]
+    esc = 'mode main'
+    ctrl-alt-q = ['reload-config', 'mode main']
+    ctrl-alt-r = ['flatten-workspace-tree', 'mode main'] # reset layout
+    ctrl-alt-t = 'enable toggle' # toggle aerospace
+
+
+    # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
+    #s = ['layout sticky tiling', 'mode main']
+
+[mode.resize.binding]
+    h = 'resize width -50'
+    j = 'resize height +50'
+    k = 'resize height -50'
+    l = 'resize width +50'
+    b = ['balance-sizes', 'mode main']
+
+    # See: https://nikitabobko.github.io/AeroSpace/commands#resize
+    minus = 'resize smart -50'
+    equal = 'resize smart +50'
+
+    enter = 'mode main'
+    esc = 'mode main'
+
+[gaps]
+    inner.horizontal = 15
+    inner.vertical =   15
+    outer.left =       15
+    outer.bottom =     15
+    outer.top =        15
+    outer.right =      15
