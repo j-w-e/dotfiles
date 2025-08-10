@@ -6,6 +6,8 @@ after-startup-command = [
 
 enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
+start-at-login = true
+
 
 [mode.main.binding]
     # See: https://nikitabobko.github.io/AeroSpace/goodies#open-a-new-window-with-applescript
@@ -17,34 +19,34 @@ enable-normalization-opposite-orientation-for-nested-containers = true
     # '''
 
     # i3 wraps focus by default
-    ctrl-alt-n = 'focus --boundaries-action wrap-around-the-workspace left'
-    ctrl-alt-a = 'focus --boundaries-action wrap-around-the-workspace down'
-    ctrl-alt-i = 'focus --boundaries-action wrap-around-the-workspace up'
-    ctrl-alt-o = 'focus --boundaries-action wrap-around-the-workspace right'
+    ctrl-alt-j               = 'focus --boundaries-action wrap-around-the-workspace left'
+    ctrl-alt-k               = 'focus --boundaries-action wrap-around-the-workspace down'
+    ctrl-alt-l               = 'focus --boundaries-action wrap-around-the-workspace up'
+    ctrl-alt-semicolon       = 'focus --boundaries-action wrap-around-the-workspace right'
 
-    ctrl-alt-m = 'workspace prev'
-    ctrl-alt-minus = 'workspace next'
+    ctrl-alt-m               = 'workspace prev'
+    ctrl-alt-slash           = 'workspace next'
 
-    ctrl-alt-shift-n = 'move left'
-    ctrl-alt-shift-a = 'move down'
-    ctrl-alt-shift-i = 'move up'
-    ctrl-alt-shift-o = 'move right'
+    ctrl-alt-shift-j         = 'move left'
+    ctrl-alt-shift-k         = 'move down'
+    ctrl-alt-shift-l         = 'move up'
+    ctrl-alt-shift-semicolon = 'move right'
 
-    ctrl-alt-h = 'join-with left'
-    ctrl-alt-j = 'join-with down'
-    ctrl-alt-k = 'join-with up'
-    ctrl-alt-l = 'join-with right'
+    ctrl-alt-u               = 'join-with left'
+    ctrl-alt-i               = 'join-with down'
+    ctrl-alt-o               = 'join-with up'
+    ctrl-alt-p               = 'join-with right'
 
-    ctrl-alt-f = 'fullscreen'
+    ctrl-alt-f               = 'fullscreen'
 
-    # ctrl-alt-v = 'layout v_accordion' # 'layout stacking' in i3
-    ctrl-alt-v = 'layout horizontal vertical'
-    ctrl-alt-t = 'layout tiles accordion'
-    # ctrl-alt-t = 'layout tiles horizontal vertical'
+    # ctrl-alt-v             = 'layout v_accordion' # 'layout stacking' in i3
+    ctrl-alt-v               = 'layout horizontal vertical'
+    ctrl-alt-d               = 'layout tiles accordion'
+    # ctrl-alt-t             = 'layout tiles horizontal vertical'
 
-    ctrl-alt-space = 'layout floating tiling'
+    ctrl-alt-space           = 'layout floating tiling'
 
-    ctrl-alt-comma = 'exec-and-forget aerospace focus-back-and-forth || aerospace workspace-back-and-forth'
+    ctrl-alt-comma           = 'exec-and-forget aerospace focus-back-and-forth || aerospace workspace-back-and-forth'
 
     ctrl-alt-1 = 'workspace 1'
     ctrl-alt-2 = 'workspace 2'
@@ -82,8 +84,8 @@ enable-normalization-opposite-orientation-for-nested-containers = true
     # ctrl-alt-shift-c = 'reload-config'
 
     # App openers
-    ctrl-alt-u = 'exec-and-forget open -a /Applications/Microsoft\ Outlook.app'
-    ctrl-alt-y = 'exec-and-forget open -a /Applications/Microsoft\ Teams.app'
+    ctrl-alt-z = 'exec-and-forget open -a /Applications/Microsoft\ Outlook.app'
+    ctrl-alt-x = 'exec-and-forget open -a /Applications/Microsoft\ Teams.app'
 
     ctrl-alt-r = 'mode resize'
     ctrl-alt-s = 'mode service'
@@ -142,11 +144,11 @@ run = [
     b = ['balance-sizes', 'mode main']
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#resize
-    minus = 'resize smart -50'
-    equal = 'resize smart +50'
+    comma  = 'resize smart -50'
+    period = 'resize smart +50'
 
-    enter = 'mode main'
-    esc = 'mode main'
+    enter  = 'mode main'
+    esc    = 'mode main'
 
 [gaps]
     inner.horizontal = 15
