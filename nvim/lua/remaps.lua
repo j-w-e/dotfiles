@@ -172,6 +172,35 @@ end, { desc = "insjump" })
 require("mini.keymap").map_combo("t", "jk", "<BS><BS><C-\\><C-n>")
 require("mini.keymap").map_combo("t", "kj", "<BS><BS><C-\\><C-n>")
 
+function JumpToNextTODO()
+  -- Save current cursor position
+  local current_pos = vim.api.nvim_win_get_cursor(0)
+  local current_line = current_pos[1]
+  -- Get total number of lines in the buffer
+  local total_lines = vim.api.nvim_buf_line_count(0)
+  -- Define a pattern to match TODO with optional surrounding whitespace
+  local pattern = "%f[%w]TODO%f[%W]" -- word boundary match
+  -- Search from the next line to the end
+  for lnum = current_line + 1, total_lines do
+    local line = vim.fn.getline(lnum)
+    if line:find(pattern) then
+      vim.api.nvim_win_set_cursor(0, { lnum, line:find(pattern) - 1 })
+      return
+    end
+  end
+  -- If not found, search from top to current line
+  for lnum = 1, current_line do
+    local line = vim.fn.getline(lnum)
+    if line:find(pattern) then
+      vim.api.nvim_win_set_cursor(0, { lnum, line:find(pattern) - 1 })
+      return
+    end
+  end
+  print("No TODO found in the file.")
+end
+nmap("<leader>j", JumpToNextTODO, "Jump to next todo")
+-- TODODO
+
 -- normal mode
 wk.add({
   { "<esc>", "<cmd>noh<cr>", desc = "remove search highlight" },
