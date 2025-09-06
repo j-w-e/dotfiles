@@ -172,34 +172,71 @@ end, { desc = "insjump" })
 require("mini.keymap").map_combo("t", "jk", "<BS><BS><C-\\><C-n>")
 require("mini.keymap").map_combo("t", "kj", "<BS><BS><C-\\><C-n>")
 
-function JumpToNextTODO()
-  -- Save current cursor position
+function JumpToTODO(forward)
   local current_pos = vim.api.nvim_win_get_cursor(0)
   local current_line = current_pos[1]
-  -- Get total number of lines in the buffer
   local total_lines = vim.api.nvim_buf_line_count(0)
-  -- Define a pattern to match TODO with optional surrounding whitespace
-  local pattern = "%f[%w]TODO%f[%W]" -- word boundary match
-  -- Search from the next line to the end
-  for lnum = current_line + 1, total_lines do
-    local line = vim.fn.getline(lnum)
-    if line:find(pattern) then
-      vim.api.nvim_win_set_cursor(0, { lnum, line:find(pattern) - 1 })
-      return
+
+  local pattern = "%f[%w]TODO%f[%W]" -- whole word "TODO"
+
+  if forward then
+    -- Search from next line to end
+    for lnum = current_line + 1, total_lines do
+      local line = vim.fn.getline(lnum)
+      local col = line:find(pattern)
+      if col then
+        vim.api.nvim_win_set_cursor(0, { lnum, col - 1 })
+        return
+      end
+    end
+
+    -- Wrap: from top to current line
+    for lnum = 1, current_line do
+      local line = vim.fn.getline(lnum)
+      local col = line:find(pattern)
+      if col then
+        vim.api.nvim_win_set_cursor(0, { lnum, col - 1 })
+        return
+      end
+    end
+  else
+    -- Search from previous line to top
+    for lnum = current_line - 1, 1, -1 do
+      local line = vim.fn.getline(lnum)
+      local last_col = nil
+      for match_start in line:gmatch("()" .. pattern) do
+        last_col = match_start
+      end
+      if last_col then
+        vim.api.nvim_win_set_cursor(0, { lnum, last_col - 1 })
+        return
+      end
+    end
+
+    -- Wrap: from bottom to current line
+    for lnum = total_lines, current_line do
+      local line = vim.fn.getline(lnum)
+      local last_col = nil
+      for match_start in line:gmatch("()" .. pattern) do
+        last_col = match_start
+      end
+      if last_col then
+        vim.api.nvim_win_set_cursor(0, { lnum, last_col - 1 })
+        return
+      end
     end
   end
-  -- If not found, search from top to current line
-  for lnum = 1, current_line do
-    local line = vim.fn.getline(lnum)
-    if line:find(pattern) then
-      vim.api.nvim_win_set_cursor(0, { lnum, line:find(pattern) - 1 })
-      return
-    end
-  end
+
   print("No TODO found in the file.")
 end
-nmap("<leader>j", JumpToNextTODO, "Jump to next todo")
--- TODODO
+
+nmap("<leader>tn", function()
+  JumpToTODO(true)
+end, "Jump to next TODO")
+
+nmap("<leader>tp", function()
+  JumpToTODO(false)
+end, "Jump to prev TODO")
 
 -- normal mode
 wk.add({
