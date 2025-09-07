@@ -92,7 +92,7 @@ return {
         --     luasnip.lsp_expand(args.body)
         --   end,
         -- },
-        completion = { completeopt = 'menu,menuone,noinsert,noselect' },
+        completion = { completeopt = 'menu,menuone,noinsert' },
         mapping = cmp.mapping.preset.insert {
           -- up, down, c-y, c-e, c-n, c-p already set by the preset
           ['<tab>'] = {
