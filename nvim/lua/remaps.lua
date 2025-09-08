@@ -97,7 +97,7 @@ nmap("<leader>vp", "<cmd>Telescope lazy_plugins<cr>", "lazy_plugins")
 nmap("<leader>vu", "<cmd>Lazy update<cr>", "Update plugins")
 nmap("<leader>tr", "<cmd>Telescope resume<cr>", "Telescope resume")
 nmap("<leader>td", function()
-  search_todos()
+  require("custom_functions.telescope_pickers").search_todos()
 end, "Telescope TODOs")
 
 -- Windows / buffers
@@ -229,105 +229,6 @@ function JumpToTODO(forward)
   else
     print("No TODO found in the file.")
   end
-end
-
-function search_todos()
-  local pickers = require("telescope.pickers")
-  local finders = require("telescope.finders")
-  local conf = require("telescope.config").values
-  local entry_display = require("telescope.pickers.entry_display")
-  local sorters = require("telescope.sorters")
-
-  local handle = io.popen("rg --no-heading --with-filename --line-number --column TODO")
-  if not handle then
-    print("Failed to run rg command")
-    return
-  end
-
-  local grouped = {} -- table: { [filename] = { entries } }
-
-  for line in handle:lines() do
-    local filename, lnum, col, text = line:match("([^:]+):(%d+):(%d+):(.*)")
-    if filename and lnum and col then
-      local entry = {
-        full = line,
-        filename = filename,
-        lnum = tonumber(lnum),
-        col = tonumber(col),
-        text = text,
-      }
-      grouped[filename] = grouped[filename] or {}
-      table.insert(grouped[filename], entry)
-    end
-  end
-  handle:close()
-
-  -- Sort entries in each file by line number
-  for _, entries in pairs(grouped) do
-    table.sort(entries, function(a, b)
-      return a.lnum < b.lnum
-    end)
-  end
-
-  -- Get filenames in reverse order
-  local sorted_filenames = {}
-  for fname in pairs(grouped) do
-    table.insert(sorted_filenames, fname)
-  end
-  table.sort(sorted_filenames, function(a, b)
-    return a > b -- reverse sort
-  end)
-
-  -- Flatten the grouped and sorted data
-  local results = {}
-  for _, fname in ipairs(sorted_filenames) do
-    for _, entry in ipairs(grouped[fname]) do
-      table.insert(results, entry)
-    end
-  end
-
-  -- Display formatting
-  local displayer = entry_display.create({
-    separator = " ",
-    items = {
-      { width = 40 },
-      -- { width = 6 },
-      -- { width = 4 },
-      { remaining = true },
-    },
-  })
-
-  local make_display = function(entry)
-    return displayer({
-      entry.filename,
-      -- tostring(entry.lnum),
-      -- tostring(entry.col),
-      entry.text,
-    })
-  end
-
-  -- Telescope picker
-  pickers
-    .new({}, {
-      prompt_title = "TODOs (by file, reversed)",
-      finder = finders.new_table({
-        results = results,
-        entry_maker = function(entry)
-          return {
-            value = entry,
-            ordinal = entry.full,
-            display = make_display,
-            filename = entry.filename,
-            -- lnum = entry.lnum,
-            -- col = entry.col,
-            text = entry.text,
-          }
-        end,
-      }),
-      sorter = sorters.get_generic_fuzzy_sorter(),
-      previewer = conf.grep_previewer({}),
-    })
-    :find()
 end
 
 -- normal mode
