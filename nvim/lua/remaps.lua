@@ -237,9 +237,6 @@ function search_todos()
   local conf = require("telescope.config").values
   local entry_display = require("telescope.pickers.entry_display")
   local sorters = require("telescope.sorters")
-  local previewers = require("telescope.previewers")
-  local actions = require("telescope.actions")
-  local action_state = require("telescope.actions.state")
 
   local handle = io.popen("rg --no-heading --with-filename --line-number --column TODO")
   if not handle then
@@ -247,65 +244,88 @@ function search_todos()
     return
   end
 
-  local results = {}
+  local grouped = {} -- table: { [filename] = { entries } }
+
   for line in handle:lines() do
-    table.insert(results, line)
+    local filename, lnum, col, text = line:match("([^:]+):(%d+):(%d+):(.*)")
+    if filename and lnum and col then
+      local entry = {
+        full = line,
+        filename = filename,
+        lnum = tonumber(lnum),
+        col = tonumber(col),
+        text = text,
+      }
+      grouped[filename] = grouped[filename] or {}
+      table.insert(grouped[filename], entry)
+    end
   end
   handle:close()
 
-  -- Reverse-sort by full line (filename path first)
-  table.sort(results, function(a, b)
-    return a > b
+  -- Sort entries in each file by line number
+  for _, entries in pairs(grouped) do
+    table.sort(entries, function(a, b)
+      return a.lnum < b.lnum
+    end)
+  end
+
+  -- Get filenames in reverse order
+  local sorted_filenames = {}
+  for fname in pairs(grouped) do
+    table.insert(sorted_filenames, fname)
+  end
+  table.sort(sorted_filenames, function(a, b)
+    return a > b -- reverse sort
   end)
 
+  -- Flatten the grouped and sorted data
+  local results = {}
+  for _, fname in ipairs(sorted_filenames) do
+    for _, entry in ipairs(grouped[fname]) do
+      table.insert(results, entry)
+    end
+  end
+
+  -- Display formatting
   local displayer = entry_display.create({
     separator = " ",
     items = {
-      { width = 40 }, -- file path
-      { width = 6 }, -- line
-      { width = 4 }, -- col
-      { remaining = true }, -- text
+      { width = 40 },
+      -- { width = 6 },
+      -- { width = 4 },
+      { remaining = true },
     },
   })
 
   local make_display = function(entry)
     return displayer({
       entry.filename,
-      tostring(entry.lnum),
-      tostring(entry.col),
+      -- tostring(entry.lnum),
+      -- tostring(entry.col),
       entry.text,
     })
   end
 
+  -- Telescope picker
   pickers
     .new({}, {
-      prompt_title = "TODOs",
+      prompt_title = "TODOs (by file, reversed)",
       finder = finders.new_table({
         results = results,
         entry_maker = function(entry)
-          local filename, lnum, col, text = entry:match("([^:]+):(%d+):(%d+):(.*)")
           return {
             value = entry,
-            ordinal = entry,
+            ordinal = entry.full,
             display = make_display,
-            filename = filename,
-            lnum = tonumber(lnum),
-            col = tonumber(col),
-            text = text,
-            path = filename,
+            filename = entry.filename,
+            -- lnum = entry.lnum,
+            -- col = entry.col,
+            text = entry.text,
           }
         end,
       }),
       sorter = sorters.get_generic_fuzzy_sorter(),
-      previewer = require("telescope.config").values.grep_previewer({}),
-      attach_mappings = function(_, map)
-        actions.select_default:replace(function()
-          local selection = action_state.get_selected_entry()
-          actions.close()
-          vim.cmd(string.format("edit +%d %s", selection.lnum, selection.filename))
-        end)
-        return true
-      end,
+      previewer = conf.grep_previewer({}),
     })
     :find()
 end
