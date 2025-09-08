@@ -77,7 +77,16 @@ function M.search_todos()
 
   local make_display = function(entry)
     if entry.is_header then
-      return ">>  " .. entry.basename .. " (" .. entry.filename .. ")"
+      local header_display = entry_display.create({
+        separator = "",
+        items = {
+          { remaining = true },
+        },
+      })
+
+      return header_display({
+        { ">>  " .. entry.basename .. " (" .. entry.filename .. ")", "@markup.heading.1.markdown" },
+      })
     end
     return displayer({
       tostring(entry.lnum),
