@@ -13,6 +13,18 @@ export default {
             },
         },
     ],
+    handlers: [{
+        // Open any link clicked in Mail & Outlook in Google Chrome
+        match: ({opener}) =>
+            ["Mail", "Microsoft Outlook"].includes(opener.name),
+        browser: "Firefox"
+    }],
+    handlers: [{
+        // Open any link clicked in Mail & Outlook in Google Chrome
+        match: ({opener}) =>
+            ["com.apple.mail", "com.microsoft.Outlook"].includes(opener.bundleId),
+        browser: "Firefox"
+    }],
     handlers: [
         //{
         //    // Open pdfs in Safari
@@ -28,6 +40,8 @@ export default {
                 /norwegianrefugeecouncil.sharepoint.com/,
                 /norwegianrefugeecouncil-my.sharepoint.com/,
                 /norcap.workplace.com/,
+                "^https:\/\/*.app.nrc.no",
+                /u16931449.ct.sendgrid.net/,
                 /eu.docusign.net/,
                 /cloud.microsoft/,
                 /whiteboard.office.com/,
