@@ -8,6 +8,9 @@ enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
 start-at-login = true
 
+exec-on-workspace-change = [ "/bin/bash", "-c", "~/.config/aerospace/scripts/reminders.sh" ]
+
+
 
 [mode.main.binding]
     # See: https://nikitabobko.github.io/AeroSpace/goodies#open-a-new-window-with-applescript
