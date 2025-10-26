@@ -180,6 +180,7 @@ function JumpToTODO(forward)
   local current_line = current_pos[1]
   local total_lines = vim.api.nvim_buf_line_count(0)
   local pattern = '%f[%w]TODO%f[%W]' -- match whole word "TODO"
+  vim.fn.setreg('/', 'TODO')
 
   local function search_range(start_line, end_line, step)
     for lnum = start_line, end_line, step do
