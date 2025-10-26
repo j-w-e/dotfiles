@@ -66,7 +66,7 @@ return {
       { 'hrsh7th/cmp-path' },
       { 'hrsh7th/cmp-emoji' },
       -- { 'saadparwaiz1/cmp_luasnip' },
-      { 'f3fora/cmp-spell' },
+      -- { 'f3fora/cmp-spell' },
       -- { 'ray-x/cmp-treesitter' },
       { 'jmbuhr/cmp-pandoc-references' },
       -- { 'L3MON4D3/LuaSnip' },
@@ -361,7 +361,7 @@ return {
     config = function()
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'c', 'lua', 'markdown', 'markdown_inline', 'python', 'r', 'vimdoc', 'vim', 'yaml' },
+        ensure_installed = { 'c', 'lua', 'markdown', 'markdown_inline', 'python', 'r', 'vimdoc', 'vim', 'yaml', 'csv' },
         auto_install = true,
         highlight = {
           enable = true,
