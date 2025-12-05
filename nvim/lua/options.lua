@@ -26,8 +26,12 @@ o.breakindent = true
 
 -- diagnostics
 vim.diagnostic.config {
-  virtual_lines = {
-    virtual_text = true,
+  -- virtual_lines = {
+  --   virtual_text = true,
+  --   current_line = true,
+  --   severity_sort = true,
+  -- },
+  virtual_text = {
     current_line = true,
     severity_sort = true,
   },
