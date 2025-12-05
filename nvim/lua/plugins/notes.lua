@@ -22,6 +22,7 @@ return {
     opts = {
       legacy_commands = false,
       ui = { enable = false },
+      checkbox = { create_new = false },
       workspaces = {
         {
           name = 'work',
