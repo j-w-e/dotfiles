@@ -30,6 +30,9 @@ exec-on-workspace-change = [ "/bin/bash", "-c", "~/.config/aerospace/scripts/rem
     ctrl-alt-m               = 'workspace prev'
     ctrl-alt-slash           = 'workspace next'
 
+    ctrl-alt-cmd-m         = 'move-node-to-workspace --focus-follows-window prev'
+    ctrl-alt-cmd-slash     = 'move-node-to-workspace --focus-follows-window next'
+
     ctrl-alt-shift-j         = 'move left'
     ctrl-alt-shift-k         = 'move down'
     ctrl-alt-shift-l         = 'move up'
