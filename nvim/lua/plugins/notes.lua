@@ -41,7 +41,7 @@ return {
       },
       new_notes_location = 'notes_subdir',
       notes_subdir = 'meetings',
-      sort_by = 'path',
+      search = { sort_by = 'path' },
 
       note_id_func = function(title)
         -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
@@ -61,6 +61,7 @@ return {
       end,
 
       frontmatter = {
+        enable = true,
         func = function(note)
           -- Add the title of the note as an alias.
           if note.title then
@@ -86,7 +87,6 @@ return {
         date_format = '%Y-%m-%d-%a',
         time_format = '%H:%M',
       },
-      disable_frontmatter = false,
       follow_url_func = function(url)
         -- Open the URL in the default web browser.
         vim.fn.jobstart { 'open', url } -- Mac OS

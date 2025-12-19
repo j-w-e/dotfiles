@@ -335,8 +335,28 @@ wk.add({
     { '<leader>ot', '<cmd>Obsidian tags<cr>', desc = 'Search tags' },
     { '<leader>ob', '<cmd>Obsidian backlinks<cr>', desc = 'Backlinks' },
     { '<leader>of', '<cmd>Obsidian quick_switch<cr>', desc = 'Open note' },
-    { '<leader>oW', '<cmd>lua MiniSessions.write("zzz-notes-tmp")<cr>', desc = 'Save tmp session' },
+    {
+      '<leader>oW',
+      function()
+        MiniSessions.write 'zzz-notes-tmp'
+        local session_file = '/Users/hughearp/.local/share/nvim/session/zzz-notes-tmp'
+        local lines = vim.fn.readfile(session_file)
+        table.insert(lines, 3, 'set title')
+        table.insert(lines, 4, 'set titlestring=notes')
+        vim.fn.writefile(lines, session_file)
+      end,
+      desc = 'Save tmp session',
+    },
+    -- { '<leader>oW', '<cmd>lua MiniSessions.write("zzz-notes-tmp")<cr>', desc = 'Save tmp session' },
     { '<leader>oO', '<cmd>lua MiniSessions.read("zzz-notes-tmp")<cr>', desc = 'Open tmp session' },
+    {
+      '<leader>ow',
+      function()
+        vim.o.title = true
+        vim.o.titlestring = 'notes'
+      end,
+      desc = 'Set window title',
+    },
     { '<leader>to', group = 'toggle' },
     {
       '<leader>tof',
