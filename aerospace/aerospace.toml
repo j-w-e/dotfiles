@@ -8,7 +8,7 @@ enable-normalization-flatten-containers = true
 enable-normalization-opposite-orientation-for-nested-containers = true
 start-at-login = true
 
-exec-on-workspace-change = [ "/bin/bash", "-c", "~/.config/aerospace/scripts/reminders.sh" ]
+# exec-on-workspace-change = [ "/bin/bash", "-c", "~/.config/aerospace/scripts/reminders.sh" ]
 
 
 
@@ -52,7 +52,9 @@ exec-on-workspace-change = [ "/bin/bash", "-c", "~/.config/aerospace/scripts/rem
 
     ctrl-alt-space           = 'layout floating tiling'
 
-    ctrl-alt-comma           = 'exec-and-forget aerospace focus-back-and-forth || aerospace workspace-back-and-forth'
+    # ctrl-alt-comma           = 'exec-and-forget aerospace focus-back-and-forth || aerospace workspace-back-and-forth'
+    ctrl-alt-comma           = 'focus-back-and-forth'
+    ctrl-alt-period          = 'workspace-back-and-forth'
 
     ctrl-alt-1 = 'workspace 1'
     ctrl-alt-2 = 'workspace 2'
@@ -92,6 +94,9 @@ exec-on-workspace-change = [ "/bin/bash", "-c", "~/.config/aerospace/scripts/rem
     # App openers
     ctrl-alt-z = 'exec-and-forget open -a /Applications/Microsoft\ Outlook.app'
     ctrl-alt-x = 'exec-and-forget open -a /Applications/Microsoft\ Teams.app'
+    ctrl-alt-a = '''exec-and-forget aerospace focus --window-id $(aerospace list-windows --monitor all --app-bundle-id com.mitchellh.ghostty --json | jq '.[] | select(.["window-title"] == "notes") | .["window-id"]')'''
+    # ctrl-alt-a = 'exec-and-forget open -a /Applications/Ghostty.app'
+    ctrl-alt-c = 'exec-and-forget /bin/bash -c ~/.config/aerospace/scripts/reminders.sh'
 
     ctrl-alt-r = 'mode resize'
     ctrl-alt-s = 'mode service'
@@ -126,9 +131,14 @@ if.app-id = 'com.apple.finder'
 if.window-title-regex-substring = 'quick look'
 run = 'layout floating'
 
-[[on-window-detected]]
-if.app-id = 'com.apple.finder'
-run = 'move-node-to-workspace 4'
+# [[on-window-detected]]
+# if.app-id = 'com.apple.finder'
+# if.window-title-regex-substring = 'copy'
+# run = 'layout floating'
+
+# [[on-window-detected]]
+# if.app-id = 'com.apple.finder'
+# run = 'move-node-to-workspace 4'
 
 [[on-window-detected]]
 if.app-id = 'com.apple.Safari'
