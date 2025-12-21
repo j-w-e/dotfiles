@@ -11,7 +11,17 @@ return {
         enabled = false,
         opts = {},
       },
-      { "folke/neodev.nvim" },
+      {
+        "folke/lazydev.nvim",
+        ft = "lua", -- only load on lua files
+        opts = {
+          library = {
+            -- See the configuration section for more details
+            -- Load luvit types when the `vim.uv` word is found
+            { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+          },
+        },
+      },
     },
 
     -- THIS is my original LSP config function
@@ -239,8 +249,6 @@ return {
         table.insert(lua_library_files, resource_path .. "/lua-types")
         table.insert(lua_plugin_paths, resource_path .. "/lua-plugin/plugin.lua")
       end
-
-      require("neodev").setup({})
 
       lspconfig.lua_ls.setup({
         capabilities = capabilities,
