@@ -9,8 +9,9 @@
 --    7. ... delete a file?
 -- 8. Make markdown folding work properly. See https://linkarzu.com/posts/neovim/markdown-setup-2025/#fold-all-level-2-or-3-headings
 -- 10. Add a command to set the wd if opening with a file?
--- 12. Possibly related, make lps format work again for R / Rmd / qmd files
+-- 12. Possibly related, make lsp format work again for R / Rmd / qmd files
 -- 13. this link gives some useful info about default mappings: https://docs.google.com/spreadsheets/d/1EJMLr_MPrYiO1TKJ2MjNkR-fA5Wgxa782-f0Wtdpz0w/htmlview#
+-- 14. Make MiniPairs work better: see https://github.com/nvim-mini/mini.nvim/discussions/2030
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
