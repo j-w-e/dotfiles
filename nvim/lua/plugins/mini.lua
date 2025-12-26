@@ -292,7 +292,7 @@ return {
         evaluate_single = true,
         items = {
           ministart.sections.sessions(6, false),
-          ministart.sections.recent_files(10, false),
+          ministart.sections.recent_files(3, false),
           ministart.sections.builtin_actions(),
         },
         content_hooks = {
