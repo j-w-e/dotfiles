@@ -114,7 +114,7 @@ return {
     lazy = false,
   },
 
-  { 'R-nvim/cmp-r' },
+  -- { 'R-nvim/cmp-r' },
 
   -- {
   --   'vhyrro/luarocks.nvim',

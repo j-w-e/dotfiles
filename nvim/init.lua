@@ -33,6 +33,8 @@ require('lazy').setup('plugins', {
 require 'autocommands'
 require 'remaps'
 
+vim.lsp.enable { 'lua_ls', 'r_language_server' }
+
 -- local setup = require('mini.hues').setup
 -- setup { background = '#29193d', foreground = '#ba85fa', accent = 'green' }
 -- next line is just to surpress a warning, if I keep using aurora as my colorscheme

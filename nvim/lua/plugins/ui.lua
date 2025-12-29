@@ -80,21 +80,21 @@ return {
     opts = { inverses = { ['TRUE'] = 'FALSE' } },
   },
 
-  {
-    'folke/noice.nvim',
-    -- event = "VeryLazy",
-    opts = {
-      presets = {
-        long_message_to_split = true,
-        lsp_doc_border = true,
-        command_palette = true,
-      },
-    },
-    dependencies = {
-      'MunifTanjim/nui.nvim',
-      'rcarriga/nvim-notify',
-    },
-  },
+  -- {
+  --   'folke/noice.nvim',
+  --   -- event = "VeryLazy",
+  --   opts = {
+  --     presets = {
+  --       long_message_to_split = true,
+  --       lsp_doc_border = true,
+  --       command_palette = true,
+  --     },
+  --   },
+  --   dependencies = {
+  --     'MunifTanjim/nui.nvim',
+  --     'rcarriga/nvim-notify',
+  --   },
+  -- },
 
   {
     'samjwill/nvim-unception',
