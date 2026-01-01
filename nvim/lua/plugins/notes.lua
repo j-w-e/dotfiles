@@ -19,6 +19,7 @@ return {
   {
     -- "epwalsh/obsidian.nvim",
     'obsidian-nvim/obsidian.nvim',
+    commit = 'f513608b6a413d82cb228bba0179a36190b22d21',
     opts = {
       legacy_commands = false,
       ui = { enable = false },
