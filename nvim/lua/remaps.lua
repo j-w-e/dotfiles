@@ -156,9 +156,47 @@ nmap('g;', 'g,', 'next change')
 vim.g.minicursorword_disable = true
 nmap('<leader>vw', '<cmd>lua vim.g.minicursorword_disable = not vim.g.minicursorword_disable<cr>', 'toggle cursorword')
 -- vim.keymap.set({ "n", "v" }, "gh", "^")
-vim.keymap.set({ 'n', 'v' }, 'gh', "(col('.') == matchend(getline('.'), '^\\s*')+1 ? '0' : '^')", { expr = true })
-vim.keymap.set({ 'n', 'v' }, 'gl', '$')
-vim.keymap.set({ 'n', 'v' }, 'gj', '%')
+-- TODO
+local function smart_line_start()
+  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+  local line = vim.api.nvim_get_current_line()
+
+  -- 1. Detect markdown bullet or numbered list
+  -- Matches:
+  --   - item
+  --   * item
+  --   + item
+  --   1. item
+  --   1) item
+  local bullet_start, bullet_end = line:find '^%s*([%-%*%+]%s+)'
+  local number_start, number_end = line:find '^%s*(%d+[%.%)]+%s+)'
+
+  local list_end = bullet_end or number_end
+
+  if list_end then
+    local target_col = list_end
+    if col ~= target_col then
+      vim.api.nvim_win_set_cursor(0, { row, target_col })
+      return
+    end
+    -- If already at list text start, fall through
+  end
+
+  -- 2. Normal smart line start behavior
+  local first_non_ws = line:find '%S'
+  first_non_ws = first_non_ws and (first_non_ws - 1) or 0
+
+  if col == first_non_ws then
+    vim.api.nvim_win_set_cursor(0, { row, 0 })
+  else
+    vim.api.nvim_win_set_cursor(0, { row, first_non_ws })
+  end
+end
+vim.keymap.set({ 'n', 'x' }, 'gh', smart_line_start, { desc = 'Start of line' })
+
+-- vim.keymap.set({ 'n', 'v' }, 'gh', "(col('.') == matchend(getline('.'), '^\\s*')+1 ? '0' : '^')", { expr = true })
+vim.keymap.set({ 'n', 'x' }, 'gl', '$')
+vim.keymap.set({ 'n', 'x' }, 'gj', '%')
 
 -- Jump to current Treesitter Node in insert mode
 -- From https://www.reddit.com/r/neovim/comments/1k1k7ow/jump_to_current_treesitter_node_in_insert_mode/
