@@ -15,6 +15,7 @@ o.timeoutlen = 300 -- until which-key pops up
 o.completeopt = 'menuone,noselect,noinsert,longest'
 o.rnu = true
 o.termguicolors = true
+-- o.pumborder = 'single'
 
 -- smarter search
 o.ignorecase = true

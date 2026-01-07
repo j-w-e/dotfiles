@@ -9,6 +9,7 @@ return {
       require('mini.cursorword').setup()
       require('mini.icons').setup()
       require('mini.misc').setup()
+      require('mini.notify').setup()
       require('mini.splitjoin').setup()
       require('mini.tabline').setup()
       require('mini.trailspace').setup()
@@ -269,7 +270,7 @@ return {
               local fileinfo = ministatus.section_fileinfo { trunc_width = 120 }
               local location = ministatus.section_location { trunc_width = 75 }
               local lsp = Lsp()
-              local noice_mode = require('noice').api.status.mode.get_hl()
+              -- local noice_mode = require('noice').api.status.mode.get_hl()
 
               return ministatus.combine_groups {
                 { hl = mode_hl, strings = { mode } },
@@ -278,7 +279,7 @@ return {
                 { hl = 'MiniStatuslineFilename', strings = { filename } },
                 '%=', -- End left alignment
                 -- { hl = 'MiniStatuslineFileinfo', strings = { noice_cmd, noice_mode } },
-                { hl = 'MiniStatuslineFileinfo', strings = { noice_mode } },
+                -- { hl = 'MiniStatuslineFileinfo', strings = { noice_mode } },
                 { hl = 'MiniStatuslineFilename', strings = { lsp } },
                 { hl = 'MiniStatuslineFileinfo', strings = { fileinfo } },
                 { hl = mode_hl, strings = { location } },
