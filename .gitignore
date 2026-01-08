@@ -5,3 +5,4 @@ test-nvim-R/
 test-nvim-other/
 test-nvim-minimal
 nvim/spell/*.spl
+nvim-mini
