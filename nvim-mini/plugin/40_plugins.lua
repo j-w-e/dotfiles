@@ -305,6 +305,6 @@ later(function()
     select_prompt = false,
     handlers = {
       search = false,
-    }
+    },
   })
 end)
