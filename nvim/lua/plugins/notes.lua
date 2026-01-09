@@ -19,7 +19,8 @@ return {
   {
     -- "epwalsh/obsidian.nvim",
     'obsidian-nvim/obsidian.nvim',
-    commit = 'f513608b6a413d82cb228bba0179a36190b22d21',
+    -- commit = 'f513608b6a413d82cb228bba0179a36190b22d21',
+    -- commit = '6b2a22a74d1c883e797764c28f75aa6b532a1ae4', -- this commit is prior to reworking the workspaces folder
     opts = {
       legacy_commands = false,
       ui = { enable = false },
@@ -27,7 +28,8 @@ return {
       workspaces = {
         {
           name = 'work',
-          path = vim.fn.expand '~/Documents/Work/OneDrive - Norwegian Refugee Council/notes',
+          -- path = vim.fn.expand '~/Documents/Work/OneDrive - Norwegian Refugee Council/notes',
+          path = vim.fn.expand '~/Library/CloudStorage/OneDrive-NorwegianRefugeeCouncil/notes',
         },
         {
           name = 'personal',
