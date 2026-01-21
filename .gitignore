@@ -1,10 +1,12 @@
 iterm2
 .DS_Store
 qBittorrent/
-test-nvim-R/
-test-nvim-other/
-test-nvim-minimal
+nvim-test-R/
+nvim-test-other/
+nvim-test-minimal
 nvim/spell/*.spl
 nvim-mini
 nvim-blink
 nvim
+nvim-minimax11
+MiniMax
