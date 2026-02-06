@@ -5,8 +5,5 @@ nvim-test-R/
 nvim-test-other/
 nvim-test-minimal
 nvim/spell/*.spl
-nvim-mini
-nvim-blink
 nvim
-nvim-minimax11
-MiniMax
+nvim-*
