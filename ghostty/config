@@ -8,4 +8,10 @@ font-size = 15
 # quick-terminal-position = center
 # keybind = ctrl+cmd+shift+b=toggle_quick_terminal
 
-# macos-option-as-alt = right
+# macos-option-as-alt can be left, right, or true
+macos-option-as-alt = true
+
+keybind = opt+3=text:#
+keybind = opt+n=text:~
+keybind = opt+minus=text:–
+keybind = shift+opt+minus=text:—
